@@ -1,7 +1,13 @@
 # Upgrade Guide
 
+- [Upgrading to 6.0.0 from 5.4](#upgrading-to-600-from-54)
+- [Upgrading to 5.4.0 from 5.3](#upgrading-to-540-from-53)
+- [Upgrading to 5.3.0 from 5.2](#upgrading-to-530-from-52)
+- [Upgrading to 5.2.0 from 5.1](#upgrading-to-520-from-51)
+- [Upgrading to 5.1.0 from 5.0](#upgrading-to-510-from-50)
+
 Canvas follows [Semantic Versioning](https://semver.org) and increments versions as `MAJOR.MINOR.PATCH` numbers.
-- Major versions **will** contain breaking changes, so check the [Table of Contents](#table-of-contents) for a step-by-step breakdown
+- Major versions **will** contain breaking changes, so follow the appropriate guide above for a step-by-step breakdown
 - Minor and patch versions should **never** contain breaking changes, so you can safely update the package by following the steps below:
 
 You may update your Canvas installation using composer:
@@ -34,14 +40,6 @@ To keep the assets up-to-date and avoid issues in future updates, you may add th
     }
 }
 ```
-
-## Table of Contents
-
-- [Upgrading to 6.0.0 from 5.4](#upgrading-to-600-from-54)
-- [Upgrading to 5.4.0 from 5.3](#upgrading-to-540-from-53)
-- [Upgrading to 5.3.0 from 5.2](#upgrading-to-530-from-52)
-- [Upgrading to 5.2.0 from 5.1](#upgrading-to-520-from-51)
-- [Upgrading to 5.1.0 from 5.0](#upgrading-to-510-from-50)
 
 ## Upgrading to 6.0.0 from 5.4
 
