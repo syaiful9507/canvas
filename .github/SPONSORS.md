@@ -18,16 +18,16 @@ If you haven't already, [star the repo](https://github.com/austintoddj/canvas/st
 
 <tr>
     <td align="center" valign="center">
-        <a href="https://www.jetbrains.com"><img width="180px" src="assets/jetbrains.png"></a>
+        <a href="https://www.jetbrains.com"><img width="180px" src="docs/jetbrains.png"></a>
     </td>
     <td align="center" valign="center">
-        <a href="https://digitalocean.com/?refcode=41cb45b3c7db"><img width="180px" src="assets/digitalocean.png"></a>
+        <a href="https://digitalocean.com/?refcode=41cb45b3c7db"><img width="180px" src="docs/digitalocean.png"></a>
     </td>
     <td align="center" valign="center">
-        <a href="https://www.navicat.com"><img width="180px" src="assets/navicat.png"></a>
+        <a href="https://www.navicat.com"><img width="180px" src="docs/navicat.png"></a>
     </td>
     <td align="center" valign="center">
-        <a href="https://readme.io"><img width="180px" src="assets/readme.png"></a>
+        <a href="https://readme.io"><img width="180px" src="docs/readme.png"></a>
     </td>
 </tr>
 

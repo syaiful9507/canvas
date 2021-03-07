@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://trycanvas.app">
-        <img src=".github/assets/header.png" alt="Canvas homepage">
+        <img src=".github/docs/header.png" alt="Canvas">
     </a>
 </p>
 
@@ -17,17 +17,27 @@ Canvas is a fully open source package to extend your existing [Laravel](https://
  up-and-running with a blog in just a few minutes. In addition to a distraction-free writing experience, you can
  view monthly trends on your content, get insights into reader traffic and more!
 
-## Table of Contents
-
-- [System Requirements](#system-requirements)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Roles & Permissions](#roles--permissions)
-- [Features](#features)
-- [Updates](#updates)
-- [Contributing](#contributing)
-- [License](#license)
-- [Credits](#credits)
+- Prologue
+    - [Release Notes](https://github.com/austintoddj/canvas/releases)
+    - [Upgrade Guide](https://github.com/austintoddj/canvas/blob/master/.github/UPGRADE.md)
+    - [Contributing Guide](https://github.com/austintoddj/canvas/blob/master/.github/CONTRIBUTING.md)
+ 
+- Getting Started
+    - [System Requirements](#system-requirements)
+    - [Installation](#installation)
+    - [Configuration](#configuration)
+ 
+- The Basics
+    - [Roles & Permissions](#roles--permissions)
+    - [Frontend UI](#frontend-ui)
+    - [Unsplash Integration](#unsplash-integration)
+    - [Weekly Digest](#weekly-digest)
+ 
+- Digging Deeper
+    - [Testing](#testing)
+    - [Troubleshooting](#troubleshooting)
+    - [License](#license)
+    - [Credits](#credits)
 
 ## System Requirements
 
@@ -139,13 +149,9 @@ Canvas has 3 pre-defined roles:
 - **Admin** (Somebody who can do everything and see everything)
 
 When you install a fresh version of Canvas, you'll have a default admin user set up automatically. From there, you
- can perform any basic CRUD actions on users, as well as assign their various roles. 
+ can perform any basic CRUD actions on users, as well as assign their various roles.
 
-## Features
-
-> **Note:** The following features are completely optional, you are not required to use them.
-
-### Frontend
+## Frontend UI
 
 **Want a beautiful, Medium.com-inspired frontend?** Use the `canvas:ui` Artisan command to install the scaffolding:
 
@@ -168,7 +174,7 @@ yarn dev
 That's it! You can navigate to `/canvas-ui` and check it out for yourself. You're free to modify any aspect of it
  that you'd like.
 
-### Unsplash Integration
+## Unsplash Integration
 
 **Want access to the entire [Unsplash](https://unsplash.com) library?** Set up a new application at [https://unsplash.com/oauth/applications](https://unsplash.com/oauth/applications), grab your access key, and update `config/canvas.php`:
 
@@ -189,7 +195,7 @@ That's it! You can navigate to `/canvas-ui` and check it out for yourself. You'r
 ]
 ```
 
-### Weekly Digest
+## Weekly Digest
 
 **Want a weekly summary?** Canvas allows users to receive a weekly summary of their authored content. Once your application is [configured for sending mail](https://laravel.com/docs/master/mail), update `config/canvas.php`:
 
@@ -217,58 +223,6 @@ Since the weekly digest runs on [Laravel's Scheduler](https://laravel.com/docs/m
 * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-## Updates
-
-Canvas follows [Semantic Versioning](https://semver.org) and increments versions as `MAJOR.MINOR.PATCH` numbers.
-- Major versions **will** contain breaking changes, so follow the [upgrade guide](.github/UPGRADE.md) for a
- step-by-step breakdown
-- Minor and patch versions should **never** contain breaking changes, so you can safely update the package by following the steps below:
-
-You may update your Canvas installation using composer:
-
-```bash
-composer update
-```
-
-Run any new migrations using the `canvas:migrate` Artisan command:
-
-```bash
-php artisan canvas:migrate
-```
-
-Re-publish the assets using the `canvas:publish` Artisan command:
-
-```bash
-php artisan canvas:publish
-```
-
-To keep the assets up-to-date and avoid issues in future updates, you may add the `canvas:publish` command to the
- `post-update-cmd` scripts in your application's `composer.json` file:
- 
-```bash
-{
-    "scripts": {
-        "post-update-cmd": [
-            "@php artisan canvas:publish --ansi"
-        ]
-    }
-}
-```
-
-## Contributing
-
-Thank you for considering contributing to Canvas!
-
-You can open a completely prebuilt, ready-to-code development environment using Gitpod.
-                                                  
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/austintoddj/canvas/tree/master)
-                                                  
-Alternatively, you can use the [contribution guide](.github/CONTRIBUTING.md) to assist you in manually setting up an
- environment on your own machine.
- 
- One of the ongoing goals for Canvas is to make it as accessible as possible. If you come across any translation
-  mistakes or issues and want to make a contribution, please [create a pull request](https://github.com/austintoddj/canvas/pulls). If you don't see your native language included in the `resources/lang` directory, feel free to add it.
-
 ## Testing
 
 Run the tests with:
@@ -276,6 +230,10 @@ Run the tests with:
 ```bash
 composer test
 ```
+
+## Troubleshooting
+
+If you're running into problems, feel free to [open a new issue](https://github.com/austintoddj/canvas/issues) or check the [Discussions](https://github.com/austintoddj/canvas/discussions) forum to see if anyone else has run into something similar. 
 
 ## License
 

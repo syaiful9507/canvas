@@ -1,5 +1,40 @@
 # Upgrade Guide
 
+Canvas follows [Semantic Versioning](https://semver.org) and increments versions as `MAJOR.MINOR.PATCH` numbers.
+- Major versions **will** contain breaking changes, so check the [Table of Contents](#table-of-contents) for a step-by-step breakdown
+- Minor and patch versions should **never** contain breaking changes, so you can safely update the package by following the steps below:
+
+You may update your Canvas installation using composer:
+
+```bash
+composer update
+```
+
+Run any new migrations using the `canvas:migrate` Artisan command:
+
+```bash
+php artisan canvas:migrate
+```
+
+Re-publish the assets using the `canvas:publish` Artisan command:
+
+```bash
+php artisan canvas:publish
+```
+
+To keep the assets up-to-date and avoid issues in future updates, you may add the `canvas:publish` command to the
+`post-update-cmd` scripts in your application's `composer.json` file:
+
+```bash
+{
+    "scripts": {
+        "post-update-cmd": [
+            "@php artisan canvas:publish --ansi"
+        ]
+    }
+}
+```
+
 ## Table of Contents
 
 - [Upgrading to 6.0.0 from 5.4](#upgrading-to-600-from-54)

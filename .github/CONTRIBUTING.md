@@ -1,7 +1,6 @@
 # Contributing Guide
 
-Hi! I'm really excited that you are interested in contributing to Canvas. The following guide will help you get
- your environment set up to begin making changes.
+Thank you for considering contributing to Canvas! One of the ongoing goals for Canvas is to make it as accessible as possible. If you come across any translation mistakes or issues and want to make a contribution, please [create a pull request](https://github.com/austintoddj/canvas/pulls). If you don't see your native language included in the `resources/lang` directory, feel free to add it.
 
 ## Table of Contents
 
