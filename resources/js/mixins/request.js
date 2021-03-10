@@ -22,6 +22,7 @@ export default {
                 switch (error.response.status) {
                     case 401:
                     case 405:
+                        // TODO: This check needs to be rewritten
                         if (store.state.settings.path === '/') {
                             window.location.href = `/logout`;
                         } else {

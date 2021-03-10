@@ -68,6 +68,7 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import FilePondPluginImageValidateSize from 'filepond-plugin-image-validate-size';
+import { store } from '../../store';
 
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
@@ -106,7 +107,8 @@ export default {
 
         getServerOptions() {
             return {
-                url: `${this.settings.path}/api/uploads`,
+                // TODO: This check shouldn't need to be here
+                url: this.settings.path === '/' ? `/api/uploads` : `${this.settings.path}/api/uploads`,
                 headers: {
                     'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
                 },
