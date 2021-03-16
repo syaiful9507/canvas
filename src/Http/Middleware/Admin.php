@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 
-class Admin
+final class Admin
 {
     /**
      * Handle the incoming request.

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage;
 
-class UploadsController extends Controller
+final class UploadsController extends Controller
 {
     /**
      * Store a newly created resource in storage.

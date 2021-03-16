@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Models\Post;
@@ -9,8 +11,9 @@ use Canvas\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Cache;
 
-class SearchController extends Controller
+final class SearchController extends Controller
 {
     /**
      * Display the specified resource.
@@ -19,27 +22,35 @@ class SearchController extends Controller
      */
     public function posts(): JsonResponse
     {
-        $posts = Post::query()
-                     ->select('id', 'title')
-                     ->when(request()->user('canvas')->isContributor, function (Builder $query) {
-                         return $query->where('user_id', request()->user('canvas')->id);
-                     }, function (Builder $query) {
-                         return $query;
-                     })
-                     ->latest()
-                     ->get();
+        $updated = optional(Post::query()->latest()->first())->updated_at;
 
-        // TODO: Can ->map() drop into the above query?
+        $key = vsprintf('%s-%s-%s', [
+            'posts',
+            request()->user('canvas')->id,
+            optional($updated)->timestamp ?? 0,
+        ]);
 
-        $posts->map(function ($post) {
-            $post['name'] = $post->title;
-            $post['type'] = 'Post';
-            $post['route'] = 'edit-post';
+        return Cache::remember($key, now()->addHours(4), function () {
+            $posts = Post::query()
+                         ->select('id', 'title')
+                         ->when(request()->user('canvas')->isContributor, function (Builder $query) {
+                             return $query->where('user_id', request()->user('canvas')->id);
+                         }, function (Builder $query) {
+                             return $query;
+                         })
+                         ->latest()
+                         ->get()
+                         ->map(function ($post) {
+                             $post['name'] = $post->title;
+                             $post['type'] = 'Post';
+                             $post['route'] = 'edit-post';
 
-            return $post;
+                             return $post;
+                         })
+                         ->toArray();
+
+            return response()->json($posts);
         });
-
-        return response()->json(collect($posts)->toArray(), 200);
     }
 
     /**
@@ -49,19 +60,29 @@ class SearchController extends Controller
      */
     public function tags(): JsonResponse
     {
-        $tags = Tag::query()
-                   ->select('id', 'name')
-                   ->latest()
-                   ->get();
+        $updated = optional(Tag::query()->latest()->first())->updated_at;
 
-        $tags->map(function ($tag) {
-            $tag['type'] = 'Tag';
-            $tag['route'] = 'edit-tag';
+        $key = vsprintf('%s-%s-%s', [
+            'tags',
+            request()->user('canvas')->id,
+            optional($updated)->timestamp ?? 0,
+        ]);
 
-            return $tag;
+        return Cache::remember($key, now()->addHours(4), function () {
+            $tags = Tag::query()
+                       ->select('id', 'name')
+                       ->latest()
+                       ->get()
+                       ->map(function ($tag) {
+                           $tag['type'] = 'Tag';
+                           $tag['route'] = 'edit-tag';
+
+                           return $tag;
+                       })
+                       ->toArray();
+
+            return response()->json($tags);
         });
-
-        return response()->json(collect($tags)->toArray(), 200);
     }
 
     /**
@@ -71,19 +92,29 @@ class SearchController extends Controller
      */
     public function topics(): JsonResponse
     {
-        $topics = Topic::query()
-                       ->select('id', 'name')
-                       ->latest()
-                       ->get();
+        $updated = optional(Topic::query()->latest()->first())->updated_at;
 
-        $topics->map(function ($topic) {
-            $topic['type'] = 'Topic';
-            $topic['route'] = 'edit-topic';
+        $key = vsprintf('%s-%s-%s', [
+            'topics',
+            request()->user('canvas')->id,
+            optional($updated)->timestamp ?? 0,
+        ]);
 
-            return $topic;
+        return Cache::remember($key, now()->addHours(4), function () {
+            $topics = Topic::query()
+                           ->select('id', 'name')
+                           ->latest()
+                           ->get()
+                           ->map(function ($topic) {
+                               $topic['type'] = 'Topic';
+                               $topic['route'] = 'edit-topic';
+
+                               return $topic;
+                           })
+                           ->toArray();
+
+            return response()->json($topics);
         });
-
-        return response()->json(collect($topics)->toArray(), 200);
     }
 
     /**
@@ -93,18 +124,28 @@ class SearchController extends Controller
      */
     public function users(): JsonResponse
     {
-        $users = User::query()
-                     ->select('id', 'name', 'email')
-                     ->latest()
-                     ->get();
+        $updated = optional(User::query()->latest()->first())->updated_at;
 
-        $users->map(function ($user) {
-            $user['type'] = 'User';
-            $user['route'] = 'edit-user';
+        $key = vsprintf('%s-%s-%s', [
+            'users',
+            request()->user('canvas')->id,
+            optional($updated)->timestamp ?? 0,
+        ]);
 
-            return $user;
+        return Cache::remember($key, now()->addHours(4), function () {
+            $users = User::query()
+                         ->select('id', 'name')
+                         ->latest()
+                         ->get()
+                         ->map(function ($user) {
+                             $user['type'] = 'User';
+                             $user['route'] = 'edit-user';
+
+                             return $user;
+                         })
+                         ->toArray();
+
+            return response()->json($users);
         });
-
-        return response()->json(collect($users)->toArray(), 200);
     }
 }

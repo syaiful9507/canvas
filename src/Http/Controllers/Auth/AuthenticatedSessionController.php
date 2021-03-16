@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers\Auth;
 
 use Canvas\Http\Requests\LoginRequest;
@@ -9,10 +11,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class AuthenticatedSessionController extends Controller
+final class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
@@ -21,7 +22,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
-        if (Auth::guard('canvas')->check()) {
+        if (auth()->guard('canvas')->check()) {
             return redirect()->route('canvas');
         }
 
@@ -52,7 +53,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
-        Auth::guard('canvas')->logout();
+        auth()->guard('canvas')->logout();
 
         $request->session()->invalidate();
 

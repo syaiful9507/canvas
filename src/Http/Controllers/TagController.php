@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Http\Requests\TagRequest;
@@ -9,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
 
-class TagController extends Controller
+final class TagController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,11 +21,10 @@ class TagController extends Controller
     public function index(): JsonResponse
     {
         return response()->json(
-            Tag::query()
-               ->select('id', 'name', 'created_at')
+            Tag::select('id', 'name', 'created_at')
                ->latest()
                ->withCount('posts')
-               ->paginate(), 200
+               ->paginate()
         );
     }
 
@@ -34,9 +35,9 @@ class TagController extends Controller
      */
     public function create(): JsonResponse
     {
-        return response()->json(Tag::query()->make([
+        return response()->json(Tag::make([
             'id' => Uuid::uuid4()->toString(),
-        ]), 200);
+        ]));
     }
 
     /**
@@ -50,9 +51,9 @@ class TagController extends Controller
     {
         $data = $request->validated();
 
-        $tag = Tag::query()->find($id);
+        $tag = Tag::find($id);
 
-        if (! $tag) {
+        if (!$tag) {
             if ($tag = Tag::onlyTrashed()->firstWhere('slug', $data['slug'])) {
                 $tag->restore();
 
@@ -79,9 +80,9 @@ class TagController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $tag = Tag::query()->findOrFail($id);
+        $tag = Tag::findOrFail($id);
 
-        return response()->json($tag, 200);
+        return response()->json($tag);
     }
 
     /**
@@ -92,9 +93,9 @@ class TagController extends Controller
      */
     public function posts($id): JsonResponse
     {
-        $tag = Tag::query()->with('posts')->findOrFail($id);
+        $tag = Tag::with('posts')->findOrFail($id);
 
-        return response()->json($tag->posts()->withCount('views')->paginate(), 200);
+        return response()->json($tag->posts()->withCount('views')->paginate());
     }
 
     /**
@@ -106,7 +107,7 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        $tag = Tag::query()->findOrFail($id);
+        $tag = Tag::findOrFail($id);
 
         $tag->delete();
 

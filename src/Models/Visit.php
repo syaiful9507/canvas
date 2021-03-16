@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Visit extends Model
+final class Visit extends Model
 {
     /**
      * The table associated with the model.

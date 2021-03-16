@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Http\Requests\PostRequest;
@@ -13,7 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
 
-class PostController extends Controller
+final class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,7 +25,7 @@ class PostController extends Controller
     public function index(): JsonResponse
     {
         $posts = Post::query()
-                    ->select('id', 'title', 'summary', 'featured_image', 'published_at', 'created_at', 'updated_at')
+                     ->select('id', 'title', 'summary', 'featured_image', 'published_at', 'created_at', 'updated_at')
                      ->when(request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all', function (Builder $query) {
                          return $query->where('user_id', request()->user('canvas')->id);
                      }, function (Builder $query) {
@@ -45,24 +47,20 @@ class PostController extends Controller
                               return $query->where('user_id', request()->user('canvas')->id);
                           }, function (Builder $query) {
                               return $query;
-                          })
-                          ->draft()
-                          ->count();
+                          })->draft()->count();
 
         $publishedCount = Post::query()
                               ->when(request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all', function (Builder $query) {
                                   return $query->where('user_id', request()->user('canvas')->id);
                               }, function (Builder $query) {
                                   return $query;
-                              })
-                              ->published()
-                              ->count();
+                              })->published()->count();
 
         return response()->json([
             'posts' => $posts,
             'draftCount' => $draftCount,
             'publishedCount' => $publishedCount,
-        ], 200);
+        ]);
     }
 
     /**
@@ -75,12 +73,12 @@ class PostController extends Controller
         $uuid = Uuid::uuid4();
 
         return response()->json([
-            'post' => Post::query()->make([
+            'post' => Post::make([
                 'id' => $uuid->toString(),
                 'slug' => "post-{$uuid->toString()}",
             ]),
-            'tags' => Tag::query()->get(['name', 'slug']),
-            'topics' => Topic::query()->get(['name', 'slug']),
+            'tags' => Tag::get(['name', 'slug']),
+            'topics' => Topic::get(['name', 'slug']),
         ]);
     }
 
@@ -96,16 +94,13 @@ class PostController extends Controller
     {
         $data = $request->validated();
 
-        $post = Post::query()
-                    ->when($request->user('canvas')->isContributor, function (Builder $query) {
-                        return $query->where('user_id', request()->user('canvas')->id);
-                    }, function (Builder $query) {
-                        return $query;
-                    })
-                    ->with('tags', 'topic')
-                    ->find($id);
+        $post = Post::when($request->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })->with('tags', 'topic')->find($id);
 
-        if (! $post) {
+        if (!$post) {
             $post = new Post(['id' => $id]);
         }
 
@@ -115,13 +110,13 @@ class PostController extends Controller
 
         $post->save();
 
-        $tags = Tag::query()->get(['id', 'name', 'slug']);
-        $topics = Topic::query()->get(['id', 'name', 'slug']);
+        $tags = Tag::get(['id', 'name', 'slug']);
+        $topics = Topic::get(['id', 'name', 'slug']);
 
         $tagsToSync = collect($request->input('tags', []))->map(function ($item) use ($tags) {
             $tag = $tags->firstWhere('slug', $item['slug']);
 
-            if (! $tag) {
+            if (!$tag) {
                 $tag = Tag::create([
                     'id' => $id = Uuid::uuid4()->toString(),
                     'name' => $item['name'],
@@ -130,13 +125,13 @@ class PostController extends Controller
                 ]);
             }
 
-            return (string) $tag->id;
+            return (string)$tag->id;
         })->toArray();
 
         $topicToSync = collect($request->input('topic', []))->map(function ($item) use ($topics) {
             $topic = $topics->firstWhere('slug', $item['slug']);
 
-            if (! $topic) {
+            if (!$topic) {
                 $topic = Topic::create([
                     'id' => $id = Uuid::uuid4()->toString(),
                     'name' => $item['name'],
@@ -145,7 +140,7 @@ class PostController extends Controller
                 ]);
             }
 
-            return (string) $topic->id;
+            return (string)$topic->id;
         })->toArray();
 
         $post->tags()->sync($tagsToSync);
@@ -163,19 +158,16 @@ class PostController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $post = Post::query()
-                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
-                        return $query->where('user_id', request()->user('canvas')->id);
-                    }, function (Builder $query) {
-                        return $query;
-                    })
-                    ->with('tags:name,slug', 'topic:name,slug')
-                    ->findOrFail($id);
+        $post = Post::when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })->with('tags:name,slug', 'topic:name,slug')->findOrFail($id);
 
         return response()->json([
             'post' => $post,
-            'tags' => Tag::query()->get(['name', 'slug']),
-            'topics' => Topic::query()->get(['name', 'slug']),
+            'tags' => Tag::get(['name', 'slug']),
+            'topics' => Topic::get(['name', 'slug']),
         ]);
     }
 
@@ -187,16 +179,13 @@ class PostController extends Controller
      */
     public function stats(string $id): JsonResponse
     {
-        $post = Post::query()
-                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
-                        return $query->where('user_id', request()->user('canvas')->id);
-                    }, function (Builder $query) {
-                        return $query;
-                    })
-                    ->published()
-                    ->findOrFail($id);
+        $post = Post::when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })->published()->findOrFail($id);
 
-        $stats = new StatsAggregator(request()->user('canvas'));
+        $stats = new StatsAggregator();
 
         $results = $stats->getStatsForPost($post);
 
@@ -212,13 +201,11 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        $post = Post::query()
-                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
-                        return $query->where('user_id', request()->user('canvas')->id);
-                    }, function (Builder $query) {
-                        return $query;
-                    })
-                    ->findOrFail($id);
+        $post = Post::when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })->findOrFail($id);
 
         $post->delete();
 

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Listeners;
 
 use Canvas\Canvas;
 use Canvas\Events\PostViewed;
 use Canvas\Models\Post;
 
-class CaptureVisit
+final class CaptureVisit
 {
     /**
      * A visit is captured when a user loads a post for the first time in a given

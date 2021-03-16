@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Services;
 
 use Canvas\Canvas;
@@ -15,25 +17,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 
-class StatsAggregator
+final class StatsAggregator
 {
-    /**
-     * The authenticated user instance.
-     *
-     * @var User
-     */
-    protected $user;
-
-    /**
-     * Create a new service instance.
-     *
-     * @param User $user
-     */
-    public function __construct(User $user)
-    {
-        $this->user = $user;
-    }
-
     /**
      * Get monthly insights on a given set of posts.
      *
@@ -213,7 +198,7 @@ class StatsAggregator
     protected function calculateReadTime(?string $text): string
     {
         // Only count words in our estimation
-        $words = str_word_count(strip_tags($text));
+        $words = str_word_count(strip_tags($text ?? ''));
 
         // Divide by the average number of words per minute
         $minutes = ceil($words / 250);
@@ -222,8 +207,8 @@ class StatsAggregator
         // to every model and we may be creating a new one
         return sprintf('%d %s %s',
             $minutes,
-            Str::plural(trans('canvas::app.min', [], optional($this->user)->locale), $minutes),
-            trans('canvas::app.read', [], optional($this->user)->locale)
+            Str::plural(trans('canvas::app.min', [], optional(request()->user)->locale), $minutes),
+            trans('canvas::app.read', [], optional(request()->user)->locale)
         );
     }
 
@@ -290,7 +275,7 @@ class StatsAggregator
         $collection = new Collection();
         $data->each(function ($item, $key) use ($collection) {
             if (empty(Canvas::parseReferer($item->referer))) {
-                $collection->push(trans('canvas::app.other', [], $this->user->locale));
+                $collection->push(trans('canvas::app.other', [], request()->user('canvas')->locale));
             } else {
                 $collection->push(Canvas::parseReferer($item->referer));
             }

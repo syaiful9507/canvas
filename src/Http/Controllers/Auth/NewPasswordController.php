@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers\Auth;
 
 use Canvas\Models\User;
@@ -10,12 +12,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Throwable;
 
-class NewPasswordController extends Controller
+final class NewPasswordController extends Controller
 {
     /**
      * Display the password reset view.
@@ -26,8 +27,8 @@ class NewPasswordController extends Controller
     public function create(Request $request)
     {
         return view('canvas::auth.passwords.reset')->with([
-            'request' => $request,
-        ]
+                'request' => $request,
+            ]
         );
     }
 
@@ -43,14 +44,14 @@ class NewPasswordController extends Controller
     {
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email:filter',
             'password' => 'required|confirmed|min:8',
         ]);
 
         try {
             [$id, $token] = explode('|', decrypt($request->token));
 
-            $user = User::findOrFail($id);
+            $user = User::query()->findOrFail($id);
 
             // Here we will attempt to reset the user's password. If it is successful we
             // will update the password on an actual user model and persist it to the
@@ -61,7 +62,7 @@ class NewPasswordController extends Controller
 
             $user->save();
 
-            Auth::guard('canvas')->login($user);
+            auth()->guard('canvas')->login($user);
         } catch (Throwable $e) {
             return redirect()->route('canvas.password.request')->with('invalidResetToken', 'Invalid token');
         }

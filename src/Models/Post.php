@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Models;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Post extends Model
+final class Post extends Model
 {
     use SoftDeletes;
 
@@ -164,7 +166,7 @@ class Post extends Model
      */
     public function scopeDraft(Builder $query): Builder
     {
-        return $query->where('published_at', '=', null)->orWhere('published_at', '>', now()->toDateTimeString());
+        return $query->whereNull('published_at')->orWhere('published_at', '>', now()->toDateTimeString());
     }
 
     /**

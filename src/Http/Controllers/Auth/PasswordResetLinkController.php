@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers\Auth;
 
 use Canvas\Mail\ResetPassword;
@@ -14,7 +16,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-class PasswordResetLinkController extends Controller
+final class PasswordResetLinkController extends Controller
 {
     /**
      * Display the password reset link request view.
@@ -39,7 +41,7 @@ class PasswordResetLinkController extends Controller
             'email' => 'required|email|exists:canvas_users',
         ]);
 
-        $user = User::firstWhere('email', $request->email);
+        $user = User::query()->firstWhere('email', $request->email);
         $token = Str::random();
 
         if ($user) {

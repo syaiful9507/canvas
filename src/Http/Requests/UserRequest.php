@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UserRequest extends FormRequest
+final class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

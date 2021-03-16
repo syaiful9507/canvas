@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
-class UiCommand extends Command
+final class UiCommand extends Command
 {
     /**
      * The name and signature of the console command.

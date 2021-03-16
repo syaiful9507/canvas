@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Console;
 
 use Canvas\Models\User;
@@ -8,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 
-class InstallCommand extends Command
+final class InstallCommand extends Command
 {
     /**
      * The name and signature of the console command.

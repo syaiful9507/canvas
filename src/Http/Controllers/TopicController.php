@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Http\Requests\TopicRequest;
@@ -9,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
 
-class TopicController extends Controller
+final class TopicController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,11 +21,10 @@ class TopicController extends Controller
     public function index(): JsonResponse
     {
         return response()->json(
-            Topic::query()
-               ->select('id', 'name', 'created_at')
-               ->latest()
-               ->withCount('posts')
-               ->paginate(), 200
+            Topic::select('id', 'name', 'created_at')
+                 ->latest()
+                 ->withCount('posts')
+                 ->paginate()
         );
     }
 
@@ -34,9 +35,9 @@ class TopicController extends Controller
      */
     public function create(): JsonResponse
     {
-        return response()->json(Topic::query()->make([
+        return response()->json(Topic::make([
             'id' => Uuid::uuid4()->toString(),
-        ]), 200);
+        ]));
     }
 
     /**
@@ -50,9 +51,9 @@ class TopicController extends Controller
     {
         $data = $request->validated();
 
-        $topic = Topic::query()->find($id);
+        $topic = Topic::find($id);
 
-        if (! $topic) {
+        if (!$topic) {
             if ($topic = Topic::onlyTrashed()->firstWhere('slug', $data['slug'])) {
                 $topic->restore();
 
@@ -79,9 +80,9 @@ class TopicController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $topic = Topic::query()->findOrFail($id);
+        $topic = Topic::findOrFail($id);
 
-        return response()->json($topic, 200);
+        return response()->json($topic);
     }
 
     /**
@@ -92,9 +93,9 @@ class TopicController extends Controller
      */
     public function posts($id): JsonResponse
     {
-        $topic = Topic::query()->with('posts')->findOrFail($id);
+        $topic = Topic::with('posts')->findOrFail($id);
 
-        return response()->json($topic->posts()->withCount('views')->paginate(), 200);
+        return response()->json($topic->posts()->withCount('views')->paginate());
     }
 
     /**
@@ -106,7 +107,7 @@ class TopicController extends Controller
      */
     public function destroy($id)
     {
-        $topic = Topic::query()->findOrFail($id);
+        $topic = Topic::findOrFail($id);
 
         $topic->delete();
 

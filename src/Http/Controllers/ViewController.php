@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
@@ -8,14 +10,14 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 
-class ViewController extends Controller
+final class ViewController extends Controller
 {
     /**
      * Handle the incoming request.
      *
      * @return Application|Factory|View
      */
-    public function __invoke()
+    public function index()
     {
         return view('canvas::layout')->with([
             'jsVars' => [

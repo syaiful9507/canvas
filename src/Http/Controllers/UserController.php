@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
@@ -12,7 +14,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
 
-class UserController extends Controller
+final class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,11 +24,10 @@ class UserController extends Controller
     public function index(): JsonResponse
     {
         return response()->json(
-            User::query()
-                ->select('id', 'name', 'email', 'avatar', 'role')
+            User::select('id', 'name', 'email', 'avatar', 'role')
                 ->latest()
                 ->withCount('posts')
-                ->paginate(), 200
+                ->paginate()
         );
     }
 
@@ -37,10 +38,10 @@ class UserController extends Controller
      */
     public function create(): JsonResponse
     {
-        return response()->json(User::query()->make([
+        return response()->json(User::make([
             'id' => Uuid::uuid4()->toString(),
             'role' => User::CONTRIBUTOR,
-        ]), 200);
+        ]));
     }
 
     /**
@@ -54,9 +55,9 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::query()->find($id);
+        $user = User::find($id);
 
-        if (! $user) {
+        if (!$user) {
             if ($user = User::onlyTrashed()->firstWhere('email', $data['email'])) {
                 $user->restore();
 
@@ -71,7 +72,7 @@ class UserController extends Controller
             }
         }
 
-        if (! Arr::has($data, 'locale') || ! in_array($data['locale'], Canvas::availableLanguageCodes())) {
+        if (!Arr::has($data, 'locale') || !in_array($data['locale'], Canvas::availableLanguageCodes())) {
             $data['locale'] = config('app.fallback_locale');
         }
 
@@ -97,9 +98,9 @@ class UserController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $user = User::query()->withCount('posts')->find($id);
+        $user = User::withCount('posts')->findOrFail($id);
 
-        return $user ? response()->json($user, 200) : response()->json(null, 404);
+        return response()->json($user);
     }
 
     /**
@@ -110,9 +111,9 @@ class UserController extends Controller
      */
     public function posts($id): JsonResponse
     {
-        $user = User::query()->with('posts')->find($id);
+        $user = User::with('posts')->findOrFail($id);
 
-        return $user ? response()->json($user->posts()->withCount('views')->paginate(), 200) : response()->json(null, 200);
+        return response()->json($user->posts()->withCount('views')->paginate());
     }
 
     /**
@@ -129,7 +130,7 @@ class UserController extends Controller
             return response()->json(null, 403);
         }
 
-        $user = User::query()->findOrFail($id);
+        $user = User::findOrFail($id);
 
         $user->delete();
 

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Events;
 
 use Canvas\Models\Post;
 
-class PostViewed
+final class PostViewed
 {
     /**
      * The post instance.

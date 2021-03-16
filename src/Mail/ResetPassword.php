@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ResetPassword extends Mailable
+final class ResetPassword extends Mailable
 {
     use Queueable, SerializesModels;
 

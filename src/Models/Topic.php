@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -7,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Topic extends Model
+final class Topic extends Model
 {
     use SoftDeletes;
 

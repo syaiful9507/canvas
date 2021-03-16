@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas;
 
 use Canvas\Models\User;
@@ -7,7 +9,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use RuntimeException;
 
-class Canvas
+final class Canvas
 {
     /**
      * Return the installed version.
