@@ -23,6 +23,7 @@ class AuthenticateTest extends TestCase
             // Base routes...
             ['GET', 'canvas'],
             ['GET', 'canvas/api'],
+            ['GET', 'canvas/api/dashboard'],
 
             // Upload routes...
             ['POST', 'canvas/api/uploads'],

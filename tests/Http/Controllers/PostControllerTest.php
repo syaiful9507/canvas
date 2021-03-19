@@ -16,7 +16,7 @@ use Ramsey\Uuid\Uuid;
  *
  * @covers \Canvas\Http\Controllers\PostController
  * @covers \Canvas\Http\Requests\PostRequest
- * @covers \Canvas\Services\StatsAggregator
+ * @covers \Canvas\Canvas
  */
 class PostControllerTest extends TestCase
 {
@@ -272,7 +272,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->admin, 'canvas')
-             ->getJson("canvas/api/posts/{$post->id}/stats")
+             ->getJson("canvas/api/posts/{$post->id}/traffic")
              ->assertSuccessful()
              ->assertJsonStructure([
                  'post',
@@ -308,7 +308,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->editor, 'canvas')
-             ->getJson("canvas/api/posts/{$post->id}/stats")
+             ->getJson("canvas/api/posts/{$post->id}/traffic")
              ->assertSuccessful()
              ->assertJsonStructure([
                  'post',
@@ -340,7 +340,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->contributor, 'canvas')
-             ->getJson("canvas/api/posts/{$post->id}/stats")
+             ->getJson("canvas/api/posts/{$post->id}/traffic")
              ->assertSuccessful()
              ->assertJsonStructure([
                  'post',
@@ -372,7 +372,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->contributor, 'canvas')
-             ->getJson("canvas/api/posts/{$post->id}/stats")
+             ->getJson("canvas/api/posts/{$post->id}/traffic")
              ->assertNotFound();
     }
 
@@ -383,7 +383,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->admin, 'canvas')
-             ->getJson("canvas/api/posts/{$post->id}/stats")
+             ->getJson("canvas/api/posts/{$post->id}/traffic")
              ->assertNotFound();
     }
 
@@ -394,7 +394,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->admin, 'canvas')
-             ->getJson("canvas/api/posts/{$post->id}/stats")
+             ->getJson("canvas/api/posts/{$post->id}/traffic")
              ->assertNotFound();
     }
 

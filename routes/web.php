@@ -1,8 +1,8 @@
 <?php
 
+use Canvas\Http\Controllers\DashboardController;
 use Canvas\Http\Controllers\PostController;
 use Canvas\Http\Controllers\SearchController;
-use Canvas\Http\Controllers\StatsController;
 use Canvas\Http\Controllers\TagController;
 use Canvas\Http\Controllers\TopicController;
 use Canvas\Http\Controllers\UploadsController;
@@ -14,21 +14,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware([Authenticate::class])->group(function () {
     Route::prefix('api')->group(function () {
-        // Stats routes...
-        Route::get('stats', [StatsController::class, 'index']);
-
-        // Upload routes...
-        Route::prefix('uploads')->group(function () {
-            Route::post('/', [UploadsController::class, 'store']);
-            Route::delete('/', [UploadsController::class, 'destroy']);
-        });
+        // Dashboard routes...
+        Route::get('dashboard', [DashboardController::class, 'index']);
 
         // Post routes...
         Route::prefix('posts')->group(function () {
             Route::get('/', [PostController::class, 'index']);
             Route::get('create', [PostController::class, 'create']);
             Route::get('{id}', [PostController::class, 'show']);
-            Route::get('{id}/stats', [PostController::class, 'stats']);
+            Route::get('{id}/traffic', [PostController::class, 'traffic']);
             Route::post('{id}', [PostController::class, 'store']);
             Route::delete('{id}', [PostController::class, 'destroy']);
         });
@@ -61,6 +55,12 @@ Route::middleware([Authenticate::class])->group(function () {
             Route::get('{id}/posts', [UserController::class, 'posts']);
             Route::post('{id}', [UserController::class, 'store']);
             Route::delete('{id}', [UserController::class, 'destroy'])->middleware([Admin::class]);
+        });
+
+        // Upload routes...
+        Route::prefix('uploads')->group(function () {
+            Route::post('/', [UploadsController::class, 'store']);
+            Route::delete('/', [UploadsController::class, 'destroy']);
         });
 
         // Search routes...

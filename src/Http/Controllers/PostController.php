@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Canvas\Http\Controllers;
 
+use Canvas\Canvas;
 use Canvas\Http\Requests\PostRequest;
 use Canvas\Models\Post;
 use Canvas\Models\Tag;
 use Canvas\Models\Topic;
-use Canvas\Services\StatsAggregator;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -100,7 +100,7 @@ final class PostController extends Controller
             return $query;
         })->with('tags', 'topic')->find($id);
 
-        if (! $post) {
+        if (!$post) {
             $post = new Post(['id' => $id]);
         }
 
@@ -116,7 +116,7 @@ final class PostController extends Controller
         $tagsToSync = collect($request->input('tags', []))->map(function ($item) use ($tags) {
             $tag = $tags->firstWhere('slug', $item['slug']);
 
-            if (! $tag) {
+            if (!$tag) {
                 $tag = Tag::create([
                     'id' => $id = Uuid::uuid4()->toString(),
                     'name' => $item['name'],
@@ -125,13 +125,13 @@ final class PostController extends Controller
                 ]);
             }
 
-            return (string) $tag->id;
+            return (string)$tag->id;
         })->toArray();
 
         $topicToSync = collect($request->input('topic', []))->map(function ($item) use ($topics) {
             $topic = $topics->firstWhere('slug', $item['slug']);
 
-            if (! $topic) {
+            if (!$topic) {
                 $topic = Topic::create([
                     'id' => $id = Uuid::uuid4()->toString(),
                     'name' => $item['name'],
@@ -140,7 +140,7 @@ final class PostController extends Controller
                 ]);
             }
 
-            return (string) $topic->id;
+            return (string)$topic->id;
         })->toArray();
 
         $post->tags()->sync($tagsToSync);
@@ -172,24 +172,55 @@ final class PostController extends Controller
     }
 
     /**
-     * Display stats for the specified resource.
+     * Display traffic for the specified resource.
      *
      * @param string $id
      * @return JsonResponse
      */
-    public function stats(string $id): JsonResponse
+    public function traffic(string $id): JsonResponse
     {
-        $post = Post::when(request()->user('canvas')->isContributor, function (Builder $query) {
-            return $query->where('user_id', request()->user('canvas')->id);
-        }, function (Builder $query) {
-            return $query;
-        })->published()->findOrFail($id);
+        $post = Post::query()
+                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
+                        return $query->where('user_id', request()->user('canvas')->id);
+                    }, function (Builder $query) {
+                        return $query;
+                    })->published()->findOrFail($id);
 
-        $stats = new StatsAggregator();
+        $currentViews = $post->views->whereBetween('created_at', [
+            today()->startOfMonth()->startOfDay()->toDateTimeString(),
+            today()->endOfMonth()->endOfDay()->toDateTimeString(),
+        ]);
 
-        $results = $stats->getStatsForPost($post);
+        $currentVisits = $post->visits->whereBetween('created_at', [
+            today()->startOfMonth()->startOfDay()->toDateTimeString(),
+            today()->endOfMonth()->endOfDay()->toDateTimeString(),
+        ]);
 
-        return response()->json($results);
+        $previousViews = $post->views->whereBetween('created_at', [
+            today()->subMonth()->startOfMonth()->startOfDay()->toDateTimeString(),
+            today()->subMonth()->endOfMonth()->endOfDay()->toDateTimeString(),
+        ]);
+
+        $previousVisits = $post->visits->whereBetween('created_at', [
+            today()->subMonth()->startOfMonth()->startOfDay()->toDateTimeString(),
+            today()->subMonth()->endOfMonth()->endOfDay()->toDateTimeString(),
+        ]);
+
+        return response()->json([
+            'post' => $post,
+            'readTime' => Canvas::calculateReadTime($post->body),
+            'popularReadingTimes' => Canvas::calculatePopularReadingTimes($post),
+            'topReferers' => Canvas::calculateTopReferers($post),
+            'monthlyViews' => $currentViews->count(),
+            'totalViews' => $post->views->count(),
+            'monthlyVisits' => $currentVisits->count(),
+            'monthOverMonthViews' => Canvas::compareMonthOverMonth($currentViews, $previousViews),
+            'monthOverMonthVisits' => Canvas::compareMonthOverMonth($currentVisits, $previousVisits),
+            'graph' => [
+                'views' => Canvas::calculateTotalForDays($currentViews)->toJson(),
+                'visits' => Canvas::calculateTotalForDays($currentVisits)->toJson(),
+            ]
+        ]);
     }
 
     /**
