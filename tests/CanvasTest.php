@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * Class CanvasTest.
  *
- * @covers \Canvas\Canvas
+ * @covers /helpers.php
  */
 class CanvasTest extends TestCase
 {
@@ -17,7 +17,7 @@ class CanvasTest extends TestCase
 
     public function testInstalledVersion(): void
     {
-        $this->assertEmpty(Canvas::installedVersion());
+        $this->assertEmpty(version());
     }
 
     public function testAvailableLanguageCodes(): void
