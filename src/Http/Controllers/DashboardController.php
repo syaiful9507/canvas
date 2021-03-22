@@ -33,42 +33,44 @@ final class DashboardController extends Controller
                 return $query->where('user_id', request()->user('canvas')->id);
             });
 
-        $currentPosts = $builder->withCount(['views' => function (Builder $query) use ($lookup) {
-            return $query->whereBetween('created_at', [
-                $lookup['start'],
-                $lookup['end'],
-            ]);
-        }])
-        ->withCount(['visits' => function (Builder $query) use ($lookup) {
-            return $query->whereBetween('created_at', [
-                $lookup['start'],
-                $lookup['end'],
-            ]);
-        }])->get();
+        $currentPosts = $builder
+            ->withCount(['views' => function (Builder $query) use ($lookup) {
+                return $query->whereBetween('created_at', [
+                    $lookup['start'],
+                    $lookup['end'],
+                ]);
+            }])
+            ->withCount(['visits' => function (Builder $query) use ($lookup) {
+                return $query->whereBetween('created_at', [
+                    $lookup['start'],
+                    $lookup['end'],
+                ]);
+            }])->get();
 
-        $historicalPosts = $builder->withCount(['views' => function (Builder $query) use ($lookback) {
-            return $query->whereBetween('created_at', [
-                $lookback['start'],
-                $lookback['end'],
-            ]);
-        }])
-                ->withCount(['visits' => function (Builder $query) use ($lookback) {
-            return $query->whereBetween('created_at', [
-                $lookback['start'],
-                $lookback['end'],
-            ]);
-                }])->get();
+        $historicalPosts = $builder
+            ->withCount(['views' => function (Builder $query) use ($lookback) {
+                return $query->whereBetween('created_at', [
+                    $lookback['start'],
+                    $lookback['end'],
+                ]);
+            }])
+            ->withCount(['visits' => function (Builder $query) use ($lookback) {
+                return $query->whereBetween('created_at', [
+                    $lookback['start'],
+                    $lookback['end'],
+                ]);
+            }])->get();
 
         return response()->json([
             [
                 'name' => 'Total pageviews',
                 'count' => $currentPosts->sum('views_count'),
-                'change' => bcsub((string) $currentPosts->sum('views_count'), (string) $historicalPosts->sum('views_count')),
+                'change' => $this->percentOfChange($currentPosts->sum('views_count'), $historicalPosts->sum('views_count')),
             ],
             [
                 'name' => 'Unique Visitors',
                 'count' => $currentPosts->sum('visits_count'),
-                'change' => bcsub((string) $currentPosts->sum('visits_count'), (string) $historicalPosts->sum('visits_count')),
+                'change' => $this->percentOfChange($currentPosts->sum('visits_count'), $historicalPosts->sum('visits_count')),
             ],
         ]);
     }
@@ -76,27 +78,27 @@ final class DashboardController extends Controller
     public function chart(): JsonResponse
     {
         $posts = Post::query()
-                     ->select('id')
-                     ->published()
-                     ->latest()
-                     ->when(request()->query('scope', 'user') === 'all', function (Builder $query) {
-                         return $query;
-                     }, function (Builder $query) {
-                         return $query->where('user_id', request()->user('canvas')->id);
-                     })
-                     ->with(['views' => function (HasMany $views) {
-                         return $views->whereBetween('created_at', [
-                             today()->subDays(30)->startOfDay()->toDateTimeString(),
-                             today()->endOfDay()->toDateTimeString(),
-                         ]);
-                     }])
-                     ->with(['visits' => function (HasMany $visits) {
-                         return $visits->whereBetween('created_at', [
-                             today()->subDays(30)->startOfDay()->toDateTimeString(),
-                             today()->endOfDay()->toDateTimeString(),
-                         ]);
-                     }])
-                     ->get();
+            ->select('id')
+            ->published()
+            ->latest()
+            ->when(request()->query('scope', 'user') === 'all', function (Builder $query) {
+                return $query;
+            }, function (Builder $query) {
+                return $query->where('user_id', request()->user('canvas')->id);
+            })
+            ->with(['views' => function (HasMany $views) {
+                return $views->whereBetween('created_at', [
+                    today()->subDays(30)->startOfDay()->toDateTimeString(),
+                    today()->endOfDay()->toDateTimeString(),
+                ]);
+            }])
+            ->with(['visits' => function (HasMany $visits) {
+                return $visits->whereBetween('created_at', [
+                    today()->subDays(30)->startOfDay()->toDateTimeString(),
+                    today()->endOfDay()->toDateTimeString(),
+                ]);
+            }])
+            ->get();
 
         return response()->json([
             'views' => Canvas::calculateTotalForDays($posts->pluck('views')->flatten())->toJson(),
@@ -125,7 +127,7 @@ final class DashboardController extends Controller
     // }
 
     /**
-     * Undocumented function.
+     * Return 2 date ranges of an equal length.
      *
      * @param string|null $from
      * @param string|null $to
@@ -151,5 +153,21 @@ final class DashboardController extends Controller
                 'end' => $secondaryEnd->toDateTimeString(),
             ],
         ];
+    }
+
+    /**
+     * Return the percentage change of two given numbers.
+     *
+     * @param string|int $numberOne
+     * @param string|int $numberTwo
+     * @return string
+     */
+    protected function percentOfChange(string|int $numberOne, string|int $numberTwo): string
+    {
+        $difference = (int) $numberOne - (int) $numberTwo;
+
+        $change = ($difference / $numberTwo) * 100;
+
+        return number_format(abs($change));
     }
 }
