@@ -156,18 +156,18 @@ final class DashboardController extends Controller
     }
 
     /**
-     * Return the percentage change of two given numbers.
+     * Return the percentage of change between two given numbers.
      *
      * @param string|int $numberOne
      * @param string|int $numberTwo
-     * @return string
+     * @return float|int
      */
-    protected function percentOfChange(string|int $numberOne, string|int $numberTwo): string
+    protected function percentOfChange(string|int $numberOne, string|int $numberTwo): float|int
     {
         $difference = (int) $numberOne - (int) $numberTwo;
 
         $change = ($difference / $numberTwo) * 100;
 
-        return number_format(abs($change));
+        return round($change, 1);
     }
 }
