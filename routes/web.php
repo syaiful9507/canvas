@@ -15,7 +15,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware([Authenticate::class])->group(function () {
     Route::prefix('api')->group(function () {
         // Dashboard routes...
-        Route::get('dashboard', [DashboardController::class, 'index']);
+        Route::prefix('dashboard')->group(function () {
+            Route::get('stats', [DashboardController::class, 'stats']);
+            Route::get('chart', [DashboardController::class, 'chart']);
+            Route::get('sources', [DashboardController::class, 'sources']);
+            Route::get('pages', [DashboardController::class, 'pages']);
+            Route::get('countries', [DashboardController::class, 'countries']);
+            Route::get('devices', [DashboardController::class, 'devices']);
+        });
 
         // Post routes...
         Route::prefix('posts')->group(function () {
