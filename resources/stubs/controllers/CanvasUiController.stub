@@ -86,7 +86,7 @@ class CanvasUiController extends Controller
     {
         $tag = Tag::firstWhere('slug', $slug);
 
-        return $tag ? response()->json($tag->posts()->with('topic')->paginate(), 200) : response()->json(null, 200);
+        return $tag ? response()->json($tag->posts()->with('topic', 'user')->paginate(), 200) : response()->json(null, 200);
     }
 
     /**
@@ -119,7 +119,7 @@ class CanvasUiController extends Controller
     {
         $topic = Topic::firstWhere('slug', $slug);
 
-        return $topic ? response()->json($topic->posts()->with('topic')->paginate(), 200) : response()->json(null, 200);
+        return $topic ? response()->json($topic->posts()->with('topic', 'user')->paginate(), 200) : response()->json(null, 200);
     }
 
     /**
