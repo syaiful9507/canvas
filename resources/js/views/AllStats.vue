@@ -26,7 +26,7 @@
                 </div>
 
                 <div v-if="isReady && hasPublishedPosts">
-                    <div class="card-deck mt-4 pt-2">
+                    <!-- <div class="card-deck mt-4 pt-2">
                         <div class="card shadow-lg">
                             <div
                                 class="card-header pb-0 bg-transparent d-flex justify-content-between align-middle border-0"
@@ -57,12 +57,12 @@
                                 <p class="card-text display-4">{{ suffixedNumber(data.visits) }}</p>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <line-chart :views="plotViewPoints" :visits="plotVisitPoints" class="mt-5" />
 
                     <div class="mt-5 card shadow-lg">
-                        <div class="card-body p-0">
+                        <!-- <div class="card-body p-0">
                             <div :key="`${index}-${post.id}`" v-for="(post, index) in posts">
                                 <router-link
                                     :to="{
@@ -122,7 +122,7 @@
                                 <span slot="no-more" />
                                 <div slot="no-results" />
                             </infinite-loading>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -168,7 +168,8 @@ export default {
         return {
             page: 1,
             posts: [],
-            data: null,
+            chart: null,
+            topStats: null,
             scope: 'user',
             infiniteId: +new Date(),
             isReady: false,
@@ -186,16 +187,16 @@ export default {
         },
 
         plotViewPoints() {
-            return JSON.parse(this.data.graph.views);
+            return JSON.parse(this.chart.views);
         },
 
         plotVisitPoints() {
-            return JSON.parse(this.data.graph.visits);
+            return JSON.parse(this.chart.visits);
         },
     },
 
     async created() {
-        await Promise.all([this.fetchStats(), this.fetchPosts()]);
+        await Promise.all([this.fetchStats(), this.fetchChart(), this.fetchPosts()]);
         this.isReady = true;
         NProgress.done();
     },
@@ -203,13 +204,30 @@ export default {
     methods: {
         fetchStats() {
             return this.request()
-                .get('/api/stats', {
+                .get('/api/dashboard/stats', {
                     params: {
                         scope: this.scope,
                     },
                 })
                 .then(({ data }) => {
-                    this.data = data;
+                    this.topStats = data;
+                    NProgress.inc();
+                })
+                .catch(() => {
+                    NProgress.done();
+                });
+        },
+
+        fetchChart() {
+            return this.request()
+                .get('/api/dashboard/chart', {
+                    params: {
+                        scope: this.scope,
+                    },
+                })
+                .then(({ data }) => {
+                    this.chart = data;
+                    console.log(this.chart);
                     NProgress.inc();
                 })
                 .catch(() => {

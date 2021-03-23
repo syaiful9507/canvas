@@ -4,16 +4,36 @@ declare(strict_types=1);
 
 namespace Canvas\Http\Controllers;
 
-use Canvas\Canvas;
 use Canvas\Models\Post;
+use Canvas\Models\View;
+use Canvas\Models\Visit;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
+use Illuminate\Support\Collection;
+use DateInterval;
+use DatePeriod;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 
 final class DashboardController extends Controller
 {
+    protected int $period;
+    protected array $lookup;
+    protected array $lookback;
+
+    public function __construct()
+    {
+        [
+            'period' => $this->period,
+            'lookup' => $this->lookup,
+            'lookback' => $this->lookback
+        ] = $this->createRangeLookups(request('from'), request('to'));
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,88 +41,141 @@ final class DashboardController extends Controller
      */
     public function stats(): JsonResponse
     {
-        ['lookup' => $lookup, 'lookback' => $lookback] = $this->dateRange(request('from'), request('to'));
+        $postIds = Post::query()
+        ->published()
+        ->when(request()->query('scope', 'user') === 'all', function (Builder $query) {
+            return $query;
+        }, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        })
+        ->pluck('id')
+        ->toArray();
 
-        $builder = Post::query()
-            ->select('id')
-            ->published()
-            ->latest()
-            ->when(request('scope', 'user') === 'all', function (Builder $query) {
-                return $query;
-            }, function (Builder $query) {
-                return $query->where('user_id', request()->user('canvas')->id);
-            });
+        // $builder = Post::query()
+        //     ->select('id')
+        //     ->published()
+        //     ->latest()
+        //     ->when(request('scope', 'user') === 'all', function (Builder $query) {
+        //         return $query;
+        //     }, function (Builder $query) {
+        //         return $query->where('user_id', request()->user('canvas')->id);
+        //     });
 
-        $currentPosts = $builder
-            ->withCount(['views' => function (Builder $query) use ($lookup) {
-                return $query->whereBetween('created_at', [
-                    $lookup['start'],
-                    $lookup['end'],
-                ]);
-            }])
-            ->withCount(['visits' => function (Builder $query) use ($lookup) {
-                return $query->whereBetween('created_at', [
-                    $lookup['start'],
-                    $lookup['end'],
-                ]);
-            }])->get();
 
-        $historicalPosts = $builder
-            ->withCount(['views' => function (Builder $query) use ($lookback) {
-                return $query->whereBetween('created_at', [
-                    $lookback['start'],
-                    $lookback['end'],
-                ]);
-            }])
-            ->withCount(['visits' => function (Builder $query) use ($lookback) {
-                return $query->whereBetween('created_at', [
-                    $lookback['start'],
-                    $lookback['end'],
-                ]);
-            }])->get();
+        // $test = DB::table('canvas_views')
+        //         ->
+        $lookupViews = View::query()
+                        ->select('id')
+                        ->whereBetween('created_at', [
+                            $this->lookup['start'],
+                            $this->lookup['end'],
+                        ])
+                        ->whereIn('post_id', $postIds)
+                        ->count();
+
+        $lookupVisits = Visit::query()
+                        ->select('id')
+                        ->whereBetween('created_at', [
+                            $this->lookup['start'],
+                            $this->lookup['end'],
+                        ])
+                        ->whereIn('post_id', $postIds)
+                        ->count();
+
+        $lookbackViews = View::query()
+                        ->select('id')
+                        ->whereBetween('created_at', [
+                            $this->lookback['start'],
+                            $this->lookback['end'],
+                        ])
+                        ->whereIn('post_id', $postIds)
+                        ->count();
+
+        $lookbackVisits = Visit::query()
+                        ->select('id')
+                        ->whereBetween('created_at', [
+                            $this->lookback['start'],
+                            $this->lookback['end'],
+                        ])
+                        ->whereIn('post_id', $postIds)
+                        ->count();
+
+        // $currentPosts = $builder
+        //     ->withCount(['views' => function (Builder $query) {
+        //         return $query->whereBetween('created_at', [
+        //             $this->lookup['start'],
+        //             $this->lookup['end'],
+        //         ]);
+        //     }])
+        //     ->withCount(['visits' => function (Builder $query) {
+        //         return $query->whereBetween('created_at', [
+        //             $this->lookup['start'],
+        //             $this->lookup['end'],
+        //         ]);
+        //     }])->get();
+
+        // $historicalPosts = $builder
+        //     ->withCount(['views' => function (Builder $query) {
+        //         return $query->whereBetween('created_at', [
+        //             $this->lookback['start'],
+        //             $this->lookback['end'],
+        //         ]);
+        //     }])
+        //     ->withCount(['visits' => function (Builder $query) {
+        //         return $query->whereBetween('created_at', [
+        //             $this->lookback['start'],
+        //             $this->lookback['end'],
+        //         ]);
+        //     }])->get();
 
         return response()->json([
             [
                 'name' => 'Total pageviews',
-                'count' => $currentPosts->sum('views_count'),
-                'change' => $this->percentOfChange($currentPosts->sum('views_count'), $historicalPosts->sum('views_count')),
+                'count' => $lookupViews,
+                'change' => $this->percentOfChange($lookupViews, $lookbackViews),
             ],
             [
                 'name' => 'Unique Visitors',
-                'count' => $currentPosts->sum('visits_count'),
-                'change' => $this->percentOfChange($currentPosts->sum('visits_count'), $historicalPosts->sum('visits_count')),
+                'count' => $lookupVisits,
+                'change' => $this->percentOfChange($lookupVisits, $lookbackVisits),
             ],
         ]);
     }
 
     public function chart(): JsonResponse
     {
-        $posts = Post::query()
-            ->select('id')
+        $postIds = Post::query()
             ->published()
-            ->latest()
             ->when(request()->query('scope', 'user') === 'all', function (Builder $query) {
                 return $query;
             }, function (Builder $query) {
                 return $query->where('user_id', request()->user('canvas')->id);
             })
-            ->with(['views' => function (HasMany $views) {
-                return $views->whereBetween('created_at', [
-                    today()->subDays(30)->startOfDay()->toDateTimeString(),
-                    today()->endOfDay()->toDateTimeString(),
-                ]);
-            }])
-            ->with(['visits' => function (HasMany $visits) {
-                return $visits->whereBetween('created_at', [
-                    today()->subDays(30)->startOfDay()->toDateTimeString(),
-                    today()->endOfDay()->toDateTimeString(),
-                ]);
-            }])
+            ->pluck('id')
+            ->toArray();
+
+        
+        $views = View::query()
+                ->select('created_at')
+                ->whereBetween('created_at', [
+                    $this->lookup['start'],
+                    $this->lookup['end'],
+                ])
+                ->whereIn('post_id', $postIds)
+                ->get();
+
+        $visits = Visit::query()
+            ->select('created_at')
+            ->whereBetween('created_at', [
+                $this->lookup['start'],
+                $this->lookup['end'],
+            ])
+            ->whereIn('post_id', $postIds)
             ->get();
 
         return response()->json([
-            'views' => Canvas::calculateTotalForDays($posts->pluck('views')->flatten())->toJson(),
-            'visits' => Canvas::calculateTotalForDays($posts->pluck('visits')->flatten())->toJson(),
+            'views' => $this->datePlots($views, $this->period)->toJson(),
+            'visits' => $this->datePlots($visits, $this->period)->toJson(),
         ]);
     }
 
@@ -133,7 +206,7 @@ final class DashboardController extends Controller
      * @param string|null $to
      * @return array
      */
-    protected function dateRange(?string $from, ?string $to): array
+    protected function createRangeLookups(?string $from, ?string $to): array
     {
         $primaryStart = $from ? Carbon::createFromDate($from)->startOfDay() : now()->subDays(30)->startOfDay();
         $primaryEnd = $to ? Carbon::createFromDate($to)->endOfDay() : now()->endOfDay();
@@ -144,6 +217,7 @@ final class DashboardController extends Controller
         $secondaryEnd = $primaryStart->copy()->startOfDay();
 
         return [
+            'period' => $days,
             'lookup' => [
                 'start' => $primaryStart->toDateTimeString(),
                 'end' => $primaryEnd->toDateTimeString(),
@@ -153,6 +227,35 @@ final class DashboardController extends Controller
                 'end' => $secondaryEnd->toDateTimeString(),
             ],
         ];
+    }
+
+    protected function datePlots(Collection $data, $days): Collection
+    {
+        // Filter the data to only include created_at date strings
+        $filtered = new Collection();
+
+        $data->sortBy('created_at')->each(function ($item) use ($filtered) {
+            $filtered->push($item->created_at->toDateString());
+        });
+
+        // Count the unique values and assign to their respective keys
+        $unique = array_count_values($filtered->toArray());
+
+        // Create a day range to hold the default date values
+        $period = $this->generateDateRange(today()->subDays($days), CarbonInterval::day(), $days);
+
+        // Compare the data and date range arrays, assigning counts where applicable
+        $results = new Collection();
+
+        foreach ($period as $date) {
+            if (array_key_exists($date, $unique)) {
+                $results->put($date, $unique[$date]);
+            } else {
+                $results->put($date, 0);
+            }
+        }
+
+        return $results;
     }
 
     /**
@@ -166,8 +269,33 @@ final class DashboardController extends Controller
     {
         $difference = (int) $numberOne - (int) $numberTwo;
 
-        $change = ($difference / $numberTwo) * 100;
+        $change = $numberOne != 0 ? ($difference / $numberTwo) * 100 : $numberOne * 100;
 
         return round($change, 1);
+    }
+
+    /**
+     * Generate a date range array of formatted strings.
+     *
+     * @param DateTimeInterface $start_date
+     * @param DateInterval $interval
+     * @param int $recurrences
+     * @param int $exclusive
+     * @return array
+     */
+    protected function generateDateRange(
+        DateTimeInterface $start_date,
+        DateInterval $interval,
+        int $recurrences,
+        int $exclusive = 1
+    ): array {
+        $period = new DatePeriod($start_date, $interval, $recurrences, $exclusive);
+        $dates = new Collection();
+
+        foreach ($period as $date) {
+            $dates->push($date->format('Y-m-d'));
+        }
+
+        return $dates->toArray();
     }
 }
