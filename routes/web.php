@@ -29,7 +29,7 @@ Route::middleware([Authenticate::class])->group(function () {
             Route::get('/', [PostController::class, 'index']);
             Route::get('create', [PostController::class, 'create']);
             Route::get('{id}', [PostController::class, 'show']);
-            Route::get('{id}/traffic', [PostController::class, 'traffic']);
+            Route::get('{id}/stats', [PostController::class, 'stats']);
             Route::post('{id}', [PostController::class, 'store']);
             Route::delete('{id}', [PostController::class, 'destroy']);
         });

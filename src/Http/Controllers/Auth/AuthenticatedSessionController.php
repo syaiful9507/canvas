@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 final class AuthenticatedSessionController extends Controller
@@ -22,7 +23,7 @@ final class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
-        if (auth()->guard('canvas')->check()) {
+        if (Auth::guard('canvas')->check()) {
             return redirect()->route('canvas');
         }
 
@@ -53,7 +54,7 @@ final class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
-        auth()->guard('canvas')->logout();
+        Auth::guard('canvas')->logout();
 
         $request->session()->invalidate();
 

@@ -30,7 +30,7 @@ final class LoginRequest extends FormRequest
         $this->redirect = route('canvas.login');
 
         return [
-            'email' => 'required|string|email',
+            'email' => 'required|string|email:filter',
             'password' => 'required|string',
         ];
     }

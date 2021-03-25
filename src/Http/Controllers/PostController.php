@@ -24,9 +24,11 @@ final class PostController extends Controller
      */
     public function index(): JsonResponse
     {
+        $scopeToUser = request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all';
+
         $posts = Post::query()
                      ->select('id', 'title', 'summary', 'featured_image', 'published_at', 'created_at', 'updated_at')
-                     ->when(request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all', function (Builder $query) {
+                     ->when($scopeToUser, function (Builder $query) {
                          return $query->where('user_id', request()->user('canvas')->id);
                      }, function (Builder $query) {
                          return $query;
@@ -40,21 +42,23 @@ final class PostController extends Controller
                      ->withCount('views')
                      ->paginate();
 
-        // TODO: The count() queries here are duplicated
-
         $draftCount = Post::query()
-                          ->when(request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all', function (Builder $query) {
+                          ->when($scopeToUser, function (Builder $query) {
                               return $query->where('user_id', request()->user('canvas')->id);
                           }, function (Builder $query) {
                               return $query;
-                          })->draft()->count();
+                          })
+                          ->draft()
+                          ->count();
 
         $publishedCount = Post::query()
-                              ->when(request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all', function (Builder $query) {
+                              ->when($scopeToUser, function (Builder $query) {
                                   return $query->where('user_id', request()->user('canvas')->id);
                               }, function (Builder $query) {
                                   return $query;
-                              })->published()->count();
+                              })
+                              ->published()
+                              ->count();
 
         return response()->json([
             'posts' => $posts,
@@ -172,19 +176,21 @@ final class PostController extends Controller
     }
 
     /**
-     * Display traffic for the specified resource.
+     * Display stats for the specified resource.
      *
      * @param string $id
      * @return JsonResponse
      */
-    public function traffic(string $id): JsonResponse
+    public function stats(string $id): JsonResponse
     {
         $post = Post::query()
                     ->when(request()->user('canvas')->isContributor, function (Builder $query) {
                         return $query->where('user_id', request()->user('canvas')->id);
                     }, function (Builder $query) {
                         return $query;
-                    })->published()->findOrFail($id);
+                    })
+                    ->published()
+                    ->findOrFail($id);
 
         $currentViews = $post->views->whereBetween('created_at', [
             today()->startOfMonth()->startOfDay()->toDateTimeString(),

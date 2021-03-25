@@ -22,12 +22,12 @@ final class SearchController extends Controller
      */
     public function posts(): JsonResponse
     {
-        $updated = optional(Post::query()->latest()->first())->updated_at;
+        $lastUpdated = optional(Post::query()->latest()->first())->updated_at;
 
         $key = vsprintf('%s-%s-%s', [
             'posts',
             request()->user('canvas')->id,
-            optional($updated)->timestamp ?? 0,
+            optional($lastUpdated)->timestamp ?? 0,
         ]);
 
         return Cache::remember($key, now()->addHours(4), function () {
@@ -60,12 +60,12 @@ final class SearchController extends Controller
      */
     public function tags(): JsonResponse
     {
-        $updated = optional(Tag::query()->latest()->first())->updated_at;
+        $lastUpdated = optional(Tag::query()->latest()->first())->updated_at;
 
         $key = vsprintf('%s-%s-%s', [
             'tags',
             request()->user('canvas')->id,
-            optional($updated)->timestamp ?? 0,
+            optional($lastUpdated)->timestamp ?? 0,
         ]);
 
         return Cache::remember($key, now()->addHours(4), function () {
@@ -92,12 +92,12 @@ final class SearchController extends Controller
      */
     public function topics(): JsonResponse
     {
-        $updated = optional(Topic::query()->latest()->first())->updated_at;
+        $lastUpdated = optional(Topic::query()->latest()->first())->updated_at;
 
         $key = vsprintf('%s-%s-%s', [
             'topics',
             request()->user('canvas')->id,
-            optional($updated)->timestamp ?? 0,
+            optional($lastUpdated)->timestamp ?? 0,
         ]);
 
         return Cache::remember($key, now()->addHours(4), function () {
@@ -124,12 +124,12 @@ final class SearchController extends Controller
      */
     public function users(): JsonResponse
     {
-        $updated = optional(User::query()->latest()->first())->updated_at;
+        $lastUpdated = optional(User::query()->latest()->first())->updated_at;
 
         $key = vsprintf('%s-%s-%s', [
             'users',
             request()->user('canvas')->id,
-            optional($updated)->timestamp ?? 0,
+            optional($lastUpdated)->timestamp ?? 0,
         ]);
 
         return Cache::remember($key, now()->addHours(4), function () {

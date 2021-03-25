@@ -12,6 +12,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Throwable;
@@ -26,10 +28,8 @@ final class NewPasswordController extends Controller
      */
     public function create(Request $request)
     {
-        return view('canvas::auth.passwords.reset')->with([
-            'request' => $request,
-        ]
-        );
+        return view('canvas::auth.passwords.reset')
+            ->with(['request' => $request]);
     }
 
     /**
@@ -62,12 +62,12 @@ final class NewPasswordController extends Controller
 
             $user->save();
 
-            auth()->guard('canvas')->login($user);
+            Auth::guard('canvas')->login($user);
         } catch (Throwable $e) {
             return redirect()->route('canvas.password.request')->with('invalidResetToken', 'Invalid token');
         }
 
-        cache()->forget("password.reset.{$id}");
+        Cache::forget("password.reset.{$id}");
 
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can

@@ -14,10 +14,8 @@ use DateInterval;
 use DatePeriod;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
 
 final class DashboardController extends Controller
 {
@@ -27,11 +25,7 @@ final class DashboardController extends Controller
 
     public function __construct()
     {
-        [
-            'period' => $this->period,
-            'lookup' => $this->lookup,
-            'lookback' => $this->lookback
-        ] = $this->createRangeLookups(request('from'), request('to'));
+        $this->getRangeLookups();
     }
 
     /**
@@ -42,51 +36,38 @@ final class DashboardController extends Controller
     public function stats(): JsonResponse
     {
         $postIds = Post::query()
-        ->published()
-        ->when(request()->query('scope', 'user') === 'all', function (Builder $query) {
-            return $query;
-        }, function (Builder $query) {
-            return $query->where('user_id', request()->user('canvas')->id);
-        })
-        ->pluck('id')
-        ->toArray();
-
-        // $builder = Post::query()
-        //     ->select('id')
-        //     ->published()
-        //     ->latest()
-        //     ->when(request('scope', 'user') === 'all', function (Builder $query) {
-        //         return $query;
-        //     }, function (Builder $query) {
-        //         return $query->where('user_id', request()->user('canvas')->id);
-        //     });
-
-
-        // $test = DB::table('canvas_views')
-        //         ->
+            ->published()
+            ->when(request()->query('scope', 'user') === 'all', function (Builder $query) {
+                return $query;
+            }, function (Builder $query) {
+                return $query->where('user_id', request()->user('canvas')->id);
+            })
+            ->pluck('id')
+            ->toArray();
+                
         $lookupViews = View::query()
-                        ->select('id')
-                        ->whereBetween('created_at', [
-                            $this->lookup['start'],
-                            $this->lookup['end'],
-                        ])
-                        ->whereIn('post_id', $postIds)
-                        ->count();
+                ->select('id')
+                ->whereBetween('created_at', [
+                    $this->lookup['start'],
+                    $this->lookup['end'],
+                ])
+                ->whereIn('post_id', $postIds)
+                ->count();
+
+        $lookbackViews = View::query()
+                ->select('id')
+                ->whereBetween('created_at', [
+                    $this->lookback['start'],
+                    $this->lookback['end'],
+                ])
+                ->whereIn('post_id', $postIds)
+                ->count();
 
         $lookupVisits = Visit::query()
                         ->select('id')
                         ->whereBetween('created_at', [
                             $this->lookup['start'],
                             $this->lookup['end'],
-                        ])
-                        ->whereIn('post_id', $postIds)
-                        ->count();
-
-        $lookbackViews = View::query()
-                        ->select('id')
-                        ->whereBetween('created_at', [
-                            $this->lookback['start'],
-                            $this->lookback['end'],
                         ])
                         ->whereIn('post_id', $postIds)
                         ->count();
@@ -99,34 +80,6 @@ final class DashboardController extends Controller
                         ])
                         ->whereIn('post_id', $postIds)
                         ->count();
-
-        // $currentPosts = $builder
-        //     ->withCount(['views' => function (Builder $query) {
-        //         return $query->whereBetween('created_at', [
-        //             $this->lookup['start'],
-        //             $this->lookup['end'],
-        //         ]);
-        //     }])
-        //     ->withCount(['visits' => function (Builder $query) {
-        //         return $query->whereBetween('created_at', [
-        //             $this->lookup['start'],
-        //             $this->lookup['end'],
-        //         ]);
-        //     }])->get();
-
-        // $historicalPosts = $builder
-        //     ->withCount(['views' => function (Builder $query) {
-        //         return $query->whereBetween('created_at', [
-        //             $this->lookback['start'],
-        //             $this->lookback['end'],
-        //         ]);
-        //     }])
-        //     ->withCount(['visits' => function (Builder $query) {
-        //         return $query->whereBetween('created_at', [
-        //             $this->lookback['start'],
-        //             $this->lookback['end'],
-        //         ]);
-        //     }])->get();
 
         return response()->json([
             [
@@ -174,8 +127,8 @@ final class DashboardController extends Controller
             ->get();
 
         return response()->json([
-            'views' => $this->datePlots($views, $this->period)->toJson(),
-            'visits' => $this->datePlots($visits, $this->period)->toJson(),
+            'views' => $this->datePlots($views)->toJson(),
+            'visits' => $this->datePlots($visits)->toJson(),
         ]);
     }
 
@@ -199,37 +152,64 @@ final class DashboardController extends Controller
     //     # code...
     // }
 
-    /**
-     * Return 2 date ranges of an equal length.
-     *
-     * @param string|null $from
-     * @param string|null $to
-     * @return array
-     */
-    protected function createRangeLookups(?string $from, ?string $to): array
+    protected function getRangeLookups(): void
     {
-        $primaryStart = $from ? Carbon::createFromDate($from)->startOfDay() : now()->subDays(30)->startOfDay();
-        $primaryEnd = $to ? Carbon::createFromDate($to)->endOfDay() : now()->endOfDay();
+        $from = request('date', now());
+        $period = request('period', '30d');
+
+        switch ($period) {
+            case 'day':
+                $primaryEnd = Carbon::parse($from)->endOfDay()->toDateTimeString();
+                $primaryStart = Carbon::parse($primaryEnd)->startOfDay()->toDateTimeString();
+                break;
+
+            case '7d':
+                $primaryStart = $primaryEnd->subDays(7)->startOfDay();
+                break;
+
+            case '30d':
+                $primaryStart = $primaryEnd->subDays(30)->startOfDay();
+                break;
+
+            case 'month':
+                $primaryStart = $primaryEnd->startOfDay();
+                break;
+
+            case '6mo':
+                $primaryStart = $primaryEnd->startOfDay();
+                break;
+
+            case '12mo':
+                $primaryStart = $primaryEnd->startOfDay();
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        
+        
 
         $days = $primaryStart->diffInDays($primaryEnd);
 
         $secondaryStart = $primaryStart->copy()->subDays($days)->startOfDay();
         $secondaryEnd = $primaryStart->copy()->startOfDay();
 
-        return [
-            'period' => $days,
-            'lookup' => [
-                'start' => $primaryStart->toDateTimeString(),
-                'end' => $primaryEnd->toDateTimeString(),
-            ],
-            'lookback' => [
-                'start' => $secondaryStart->toDateTimeString(),
-                'end' => $secondaryEnd->toDateTimeString(),
-            ],
-        ];
+        // return [
+        //     'period' => $days,
+        //     'lookup' => [
+        //         'start' => $primaryStart->toDateTimeString(),
+        //         'end' => $primaryEnd->toDateTimeString(),
+        //     ],
+        //     'lookback' => [
+        //         'start' => $secondaryStart->toDateTimeString(),
+        //         'end' => $secondaryEnd->toDateTimeString(),
+        //     ],
+        // ];
     }
 
-    protected function datePlots(Collection $data, $days): Collection
+    protected function datePlots(Collection $data): Collection
     {
         // Filter the data to only include created_at date strings
         $filtered = new Collection();
@@ -242,7 +222,27 @@ final class DashboardController extends Controller
         $unique = array_count_values($filtered->toArray());
 
         // Create a day range to hold the default date values
-        $period = $this->generateDateRange(today()->subDays($days), CarbonInterval::day(), $days);
+
+        // this works for day breakdowns
+        $period = $this->generateDateRange(
+            Carbon::create($this->lookback['start']), 
+            CarbonInterval::days(), 
+            $this->period,
+            DatePeriod::EXCLUDE_START_DATE,
+            'Y-m-d'
+        );
+
+        // this works for hourly breakdowns
+        // $period = $this->generateDateRange(
+        //     Carbon::create($this->lookup['start']), 
+        //     CarbonInterval::hours(), 
+        //     24,
+        //     DatePeriod::EXCLUDE_START_DATE,
+        //     'g:i A'
+        // );
+        
+
+        dd($period);
 
         // Compare the data and date range arrays, assigning counts where applicable
         $results = new Collection();
@@ -275,25 +275,27 @@ final class DashboardController extends Controller
     }
 
     /**
-     * Generate a date range array of formatted strings.
+     * Return an array of formatted date/time strings.
      *
      * @param DateTimeInterface $start_date
      * @param DateInterval $interval
      * @param int $recurrences
      * @param int $exclusive
+     * @param string $format
      * @return array
      */
     protected function generateDateRange(
         DateTimeInterface $start_date,
         DateInterval $interval,
         int $recurrences,
-        int $exclusive = 1
+        int $exclusive = 1,
+        string $format = 'Y-m-d'
     ): array {
         $period = new DatePeriod($start_date, $interval, $recurrences, $exclusive);
         $dates = new Collection();
 
         foreach ($period as $date) {
-            $dates->push($date->format('Y-m-d'));
+            $dates->push($date->format($format));
         }
 
         return $dates->toArray();

@@ -30,7 +30,7 @@ final class UserRequest extends FormRequest
             'name' => 'required|string',
             'email' => [
                 'required',
-                'email',
+                'email:filter',
                 Rule::unique('canvas_users')->where(function ($query) {
                     return $query->where('email', request('email'));
                 })->ignore(request('id'))->whereNull('deleted_at'),
