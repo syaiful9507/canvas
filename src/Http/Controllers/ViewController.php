@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
@@ -10,7 +8,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 
-final class ViewController extends Controller
+class ViewController extends Controller
 {
     /**
      * Handle the incoming request.

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Console;
 
 use Canvas\Canvas;
@@ -10,7 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
 
-final class UserCommand extends Command
+class UserCommand extends Command
 {
     /**
      * The name and signature of the console command.

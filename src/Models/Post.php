@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Models;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -11,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-final class Post extends Model
+class Post extends Model
 {
     use SoftDeletes;
 
@@ -82,6 +80,8 @@ final class Post extends Model
      */
     public function tags(): BelongsToMany
     {
+        // TODO: This should be a hasMany() relationship?
+
         return $this->belongsToMany(
             Tag::class,
             'canvas_posts_tags',
@@ -97,7 +97,7 @@ final class Post extends Model
      */
     public function topic(): BelongsToMany
     {
-        // TODO: This should be a belongsTo() relationship?
+        // TODO: This should be a hasOne() relationship?
 
         return $this->belongsToMany(
             Topic::class,
@@ -144,7 +144,7 @@ final class Post extends Model
      */
     public function getPublishedAttribute(): bool
     {
-        return ! is_null($this->published_at) && $this->published_at <= now()->toDateTimeString();
+        return !is_null($this->published_at) && $this->published_at <= now()->toDateTimeString();
     }
 
     /**

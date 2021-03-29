@@ -1,14 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-final class WeeklyDigest extends Mailable
+class WeeklyDigest extends Mailable
 {
     use Queueable, SerializesModels;
 

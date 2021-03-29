@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Middleware;
 
 use Closure;
@@ -9,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Date;
 
-final class Session
+class Session
 {
     /**
      * Handle the incoming request.

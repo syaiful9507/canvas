@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas;
 
 use Canvas\Models\Post;
@@ -16,7 +14,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use RuntimeException;
 
-final class Canvas
+class Canvas
 {
     /**
      * Return the installed version.

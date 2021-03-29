@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas;
 
 use Canvas\Console\DigestCommand;
@@ -19,7 +17,7 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-final class CanvasServiceProvider extends ServiceProvider
+class CanvasServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.

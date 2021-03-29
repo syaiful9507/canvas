@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-final class TagRequest extends FormRequest
+class TagRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

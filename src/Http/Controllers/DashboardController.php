@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Controllers;
 
 use Canvas\Models\Post;
@@ -17,7 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
-final class DashboardController extends Controller
+class DashboardController extends Controller
 {
     protected int $period;
     protected array $lookup;
@@ -44,7 +42,7 @@ final class DashboardController extends Controller
             })
             ->pluck('id')
             ->toArray();
-                
+
         $lookupViews = View::query()
                 ->select('id')
                 ->whereBetween('created_at', [
@@ -107,7 +105,7 @@ final class DashboardController extends Controller
             ->pluck('id')
             ->toArray();
 
-        
+
         $views = View::query()
                 ->select('created_at')
                 ->whereBetween('created_at', [
@@ -182,14 +180,14 @@ final class DashboardController extends Controller
             case '12mo':
                 $primaryStart = $primaryEnd->startOfDay();
                 break;
-            
+
             default:
                 # code...
                 break;
         }
 
-        
-        
+
+
 
         $days = $primaryStart->diffInDays($primaryEnd);
 
@@ -225,8 +223,8 @@ final class DashboardController extends Controller
 
         // this works for day breakdowns
         $period = $this->generateDateRange(
-            Carbon::create($this->lookback['start']), 
-            CarbonInterval::days(), 
+            Carbon::create($this->lookback['start']),
+            CarbonInterval::days(),
             $this->period,
             DatePeriod::EXCLUDE_START_DATE,
             'Y-m-d'
@@ -234,13 +232,13 @@ final class DashboardController extends Controller
 
         // this works for hourly breakdowns
         // $period = $this->generateDateRange(
-        //     Carbon::create($this->lookup['start']), 
-        //     CarbonInterval::hours(), 
+        //     Carbon::create($this->lookup['start']),
+        //     CarbonInterval::hours(),
         //     24,
         //     DatePeriod::EXCLUDE_START_DATE,
         //     'g:i A'
         // );
-        
+
 
         dd($period);
 

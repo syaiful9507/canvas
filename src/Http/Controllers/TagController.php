@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Controllers;
 
 use Canvas\Http\Requests\TagRequest;
@@ -11,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
 
-final class TagController extends Controller
+class TagController extends Controller
 {
     /**
      * Display a listing of the resource.

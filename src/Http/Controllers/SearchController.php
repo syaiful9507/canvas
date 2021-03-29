@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Controllers;
 
 use Canvas\Models\Post;
@@ -13,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 
-final class SearchController extends Controller
+class SearchController extends Controller
 {
     /**
      * Display the specified resource.

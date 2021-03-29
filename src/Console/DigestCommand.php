@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Console;
 
 use Canvas\Mail\WeeklyDigest;
@@ -11,7 +9,7 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Mail;
 
-final class DigestCommand extends Command
+class DigestCommand extends Command
 {
     /**
      * The name and signature of the console command.

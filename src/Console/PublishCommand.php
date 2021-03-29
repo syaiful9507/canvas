@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Console;
 
 use Illuminate\Console\Command;
 
-final class PublishCommand extends Command
+class PublishCommand extends Command
 {
     /**
      * The name and signature of the console command.

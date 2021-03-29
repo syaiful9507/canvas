@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Controllers\Auth;
 
 use Canvas\Mail\ResetPassword;
@@ -16,7 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-final class PasswordResetLinkController extends Controller
+class PasswordResetLinkController extends Controller
 {
     /**
      * Display the password reset link request view.

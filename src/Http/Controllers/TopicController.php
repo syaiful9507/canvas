@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Controllers;
 
 use Canvas\Http\Requests\TopicRequest;
@@ -11,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
 
-final class TopicController extends Controller
+class TopicController extends Controller
 {
     /**
      * Display a listing of the resource.

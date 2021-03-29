@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
@@ -14,7 +12,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
 
-final class UserController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Middleware;
 
 use Closure;
@@ -9,7 +7,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Http\Request;
 
-final class Authenticate
+class Authenticate
 {
     /**
      * The authentication factory instance.

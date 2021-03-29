@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Controllers\Auth;
 
 use Canvas\Models\User;
@@ -18,7 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Throwable;
 
-final class NewPasswordController extends Controller
+class NewPasswordController extends Controller
 {
     /**
      * Display the password reset view.

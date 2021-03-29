@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Models;
 
 use Canvas\Canvas;
@@ -9,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-final class User extends Authenticatable
+class User extends Authenticatable
 {
     use SoftDeletes;
 

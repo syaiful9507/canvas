@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
@@ -15,7 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
 
-final class PostController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
