@@ -258,17 +258,18 @@ class PostControllerTest extends TestCase
     {
         $post = factory(Post::class)->create([
             'user_id' => $this->contributor->id,
+            'published_at' => now()->subWeek(),
             'body' => null,
         ]);
 
         factory(View::class)->create([
             'post_id' => $post->id,
-            'created_at' => now()->subMonth(),
+            'created_at' => now()->subMonthNoOverflow(),
         ]);
 
         factory(Visit::class)->create([
             'post_id' => $post->id,
-            'created_at' => now()->subMonth(),
+            'created_at' => now()->subMonthNoOverflow(),
         ]);
 
         $this->actingAs($this->admin, 'canvas')
