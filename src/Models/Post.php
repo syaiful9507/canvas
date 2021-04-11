@@ -144,7 +144,7 @@ class Post extends Model
      */
     public function getPublishedAttribute(): bool
     {
-        return ! is_null($this->published_at) && $this->published_at <= now()->toDateTimeString();
+        return ! is_null($this->published_at) && $this->published_at <= now();
     }
 
     /**
@@ -155,7 +155,7 @@ class Post extends Model
      */
     public function scopePublished(Builder $query): Builder
     {
-        return $query->where('published_at', '<=', now()->toDateTimeString());
+        return $query->orWhereDate('published_at', '<=', now());
     }
 
     /**
@@ -166,7 +166,7 @@ class Post extends Model
      */
     public function scopeDraft(Builder $query): Builder
     {
-        return $query->whereNull('published_at')->orWhere('published_at', '>', now()->toDateTimeString());
+        return $query->whereNull('published_at')->orWhereDate('published_at', '>', now());
     }
 
     /**
