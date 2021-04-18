@@ -17,14 +17,9 @@ use Illuminate\Routing\Controller;
 
 class DashboardController extends Controller
 {
-    protected int $period;
-    protected array $lookup;
-    protected array $lookback;
-
-    public function __construct()
-    {
-        $this->getRangeLookups();
-    }
+    protected $period;
+    protected $lookup;
+    protected $lookback;
 
     /**
      * Display a listing of the resource.
@@ -33,8 +28,9 @@ class DashboardController extends Controller
      */
     public function stats(): JsonResponse
     {
-        $postIds = Post::query()
-            ->published()
+        $this->getRangeLookups();
+
+        $postIds = Post::published()
             ->when(request()->query('scope', 'user') === 'all', function (Builder $query) {
                 return $query;
             }, function (Builder $query) {
