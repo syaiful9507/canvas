@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/canvas') }}">
 </head>
 <body>
-@yield('content')
+    <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        @yield('content')
+    </div>
 </body>
 </html>
