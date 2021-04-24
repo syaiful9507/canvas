@@ -42,7 +42,7 @@ class NewPasswordController extends Controller
     {
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email:filter',
+            'email' => 'required|email:filter|exists:canvas_users',
             'password' => 'required|confirmed|min:8',
         ]);
 

@@ -16,6 +16,24 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            @if (session('status'))
+                <div class="rounded-md bg-green-50 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <!-- Heroicon name: solid/check-circle -->
+                            <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-green-800">
+                                {{ session('status') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <form class="space-y-6" action="{{ route('canvas.password.email') }}" method="POST">
                 @csrf
                 <div>
@@ -50,62 +68,4 @@
             </form>
         </div>
     </div>
-
-
-
-
-{{--    <main class="col-12 col-lg-5">--}}
-{{--        <div class="mb-5 text-center">--}}
-{{--            <h1>Forgot your <span class="font-cursive">password</span>?</h1>--}}
-{{--        </div>--}}
-{{--        <div class="card shadow-lg w-auto">--}}
-{{--            <div class="card-body">--}}
-{{--                <form method="POST" action="{{ route('canvas.password.email') }}" class="w-100 my-auto">--}}
-{{--                    @csrf--}}
-
-{{--                    @if (session('status'))--}}
-{{--                        <div class="alert alert-success" role="alert">--}}
-{{--                            {{ session('status') }}--}}
-{{--                        </div>--}}
-{{--                    @endif--}}
-
-{{--                    <div class="form-group row">--}}
-{{--                        <div class="col-12">--}}
-{{--                            <label for="email" class="font-weight-bold text-uppercase text-muted small"> Email </label>--}}
-{{--                            <input--}}
-{{--                                type="email"--}}
-{{--                                name="email"--}}
-{{--                                value="{{ old('email') }}"--}}
-{{--                                id="email"--}}
-{{--                                class="form-control border-0 @error('email') is-invalid @enderror"--}}
-{{--                                placeholder="Email address"--}}
-{{--                                required--}}
-{{--                                autofocus--}}
-{{--                            />--}}
-{{--                            @error('email')--}}
-{{--                            <span class="invalid-feedback" role="alert">--}}
-{{--                                <strong>{{ $message }}</strong>--}}
-{{--                            </span>--}}
-{{--                            @enderror--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-
-{{--                    <div class="form-group row">--}}
-{{--                        <div class="col-12">--}}
-{{--                            <button class="btn btn-success btn-block mt-3" type="submit">Send Password Reset Link</button>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </form>--}}
-
-{{--                <div class="d-flex justify-content-center mt-3">--}}
-{{--                    <a class="btn btn-link text-decoration-none" href="{{ route('canvas.login') }}">--}}
-{{--                        Return to sign in--}}
-{{--                    </a>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--        <div class="mt-5 text-center">--}}
-{{--            <p class="text-muted">Powered by <a href="https://trycanvas.app" class="text-primary text-decoration-none">Canvas</a></p>--}}
-{{--        </div>--}}
-{{--    </main>--}}
 @endsection
