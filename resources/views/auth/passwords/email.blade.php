@@ -4,12 +4,12 @@
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow">
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Forgot your password?
+            {{ trans('canvas::app.forgot_your_password', [], app()->getLocale()) }}
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600 max-w">
-            Or
+            {{ trans('canvas::app.or', [], app()->getLocale()) }}
             <a href="{{ route('canvas.login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
-                return to sign in
+                {{ trans('canvas::app.return_to_sign_in', [], app()->getLocale()) }}
             </a>
         </p>
     </div>
@@ -36,7 +36,7 @@
             <form class="space-y-6" action="{{ route('canvas.password.email') }}" method="POST">
                 @csrf
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700"> Email address </label>
+                    <label for="email" class="block text-sm font-medium text-gray-700"> {{ trans('canvas::app.email_address', [], app()->getLocale()) }} </label>
                     <div class="mt-1 relative">
                         <input id="email"
                                 value="{{ old('email') }}"
@@ -60,7 +60,7 @@
 
                 <div>
                     <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Send Password Reset Link
+                        {{ trans('canvas::app.send_password_reset_link', [], app()->getLocale()) }}
                     </button>
                 </div>
             </form>

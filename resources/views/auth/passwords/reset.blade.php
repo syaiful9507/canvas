@@ -4,7 +4,7 @@
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow">
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Reset your password
+            {{ trans('canvas::app.reset_your_password', [], app()->getLocale()) }}
         </h2>
     </div>
 
@@ -14,7 +14,7 @@
                 @csrf
                 <input type="hidden" name="token" value="{{ $request->route('token') }}">
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700"> Email address </label>
+                    <label for="email" class="block text-sm font-medium text-gray-700"> {{ trans('canvas::app.email_address', [], app()->getLocale()) }} </label>
                     <div class="mt-1 relative">
                         <input id="email"
                                 value="{{ old('email') }}"
@@ -37,7 +37,7 @@
                 </div>
 
                 <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700"> New Password </label>
+                    <label for="password" class="block text-sm font-medium text-gray-700"> {{ trans('canvas::app.new_password', [], app()->getLocale()) }} </label>
                     <div class="mt-1 relative">
                         <input
                                 id="password"
@@ -49,7 +49,7 @@
                 </div>
 
                 <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700"> Confirm Password </label>
+                    <label for="password" class="block text-sm font-medium text-gray-700"> {{ trans('canvas::app.confirm_password', [], app()->getLocale()) }} </label>
                     <div class="mt-1 relative">
                         <input
                                 id="password_confirmation"
@@ -72,7 +72,7 @@
 
                 <div>
                     <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Update password
+                        {{ trans('canvas::app.update_password', [], app()->getLocale()) }}
                     </button>
                 </div>
             </form>
