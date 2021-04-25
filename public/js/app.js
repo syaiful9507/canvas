@@ -2321,7 +2321,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -2737,7 +2737,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]); if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
@@ -3392,7 +3392,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -4586,7 +4586,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -5303,6 +5303,7 @@ vue__WEBPACK_IMPORTED_MODULE_14__.default.use(vue_textarea_autosize__WEBPACK_IMP
                   _this4.isSaved = true;
                   _this4.post = data; // TODO: Check if searchable data is changing
 
+                  // TODO: Check if searchable data is changing
                   _this4.$store.dispatch('search/buildIndex', true);
                 })["catch"](function (error) {
                   _this4.errors = error.response.data.errors;
@@ -5630,7 +5631,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -6137,7 +6138,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -6650,7 +6651,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -7339,7 +7340,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -8078,7 +8079,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -8329,7 +8330,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -8580,7 +8581,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -9746,7 +9747,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -10022,7 +10023,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./chunks/helpers.segment.js */ "./node_modules/chart.js/dist/chunks/helpers.segment.js");
 /*!
- * Chart.js v3.1.1
+ * Chart.js v3.2.0
  * https://www.chartjs.org
  * (c) 2021 Chart.js Contributors
  * Released under the MIT License
@@ -10042,6 +10043,7 @@ class Animator {
     const numSteps = anims.duration;
     callbacks.forEach(fn => fn({
       chart,
+      initial: anims.initial,
       numSteps,
       currentStep: Math.min(date - anims.start, numSteps)
     }));
@@ -10091,6 +10093,7 @@ class Animator {
       if (!items.length) {
         anims.running = false;
         me._notify(chart, anims, date, 'complete');
+        anims.initial = false;
       }
       remaining += items.length;
     });
@@ -10105,6 +10108,7 @@ class Animator {
     if (!anims) {
       anims = {
         running: false,
+        initial: true,
         items: [],
         listeners: {
           complete: [],
@@ -10548,6 +10552,15 @@ function getOrCreateStack(stacks, stackKey, indexValue) {
   const subStack = stacks[stackKey] || (stacks[stackKey] = {});
   return subStack[indexValue] || (subStack[indexValue] = {});
 }
+function getLastIndexInStack(stack, vScale, positive) {
+  for (const meta of vScale.getMatchingVisibleMetas('bar').reverse()) {
+    const value = stack[meta.index];
+    if ((positive && value > 0) || (!positive && value < 0)) {
+      return meta.index;
+    }
+  }
+  return null;
+}
 function updateStacks(controller, parsed) {
   const {chart, _cachedMeta: meta} = controller;
   const stacks = chart._stacks || (chart._stacks = {});
@@ -10563,6 +10576,8 @@ function updateStacks(controller, parsed) {
     const itemStacks = item._stacks || (item._stacks = {});
     stack = itemStacks[vAxis] = getOrCreateStack(stacks, key, index);
     stack[datasetIndex] = value;
+    stack._top = getLastIndexInStack(stack, vScale, true);
+    stack._bottom = getLastIndexInStack(stack, vScale, false);
   }
 }
 function getFirstScaleId(chart, axis) {
@@ -10741,6 +10756,7 @@ class DatasetController {
     if (me._parsing === false) {
       meta._parsed = data;
       meta._sorted = true;
+      parsed = data;
     } else {
       if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(data[start])) {
         parsed = me.parseArrayData(meta, data, start, count);
@@ -11315,9 +11331,11 @@ class BarController extends DatasetController {
       const parsed = me.getParsed(i);
       const vpixels = reset || (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(parsed[vScale.axis]) ? {base, head: base} : me._calculateBarValuePixels(i);
       const ipixels = me._calculateBarIndexPixels(i, ruler);
+      const stack = (parsed._stacks || {})[vScale.axis];
       const properties = {
         horizontal,
         base: vpixels.base,
+        enableBorderRadius: !stack || isFloatBar(parsed._custom) || (me.index === stack._top || me.index === stack._bottom),
         x: horizontal ? vpixels.head : ipixels.center,
         y: horizontal ? ipixels.center : vpixels.head,
         height: horizontal ? ipixels.size : undefined,
@@ -11364,8 +11382,8 @@ class BarController extends DatasetController {
   _getStackCount(index) {
     return this._getStacks(undefined, index).length;
   }
-  _getStackIndex(datasetIndex, name) {
-    const stacks = this._getStacks(datasetIndex);
+  _getStackIndex(datasetIndex, name, dataIndex) {
+    const stacks = this._getStacks(datasetIndex, dataIndex);
     const index = (name !== undefined)
       ? stacks.indexOf(name)
       : -1;
@@ -11456,14 +11474,15 @@ class BarController extends DatasetController {
     const me = this;
     const scale = ruler.scale;
     const options = me.options;
+    const skipNull = options.skipNull;
     const maxBarThickness = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(options.maxBarThickness, Infinity);
     let center, size;
     if (ruler.grouped) {
-      const stackCount = options.skipNull ? me._getStackCount(index) : ruler.stackCount;
+      const stackCount = skipNull ? me._getStackCount(index) : ruler.stackCount;
       const range = options.barThickness === 'flex'
         ? computeFlexCategoryTraits(index, ruler, options, stackCount)
         : computeFitCategoryTraits(index, ruler, options, stackCount);
-      const stackIndex = me._getStackIndex(me.index, me._cachedMeta.stack);
+      const stackIndex = me._getStackIndex(me.index, me._cachedMeta.stack, skipNull ? index : undefined);
       center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
       size = Math.min(maxBarThickness, range.chunk * range.ratio);
     } else {
@@ -13240,6 +13259,9 @@ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.set('scale', {
     major: {},
     align: 'center',
     crossAlign: 'near',
+    showLabelBackdrop: false,
+    backdropColor: 'rgba(255, 255, 255, 0.75)',
+    backdropPadding: 2,
   }
 });
 _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.route('scale.ticks', 'color', '', 'color');
@@ -13918,7 +13940,9 @@ class Scale extends Element {
       first: valueAt(0),
       last: valueAt(length - 1),
       widest: valueAt(widest),
-      highest: valueAt(highest)
+      highest: valueAt(highest),
+      widths,
+      heights,
     };
   }
   getLabelForValue(value) {
@@ -14000,7 +14024,7 @@ class Scale extends Element {
     const ticksLength = ticks.length + (offset ? 1 : 0);
     const tl = getTickMarkLength(grid);
     const items = [];
-    const borderOpts = grid.setContext(me.getContext(0));
+    const borderOpts = grid.setContext(me.getContext());
     const axisWidth = borderOpts.drawBorder ? borderOpts.borderWidth : 0;
     const axisHalfWidth = axisWidth / 2;
     const alignBorderValue = function(pixel) {
@@ -14194,6 +14218,37 @@ class Scale extends Element {
         y = pixel;
         textOffset = (1 - lineCount) * lineHeight / 2;
       }
+      let backdrop;
+      if (optsAtIndex.showLabelBackdrop) {
+        const labelPadding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(optsAtIndex.backdropPadding);
+        const height = labelSizes.heights[i];
+        const width = labelSizes.widths[i];
+        let top = y + textOffset - labelPadding.top;
+        let left = x - labelPadding.left;
+        switch (textBaseline) {
+        case 'middle':
+          top -= height / 2;
+          break;
+        case 'bottom':
+          top -= height;
+          break;
+        }
+        switch (textAlign) {
+        case 'center':
+          left -= width / 2;
+          break;
+        case 'right':
+          left -= width;
+          break;
+        }
+        backdrop = {
+          left,
+          top,
+          width: width + labelPadding.width,
+          height: height + labelPadding.height,
+          color: optsAtIndex.backdropColor,
+        };
+      }
       items.push({
         rotation,
         label,
@@ -14204,7 +14259,8 @@ class Scale extends Element {
         textOffset,
         textAlign,
         textBaseline,
-        translation: [x, y]
+        translation: [x, y],
+        backdrop,
       });
     }
     return items;
@@ -14309,9 +14365,6 @@ class Scale extends Element {
     const me = this;
     const grid = me.options.grid;
     const ctx = me.ctx;
-    const chart = me.chart;
-    const borderOpts = grid.setContext(me.getContext());
-    const axisWidth = grid.drawBorder ? borderOpts.borderWidth : 0;
     const items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
     let i, ilen;
     const drawLine = (p1, p2, style) => {
@@ -14353,24 +14406,35 @@ class Scale extends Element {
         }
       }
     }
-    if (axisWidth) {
-      const lastLineWidth = borderOpts.lineWidth;
-      const borderValue = me._borderValue;
-      let x1, x2, y1, y2;
-      if (me.isHorizontal()) {
-        x1 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.left, axisWidth) - axisWidth / 2;
-        x2 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.right, lastLineWidth) + lastLineWidth / 2;
-        y1 = y2 = borderValue;
-      } else {
-        y1 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.top, axisWidth) - axisWidth / 2;
-        y2 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.bottom, lastLineWidth) + lastLineWidth / 2;
-        x1 = x2 = borderValue;
-      }
-      drawLine(
-        {x: x1, y: y1},
-        {x: x2, y: y2},
-        {width: axisWidth, color: borderOpts.borderColor});
+  }
+  drawBorder() {
+    const me = this;
+    const {chart, ctx, options: {grid}} = me;
+    const borderOpts = grid.setContext(me.getContext());
+    const axisWidth = grid.drawBorder ? borderOpts.borderWidth : 0;
+    if (!axisWidth) {
+      return;
     }
+    const lastLineWidth = grid.setContext(me.getContext(0)).lineWidth;
+    const borderValue = me._borderValue;
+    let x1, x2, y1, y2;
+    if (me.isHorizontal()) {
+      x1 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.left, axisWidth) - axisWidth / 2;
+      x2 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.right, lastLineWidth) + lastLineWidth / 2;
+      y1 = y2 = borderValue;
+    } else {
+      y1 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.top, axisWidth) - axisWidth / 2;
+      y2 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.bottom, lastLineWidth) + lastLineWidth / 2;
+      x1 = x2 = borderValue;
+    }
+    ctx.save();
+    ctx.lineWidth = borderOpts.borderWidth;
+    ctx.strokeStyle = borderOpts.borderColor;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.restore();
   }
   drawLabels(chartArea) {
     const me = this;
@@ -14389,6 +14453,10 @@ class Scale extends Element {
       const item = items[i];
       const tickFont = item.font;
       const label = item.label;
+      if (item.backdrop) {
+        ctx.fillStyle = item.backdrop.color;
+        ctx.fillRect(item.backdrop.left, item.backdrop.top, item.backdrop.width, item.backdrop.height);
+      }
       let y = item.textOffset;
       (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.V)(ctx, label, 0, y, tickFont, item);
     }
@@ -14430,6 +14498,7 @@ class Scale extends Element {
     }
     me.drawBackground();
     me.drawGrid(chartArea);
+    me.drawBorder();
     me.drawTitle();
     me.drawLabels(chartArea);
   }
@@ -14438,7 +14507,7 @@ class Scale extends Element {
     const opts = me.options;
     const tz = opts.ticks && opts.ticks.z || 0;
     const gz = opts.grid && opts.grid.z || 0;
-    if (!me._isVisible() || tz === gz || me.draw !== Scale.prototype.draw) {
+    if (!me._isVisible() || me.draw !== Scale.prototype.draw) {
       return [{
         z: tz,
         draw(chartArea) {
@@ -14452,6 +14521,11 @@ class Scale extends Element {
         me.drawBackground();
         me.drawGrid(chartArea);
         me.drawTitle();
+      }
+    }, {
+      z: gz + 1,
+      draw() {
+        me.drawBorder();
       }
     }, {
       z: tz,
@@ -15020,7 +15094,7 @@ function needContext(proxy, names) {
   return false;
 }
 
-var version = "3.1.1";
+var version = "3.2.0";
 
 const KNOWN_POSITIONS = ['top', 'bottom', 'left', 'right', 'chartArea'];
 function positionIsHorizontal(position, axis) {
@@ -15357,6 +15431,12 @@ class Chart {
     const animsDisabled = me._animationsDisabled = !me.options.animation;
     me.ensureScalesHaveIDs();
     me.buildOrUpdateScales();
+    const existingEvents = new Set(Object.keys(me._listeners));
+    const newEvents = new Set(me.options.events);
+    if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ab)(existingEvents, newEvents)) {
+      me.unbindEvents();
+      me.bindEvents();
+    }
     me._plugins.invalidate();
     if (me.notifyPlugins('beforeUpdate', {mode, cancelable: true}) === false) {
       return;
@@ -15674,7 +15754,7 @@ class Chart {
     if (!listeners) {
       return;
     }
-    delete me._listeners;
+    me._listeners = {};
     (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(listeners, (listener, type) => {
       me.platform.removeEventListener(me, type, listener);
     });
@@ -15711,7 +15791,7 @@ class Chart {
         index,
       };
     });
-    const changed = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ab)(active, lastActive);
+    const changed = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ac)(active, lastActive);
     if (changed) {
       me._active = active;
       me._updateHoverStyles(active, lastActive);
@@ -15767,7 +15847,7 @@ class Chart {
         (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(options.onClick, [e, active, me], me);
       }
     }
-    changed = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ab)(active, lastActive);
+    changed = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ac)(active, lastActive);
     if (changed || replay) {
       me._active = active;
       me._updateHoverStyles(active, lastActive, replay);
@@ -15834,7 +15914,7 @@ function clipArc(ctx, element) {
   ctx.clip();
 }
 function toRadiusCorners(value) {
-  return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ad)(value, ['outerStart', 'outerEnd', 'innerStart', 'innerEnd']);
+  return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ae)(value, ['outerStart', 'outerEnd', 'innerStart', 'innerEnd']);
 }
 function parseBorderRadius$1(arc, innerRadius, outerRadius, angleDelta) {
   const o = toRadiusCorners(arc.options.borderRadius);
@@ -15973,7 +16053,7 @@ class ArcElement extends Element {
   }
   inRange(chartX, chartY, useFinalPosition) {
     const point = this.getProps(['x', 'y'], useFinalPosition);
-    const {angle, distance} = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ac)(point, {x: chartX, y: chartY});
+    const {angle, distance} = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ad)(point, {x: chartX, y: chartY});
     const {startAngle, endAngle, innerRadius, outerRadius, circumference} = this.getProps([
       'startAngle',
       'endAngle',
@@ -16051,10 +16131,10 @@ function lineTo(ctx, previous, target) {
 }
 function getLineMethod(options) {
   if (options.stepped) {
-    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ak;
+    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.al;
   }
   if (options.tension) {
-    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.al;
+    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.am;
   }
   return lineTo;
 }
@@ -16149,12 +16229,12 @@ function _getSegmentMethod(line) {
 }
 function _getInterpolationMethod(options) {
   if (options.stepped) {
-    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ah;
-  }
-  if (options.tension) {
     return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ai;
   }
-  return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aj;
+  if (options.tension) {
+    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aj;
+  }
+  return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ak;
 }
 function strokePathWithCache(ctx, line, start, count) {
   let path = line._path;
@@ -16208,7 +16288,7 @@ class LineElement extends Element {
     const options = me.options;
     if (options.tension && !options.stepped && !me._pointsUpdated) {
       const loop = options.spanGaps ? me._loop : me._fullLoop;
-      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ae)(me._points, options, chartArea, loop);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.af)(me._points, options, chartArea, loop);
       me._pointsUpdated = true;
     }
   }
@@ -16223,7 +16303,7 @@ class LineElement extends Element {
     return this._points;
   }
   get segments() {
-    return this._segments || (this._segments = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.af)(this, this.options.segment));
+    return this._segments || (this._segments = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ag)(this, this.options.segment));
   }
   first() {
     const segments = this.segments;
@@ -16241,7 +16321,7 @@ class LineElement extends Element {
     const options = me.options;
     const value = point[property];
     const points = me.points;
-    const segments = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ag)(me, {property, start: value, end: value});
+    const segments = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ah)(me, {property, start: value, end: value});
     if (!segments.length) {
       return;
     }
@@ -16365,7 +16445,7 @@ class PointElement extends Element {
     ctx.strokeStyle = options.borderColor;
     ctx.lineWidth = options.borderWidth;
     ctx.fillStyle = options.backgroundColor;
-    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.am)(ctx, options, me.x, me.y);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, options, me.x, me.y);
   }
   getRange() {
     const options = this.options || {};
@@ -16438,7 +16518,7 @@ function skipOrLimit(skip, value, min, max) {
 function parseBorderWidth(bar, maxW, maxH) {
   const value = bar.options.borderWidth;
   const skip = parseBorderSkipped(bar);
-  const o = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ao)(value);
+  const o = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ap)(value);
   return {
     t: skipOrLimit(skip.top, o.top, 0, maxH),
     r: skipOrLimit(skip.right, o.right, 0, maxW),
@@ -16447,15 +16527,17 @@ function parseBorderWidth(bar, maxW, maxH) {
   };
 }
 function parseBorderRadius(bar, maxW, maxH) {
+  const {enableBorderRadius} = bar.getProps(['enableBorderRadius']);
   const value = bar.options.borderRadius;
-  const o = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ap)(value);
+  const o = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aq)(value);
   const maxR = Math.min(maxW, maxH);
   const skip = parseBorderSkipped(bar);
+  const enableBorder = enableBorderRadius || (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(value);
   return {
-    topLeft: skipOrLimit(skip.top || skip.left, o.topLeft, 0, maxR),
-    topRight: skipOrLimit(skip.top || skip.right, o.topRight, 0, maxR),
-    bottomLeft: skipOrLimit(skip.bottom || skip.left, o.bottomLeft, 0, maxR),
-    bottomRight: skipOrLimit(skip.bottom || skip.right, o.bottomRight, 0, maxR)
+    topLeft: skipOrLimit(!enableBorder || skip.top || skip.left, o.topLeft, 0, maxR),
+    topRight: skipOrLimit(!enableBorder || skip.top || skip.right, o.topRight, 0, maxR),
+    bottomLeft: skipOrLimit(!enableBorder || skip.bottom || skip.left, o.bottomLeft, 0, maxR),
+    bottomRight: skipOrLimit(!enableBorder || skip.bottom || skip.right, o.bottomRight, 0, maxR)
   };
 }
 function boundingRects(bar) {
@@ -16516,7 +16598,7 @@ class BarElement extends Element {
   draw(ctx) {
     const options = this.options;
     const {inner, outer} = boundingRects(this);
-    const addRectPath = hasRadius(outer.radius) ? _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an : addNormalRectPath;
+    const addRectPath = hasRadius(outer.radius) ? _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ao : addNormalRectPath;
     ctx.save();
     if (outer.w !== inner.w || outer.h !== inner.h) {
       ctx.beginPath();
@@ -16557,6 +16639,7 @@ BarElement.defaults = {
   borderSkipped: 'start',
   borderWidth: 0,
   borderRadius: 0,
+  enableBorderRadius: true,
   pointStyle: undefined
 };
 BarElement.defaultRoutes = {
@@ -17042,8 +17125,8 @@ function getBounds(property, first, last, loop) {
   let start = first[property];
   let end = last[property];
   if (property === 'angle') {
-    start = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ar)(start);
-    end = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ar)(end);
+    start = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(start);
+    end = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(end);
   }
   return {property, start, end};
 }
@@ -17069,10 +17152,10 @@ function _segments(line, target, property) {
       });
       continue;
     }
-    const targetSegments = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ag)(target, bounds);
+    const targetSegments = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ah)(target, bounds);
     for (const tgt of targetSegments) {
       const subBounds = getBounds(property, tpoints[tgt.start], tpoints[tgt.end], tgt.loop);
-      const fillSources = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aq)(segment, points, subBounds);
+      const fillSources = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ar)(segment, points, subBounds);
       for (const fillSource of fillSources) {
         parts.push({
           source: fillSource,
@@ -17188,16 +17271,30 @@ var plugin_filler = {
       source.fill = resolveTarget(sources, i, options.propagate);
     }
   },
-  beforeDatasetsDraw(chart, _args, options) {
+  beforeDraw(chart, _args, options) {
+    const draw = options.drawTime === 'beforeDraw';
     const metasets = chart.getSortedVisibleDatasetMetas();
     const area = chart.chartArea;
     for (let i = metasets.length - 1; i >= 0; --i) {
       const source = metasets[i].$filler;
+      if (!source) {
+        continue;
+      }
+      source.line.updateControlPoints(area);
+      if (draw) {
+        drawfill(chart.ctx, source, area);
+      }
+    }
+  },
+  beforeDatasetsDraw(chart, _args, options) {
+    if (options.drawTime !== 'beforeDatasetsDraw') {
+      return;
+    }
+    const metasets = chart.getSortedVisibleDatasetMetas();
+    for (let i = metasets.length - 1; i >= 0; --i) {
+      const source = metasets[i].$filler;
       if (source) {
-        source.line.updateControlPoints(area);
-        if (options.drawTime === 'beforeDatasetsDraw') {
-          drawfill(chart.ctx, source, area);
-        }
+        drawfill(chart.ctx, source, chart.chartArea);
       }
     }
   },
@@ -17418,7 +17515,7 @@ class Legend extends Element {
     const {options: opts, columnSizes, lineWidths, ctx} = me;
     const {align, labels: labelOpts} = opts;
     const defaultColor = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.color;
-    const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(opts.rtl, me.left, me.width);
+    const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(opts.rtl, me.left, me.width);
     const labelFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(labelOpts.font);
     const {color: fontColor, padding} = labelOpts;
     const fontSize = labelFont.size;
@@ -17452,14 +17549,14 @@ class Legend extends Element {
         };
         const centerX = rtlHelper.xPlus(x, boxWidth / 2);
         const centerY = y + halfFontSize;
-        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.am)(ctx, drawOptions, centerX, centerY);
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, drawOptions, centerX, centerY);
       } else {
         const yBoxTop = y + Math.max((fontSize - boxHeight) / 2, 0);
         const xBoxLeft = rtlHelper.leftForLtr(x, boxWidth);
-        const borderRadius = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ap)(legendItem.borderRadius);
+        const borderRadius = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aq)(legendItem.borderRadius);
         ctx.beginPath();
         if (Object.values(borderRadius).some(v => v !== 0)) {
-          (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, {
+          (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ao)(ctx, {
             x: xBoxLeft,
             y: yBoxTop,
             w: boxWidth,
@@ -17497,7 +17594,7 @@ class Legend extends Element {
         line: 0
       };
     }
-    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(me.ctx, opts.textDirection);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.au)(me.ctx, opts.textDirection);
     const lineHeight = itemHeight + padding;
     me.legendItems.forEach((legendItem, i) => {
       ctx.strokeStyle = legendItem.fontColor || fontColor;
@@ -17521,7 +17618,7 @@ class Legend extends Element {
       }
       const realX = rtlHelper.x(x);
       drawLegendBox(realX, y, legendItem);
-      x = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.au)(textAlign, x + boxWidth + halfFontSize, me.right);
+      x = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.av)(textAlign, x + boxWidth + halfFontSize, me.right);
       fillText(rtlHelper.x(x), y, legendItem);
       if (isHorizontal) {
         cursor.x += width + padding;
@@ -17529,7 +17626,7 @@ class Legend extends Element {
         cursor.y += lineHeight;
       }
     });
-    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.av)(me.ctx, opts.textDirection);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw)(me.ctx, opts.textDirection);
   }
   drawTitle() {
     const me = this;
@@ -17540,7 +17637,7 @@ class Legend extends Element {
     if (!titleOpts.display) {
       return;
     }
-    const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(opts.rtl, me.left, me.width);
+    const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(opts.rtl, me.left, me.width);
     const ctx = me.ctx;
     const position = titleOpts.position;
     const halfFontSize = titleFont.size / 2;
@@ -17874,7 +17971,7 @@ const positioners = {
       const el = items[i].element;
       if (el && el.hasValue()) {
         const center = el.getCenterPoint();
-        const d = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax)(eventPosition, center);
+        const d = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ay)(eventPosition, center);
         if (d < minDistance) {
           minDistance = d;
           nearestElement = el;
@@ -18318,7 +18415,7 @@ class Tooltip extends Element {
     const length = title.length;
     let titleFont, titleSpacing, i;
     if (length) {
-      const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(options.rtl, me.x, me.width);
+      const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(options.rtl, me.x, me.width);
       pt.x = getAlignedX(me, options.titleAlign, options);
       ctx.textAlign = rtlHelper.textAlign(options.titleAlign);
       ctx.textBaseline = 'middle';
@@ -18356,10 +18453,10 @@ class Tooltip extends Element {
       const centerY = colorY + boxHeight / 2;
       ctx.strokeStyle = options.multiKeyBackground;
       ctx.fillStyle = options.multiKeyBackground;
-      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.am)(ctx, drawOptions, centerX, centerY);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, drawOptions, centerX, centerY);
       ctx.strokeStyle = labelColors.borderColor;
       ctx.fillStyle = labelColors.backgroundColor;
-      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.am)(ctx, drawOptions, centerX, centerY);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, drawOptions, centerX, centerY);
     } else {
       ctx.lineWidth = labelColors.borderWidth || 1;
       ctx.strokeStyle = labelColors.borderColor;
@@ -18367,11 +18464,11 @@ class Tooltip extends Element {
       ctx.lineDashOffset = labelColors.borderDashOffset || 0;
       const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth);
       const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2);
-      const borderRadius = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ap)(labelColors.borderRadius);
+      const borderRadius = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aq)(labelColors.borderRadius);
       if (Object.values(borderRadius).some(v => v !== 0)) {
         ctx.beginPath();
         ctx.fillStyle = options.multiKeyBackground;
-        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, {
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ao)(ctx, {
           x: outerX,
           y: colorY,
           w: boxWidth,
@@ -18382,7 +18479,7 @@ class Tooltip extends Element {
         ctx.stroke();
         ctx.fillStyle = labelColors.backgroundColor;
         ctx.beginPath();
-        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, {
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ao)(ctx, {
           x: innerX,
           y: colorY + 1,
           w: boxWidth - 2,
@@ -18407,7 +18504,7 @@ class Tooltip extends Element {
     const bodyFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(options.bodyFont);
     let bodyLineHeight = bodyFont.lineHeight;
     let xLinePadding = 0;
-    const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(options.rtl, me.x, me.width);
+    const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(options.rtl, me.x, me.width);
     const fillLineOfText = function(line) {
       ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyLineHeight / 2);
       pt.y += bodyLineHeight + bodySpacing;
@@ -18450,7 +18547,7 @@ class Tooltip extends Element {
     const length = footer.length;
     let footerFont, i;
     if (length) {
-      const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(options.rtl, me.x, me.width);
+      const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(options.rtl, me.x, me.width);
       pt.x = getAlignedX(me, options.footerAlign, options);
       pt.y += options.footerMarginTop;
       ctx.textAlign = rtlHelper.textAlign(options.footerAlign);
@@ -18549,12 +18646,12 @@ class Tooltip extends Element {
       ctx.save();
       ctx.globalAlpha = opacity;
       me.drawBackground(pt, ctx, tooltipSize, options);
-      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(ctx, options.textDirection);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.au)(ctx, options.textDirection);
       pt.y += padding.top;
       me.drawTitle(pt, ctx, options);
       me.drawBody(pt, ctx, options);
       me.drawFooter(pt, ctx, options);
-      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.av)(ctx, options.textDirection);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw)(ctx, options.textDirection);
       ctx.restore();
     }
   }
@@ -18575,7 +18672,7 @@ class Tooltip extends Element {
         index,
       };
     });
-    const changed = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ab)(lastActive, active);
+    const changed = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ac)(lastActive, active);
     const positionChanged = me._positionChanged(active, eventPosition);
     if (changed || positionChanged) {
       me._active = active;
@@ -18596,7 +18693,7 @@ class Tooltip extends Element {
       }
     }
     const positionChanged = me._positionChanged(active, e);
-    changed = replay || !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ab)(active, lastActive) || positionChanged;
+    changed = replay || !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ac)(active, lastActive) || positionChanged;
     if (changed) {
       me._active = active;
       if (options.enabled || options.external) {
@@ -18705,7 +18802,7 @@ var plugin_tooltip = {
       }
     },
     callbacks: {
-      beforeTitle: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw,
+      beforeTitle: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
       title(tooltipItems) {
         if (tooltipItems.length > 0) {
           const item = tooltipItems[0];
@@ -18721,9 +18818,9 @@ var plugin_tooltip = {
         }
         return '';
       },
-      afterTitle: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw,
-      beforeBody: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw,
-      beforeLabel: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw,
+      afterTitle: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      beforeBody: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      beforeLabel: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
       label(tooltipItem) {
         if (this && this.options && this.options.mode === 'dataset') {
           return tooltipItem.label + ': ' + tooltipItem.formattedValue || tooltipItem.formattedValue;
@@ -18761,11 +18858,11 @@ var plugin_tooltip = {
           rotation: options.rotation,
         };
       },
-      afterLabel: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw,
-      afterBody: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw,
-      beforeFooter: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw,
-      footer: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw,
-      afterFooter: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw
+      afterLabel: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      afterBody: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      beforeFooter: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      footer: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      afterFooter: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax
     }
   },
   defaultRoutes: {
@@ -18911,14 +19008,14 @@ function generateTicks$1(generationOptions, dataRange) {
   const minDefined = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(min);
   const maxDefined = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(max);
   const countDefined = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(count);
-  let spacing = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.az)((rmax - rmin) / maxSpaces / unit) * unit;
+  let spacing = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aA)((rmax - rmin) / maxSpaces / unit) * unit;
   let factor, niceMin, niceMax, numSpaces;
   if (spacing < MIN_SPACING && !minDefined && !maxDefined) {
     return [{value: rmin}, {value: rmax}];
   }
   numSpaces = Math.ceil(rmax / spacing) - Math.floor(rmin / spacing);
   if (numSpaces > maxSpaces) {
-    spacing = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.az)(numSpaces * spacing / maxSpaces / unit) * unit;
+    spacing = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aA)(numSpaces * spacing / maxSpaces / unit) * unit;
   }
   if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(precision)) {
     factor = Math.pow(10, precision);
@@ -18926,7 +19023,7 @@ function generateTicks$1(generationOptions, dataRange) {
   }
   niceMin = Math.floor(rmin / spacing) * spacing;
   niceMax = Math.ceil(rmax / spacing) * spacing;
-  if (minDefined && maxDefined && step && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aA)((max - min) / step, spacing / 1000)) {
+  if (minDefined && maxDefined && step && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aB)((max - min) / step, spacing / 1000)) {
     numSpaces = Math.min((max - min) / spacing, maxTicks);
     spacing = (max - min) / numSpaces;
     niceMin = min;
@@ -18938,13 +19035,13 @@ function generateTicks$1(generationOptions, dataRange) {
     spacing = (niceMax - niceMin) / numSpaces;
   } else {
     numSpaces = (niceMax - niceMin) / spacing;
-    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aB)(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aC)(numSpaces, Math.round(numSpaces), spacing / 1000)) {
       numSpaces = Math.round(numSpaces);
     } else {
       numSpaces = Math.ceil(numSpaces);
     }
   }
-  factor = Math.pow(10, (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(precision) ? (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aC)(spacing) : precision);
+  factor = Math.pow(10, (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(precision) ? (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aD)(spacing) : precision);
   niceMin = Math.round(niceMin * factor) / factor;
   niceMax = Math.round(niceMax * factor) / factor;
   let j = 0;
@@ -18953,7 +19050,7 @@ function generateTicks$1(generationOptions, dataRange) {
     if (niceMin <= min) {
       j++;
     }
-    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aB)(Math.round((niceMin + j * spacing) * factor) / factor, min, spacing / 10)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aC)(Math.round((niceMin + j * spacing) * factor) / factor, min, spacing / 10)) {
       j++;
     }
   }
@@ -18961,7 +19058,7 @@ function generateTicks$1(generationOptions, dataRange) {
     ticks.push({value: Math.round((niceMin + j * spacing) * factor) / factor});
   }
   if (maxDefined) {
-    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aB)(ticks[ticks.length - 1].value, max, spacing / 10)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aC)(ticks[ticks.length - 1].value, max, spacing / 10)) {
       ticks[ticks.length - 1].value = max;
     } else {
       ticks.push({value: max});
@@ -19050,7 +19147,7 @@ class LinearScaleBase extends Scale {
     const dataRange = me._range || me;
     const ticks = generateTicks$1(numericGeneratorOptions, dataRange);
     if (opts.bounds === 'ticks') {
-      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ay)(ticks, me, 'value');
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.az)(ticks, me, 'value');
     }
     if (opts.reverse) {
       ticks.reverse();
@@ -19202,7 +19299,7 @@ class LogarithmicScale extends Scale {
     };
     const ticks = generateTicks(generationOptions, me);
     if (opts.bounds === 'ticks') {
-      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ay)(ticks, me, 'value');
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.az)(ticks, me, 'value');
     }
     if (opts.reverse) {
       ticks.reverse();
@@ -19263,7 +19360,7 @@ function getTickBackdropHeight(opts) {
 function measureLabelSize(ctx, lineHeight, label) {
   if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(label)) {
     return {
-      w: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aD)(ctx, ctx.font, label),
+      w: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aE)(ctx, ctx.font, label),
       h: label.length * lineHeight
     };
   }
@@ -19509,7 +19606,7 @@ class RadialLinearScale extends LinearScaleBase {
   getIndexAngle(index) {
     const angleMultiplier = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T / this.getLabels().length;
     const startAngle = this.options.startAngle || 0;
-    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ar)(index * angleMultiplier + (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(startAngle));
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(index * angleMultiplier + (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(startAngle));
   }
   getDistanceFromCenterForValue(value) {
     const me = this;
@@ -19609,6 +19706,7 @@ class RadialLinearScale extends LinearScaleBase {
       ctx.restore();
     }
   }
+  drawBorder() {}
   drawLabels() {
     const me = this;
     const ctx = me.ctx;
@@ -19667,8 +19765,6 @@ RadialLinearScale.defaults = {
   startAngle: 0,
   ticks: {
     showLabelBackdrop: true,
-    backdropColor: 'rgba(255,255,255,0.75)',
-    backdropPadding: 2,
     callback: Ticks.formatters.numeric
   },
   pointLabels: {
@@ -19715,8 +19811,7 @@ function parse(scale, input) {
     return null;
   }
   const adapter = scale._adapter;
-  const options = scale.options.time;
-  const {parser, round, isoWeekday} = options;
+  const {parser, round, isoWeekday} = scale._parseOpts;
   let value = input;
   if (typeof parser === 'function') {
     value = parser(value);
@@ -19767,7 +19862,7 @@ function addTick(ticks, time, timestamps) {
   if (!timestamps) {
     ticks[time] = true;
   } else if (timestamps.length) {
-    const {lo, hi} = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aF)(timestamps, time);
+    const {lo, hi} = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aG)(timestamps, time);
     const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
     ticks[timestamp] = true;
   }
@@ -19812,11 +19907,17 @@ class TimeScale extends Scale {
     this._majorUnit = undefined;
     this._offsets = {};
     this._normalized = false;
+    this._parseOpts = undefined;
   }
   init(scaleOpts, opts) {
     const time = scaleOpts.time || (scaleOpts.time = {});
     const adapter = this._adapter = new adapters._date(scaleOpts.adapters.date);
     (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a6)(time.displayFormats, adapter.formats());
+    this._parseOpts = {
+      parser: time.parser,
+      round: time.round,
+      isoWeekday: time.isoWeekday
+    };
     super.init(scaleOpts);
     this._normalized = opts.normalized;
   }
@@ -19881,7 +19982,7 @@ class TimeScale extends Scale {
     }
     const min = me.min;
     const max = me.max;
-    const ticks = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aE)(timestamps, min, max);
+    const ticks = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aF)(timestamps, min, max);
     me._unit = timeOpts.unit || (tickOpts.autoSkip
       ? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, me._getLabelCapacity(min))
       : determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
@@ -20077,7 +20178,7 @@ function interpolate(table, val, reverse) {
     prevTarget = table[prevSource];
     nextTarget = table[nextSource];
   } else {
-    const result = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aF)(table, val);
+    const result = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aG)(table, val);
     prevTarget = result.lo;
     nextTarget = result.hi;
     prevSource = table[prevTarget];
@@ -20225,55 +20326,56 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "a7": () => (/* binding */ uid),
 /* harmony export */   "a8": () => (/* binding */ debounce),
 /* harmony export */   "a9": () => (/* binding */ retinaScale),
-/* harmony export */   "aA": () => (/* binding */ almostWhole),
-/* harmony export */   "aB": () => (/* binding */ almostEquals),
-/* harmony export */   "aC": () => (/* binding */ _decimalPlaces),
-/* harmony export */   "aD": () => (/* binding */ _longestText),
-/* harmony export */   "aE": () => (/* binding */ _filterBetween),
-/* harmony export */   "aF": () => (/* binding */ _lookup),
-/* harmony export */   "aG": () => (/* binding */ getHoverColor),
-/* harmony export */   "aH": () => (/* binding */ clone$1),
-/* harmony export */   "aI": () => (/* binding */ _merger),
-/* harmony export */   "aJ": () => (/* binding */ _mergerIf),
-/* harmony export */   "aK": () => (/* binding */ _deprecated),
-/* harmony export */   "aL": () => (/* binding */ toFontString),
-/* harmony export */   "aM": () => (/* binding */ splineCurve),
-/* harmony export */   "aN": () => (/* binding */ splineCurveMonotone),
-/* harmony export */   "aO": () => (/* binding */ getStyle),
-/* harmony export */   "aP": () => (/* binding */ fontString),
-/* harmony export */   "aQ": () => (/* binding */ toLineHeight),
-/* harmony export */   "aR": () => (/* binding */ PITAU),
-/* harmony export */   "aS": () => (/* binding */ INFINITY),
-/* harmony export */   "aT": () => (/* binding */ RAD_PER_DEG),
-/* harmony export */   "aU": () => (/* binding */ QUARTER_PI),
-/* harmony export */   "aV": () => (/* binding */ TWO_THIRDS_PI),
-/* harmony export */   "aW": () => (/* binding */ _angleDiff),
+/* harmony export */   "aA": () => (/* binding */ niceNum),
+/* harmony export */   "aB": () => (/* binding */ almostWhole),
+/* harmony export */   "aC": () => (/* binding */ almostEquals),
+/* harmony export */   "aD": () => (/* binding */ _decimalPlaces),
+/* harmony export */   "aE": () => (/* binding */ _longestText),
+/* harmony export */   "aF": () => (/* binding */ _filterBetween),
+/* harmony export */   "aG": () => (/* binding */ _lookup),
+/* harmony export */   "aH": () => (/* binding */ getHoverColor),
+/* harmony export */   "aI": () => (/* binding */ clone$1),
+/* harmony export */   "aJ": () => (/* binding */ _merger),
+/* harmony export */   "aK": () => (/* binding */ _mergerIf),
+/* harmony export */   "aL": () => (/* binding */ _deprecated),
+/* harmony export */   "aM": () => (/* binding */ toFontString),
+/* harmony export */   "aN": () => (/* binding */ splineCurve),
+/* harmony export */   "aO": () => (/* binding */ splineCurveMonotone),
+/* harmony export */   "aP": () => (/* binding */ getStyle),
+/* harmony export */   "aQ": () => (/* binding */ fontString),
+/* harmony export */   "aR": () => (/* binding */ toLineHeight),
+/* harmony export */   "aS": () => (/* binding */ PITAU),
+/* harmony export */   "aT": () => (/* binding */ INFINITY),
+/* harmony export */   "aU": () => (/* binding */ RAD_PER_DEG),
+/* harmony export */   "aV": () => (/* binding */ QUARTER_PI),
+/* harmony export */   "aW": () => (/* binding */ TWO_THIRDS_PI),
+/* harmony export */   "aX": () => (/* binding */ _angleDiff),
 /* harmony export */   "aa": () => (/* binding */ clearCanvas),
-/* harmony export */   "ab": () => (/* binding */ _elementsEqual),
-/* harmony export */   "ac": () => (/* binding */ getAngleFromPoint),
-/* harmony export */   "ad": () => (/* binding */ _readValueToProps),
-/* harmony export */   "ae": () => (/* binding */ _updateBezierControlPoints),
-/* harmony export */   "af": () => (/* binding */ _computeSegments),
-/* harmony export */   "ag": () => (/* binding */ _boundSegments),
-/* harmony export */   "ah": () => (/* binding */ _steppedInterpolation),
-/* harmony export */   "ai": () => (/* binding */ _bezierInterpolation),
-/* harmony export */   "aj": () => (/* binding */ _pointInLine),
-/* harmony export */   "ak": () => (/* binding */ _steppedLineTo),
-/* harmony export */   "al": () => (/* binding */ _bezierCurveTo),
-/* harmony export */   "am": () => (/* binding */ drawPoint),
-/* harmony export */   "an": () => (/* binding */ addRoundedRectPath),
-/* harmony export */   "ao": () => (/* binding */ toTRBL),
-/* harmony export */   "ap": () => (/* binding */ toTRBLCorners),
-/* harmony export */   "aq": () => (/* binding */ _boundSegment),
-/* harmony export */   "ar": () => (/* binding */ _normalizeAngle),
-/* harmony export */   "as": () => (/* binding */ getRtlAdapter),
-/* harmony export */   "at": () => (/* binding */ overrideTextDirection),
-/* harmony export */   "au": () => (/* binding */ _textX),
-/* harmony export */   "av": () => (/* binding */ restoreTextDirection),
-/* harmony export */   "aw": () => (/* binding */ noop),
-/* harmony export */   "ax": () => (/* binding */ distanceBetweenPoints),
-/* harmony export */   "ay": () => (/* binding */ _setMinAndMaxByKey),
-/* harmony export */   "az": () => (/* binding */ niceNum),
+/* harmony export */   "ab": () => (/* binding */ setsEqual),
+/* harmony export */   "ac": () => (/* binding */ _elementsEqual),
+/* harmony export */   "ad": () => (/* binding */ getAngleFromPoint),
+/* harmony export */   "ae": () => (/* binding */ _readValueToProps),
+/* harmony export */   "af": () => (/* binding */ _updateBezierControlPoints),
+/* harmony export */   "ag": () => (/* binding */ _computeSegments),
+/* harmony export */   "ah": () => (/* binding */ _boundSegments),
+/* harmony export */   "ai": () => (/* binding */ _steppedInterpolation),
+/* harmony export */   "aj": () => (/* binding */ _bezierInterpolation),
+/* harmony export */   "ak": () => (/* binding */ _pointInLine),
+/* harmony export */   "al": () => (/* binding */ _steppedLineTo),
+/* harmony export */   "am": () => (/* binding */ _bezierCurveTo),
+/* harmony export */   "an": () => (/* binding */ drawPoint),
+/* harmony export */   "ao": () => (/* binding */ addRoundedRectPath),
+/* harmony export */   "ap": () => (/* binding */ toTRBL),
+/* harmony export */   "aq": () => (/* binding */ toTRBLCorners),
+/* harmony export */   "ar": () => (/* binding */ _boundSegment),
+/* harmony export */   "as": () => (/* binding */ _normalizeAngle),
+/* harmony export */   "at": () => (/* binding */ getRtlAdapter),
+/* harmony export */   "au": () => (/* binding */ overrideTextDirection),
+/* harmony export */   "av": () => (/* binding */ _textX),
+/* harmony export */   "aw": () => (/* binding */ restoreTextDirection),
+/* harmony export */   "ax": () => (/* binding */ noop),
+/* harmony export */   "ay": () => (/* binding */ distanceBetweenPoints),
+/* harmony export */   "az": () => (/* binding */ _setMinAndMaxByKey),
 /* harmony export */   "b": () => (/* binding */ isArray),
 /* harmony export */   "c": () => (/* binding */ color),
 /* harmony export */   "d": () => (/* binding */ defaults),
@@ -20301,7 +20403,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "z": () => (/* binding */ getRelativePosition)
 /* harmony export */ });
 /*!
- * Chart.js v3.1.1
+ * Chart.js v3.2.0
  * https://www.chartjs.org
  * (c) 2021 Chart.js Contributors
  * Released under the MIT License
@@ -20522,6 +20624,17 @@ function _capitalize(str) {
 }
 const defined = (value) => typeof value !== 'undefined';
 const isFunction = (value) => typeof value === 'function';
+const setsEqual = (a, b) => {
+  if (a.size !== b.size) {
+    return false;
+  }
+  for (const item of a) {
+    if (!b.has(item)) {
+      return false;
+    }
+  }
+  return true;
+};
 
 const PI = Math.PI;
 const TAU = 2 * PI;
@@ -102133,7 +102246,7 @@ module.exports = JSON.parse('{"ab":{"name":"Abkhaz","nativeName":"аҧсуа"},"
 /******/ 					__webpack_require__.m[moduleId] = moreModules[moduleId];
 /******/ 				}
 /******/ 			}
-/******/ 			if(runtime) runtime(__webpack_require__);
+/******/ 			if(runtime) var result = runtime(__webpack_require__);
 /******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
 /******/ 			for(;i < chunkIds.length; i++) {
 /******/ 				chunkId = chunkIds[i];
@@ -102142,7 +102255,7 @@ module.exports = JSON.parse('{"ab":{"name":"Abkhaz","nativeName":"аҧсуа"},"
 /******/ 				}
 /******/ 				installedChunks[chunkIds[i]] = 0;
 /******/ 			}
-/******/ 			__webpack_require__.O();
+/******/ 			return __webpack_require__.O(result);
 /******/ 		}
 /******/ 		
 /******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
