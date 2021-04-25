@@ -2,7 +2,7 @@
 
 namespace Canvas\Http\Controllers\Auth;
 
-use Canvas\Http\Requests\LoginRequest;
+use Canvas\Http\Requests\AuthenticatedSessionRequest;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -31,11 +31,11 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      *
-     * @param LoginRequest $request
+     * @param AuthenticatedSessionRequest $request
      * @return RedirectResponse
      * @throws ValidationException
      */
-    public function store(LoginRequest $request)
+    public function store(AuthenticatedSessionRequest $request)
     {
         $request->authenticate();
 

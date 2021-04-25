@@ -2,6 +2,7 @@
 
 namespace Canvas\Http\Controllers\Auth;
 
+use Canvas\Http\Requests\NewPasswordRequest;
 use Canvas\Models\User;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -33,28 +34,24 @@ class NewPasswordController extends Controller
     /**
      * Handle an incoming new password request.
      *
-     * @param Request $request
+     * @param NewPasswordRequest $request
      * @return RedirectResponse
      *
      * @throws Exception
      */
-    public function store(Request $request)
+    public function store(NewPasswordRequest $request)
     {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email:filter|exists:canvas_users',
-            'password' => 'required|confirmed|min:8',
-        ]);
+        $data = $request->validated();
 
         try {
-            [$id, $token] = explode('|', decrypt($request->token));
+            [$id, $token] = explode('|', decrypt($data['token']));
 
             $user = User::query()->findOrFail($id);
 
             // Here we will attempt to reset the user's password. If it is successful we
             // will update the password on an actual user model and persist it to the
             // database. Otherwise we will parse the error and return the response.
-            $user->password = Hash::make($request->password);
+            $user->password = Hash::make($data['password']);
 
             $user->setRememberToken(Str::random(60));
 
@@ -62,7 +59,7 @@ class NewPasswordController extends Controller
 
             Auth::guard('canvas')->login($user);
         } catch (Throwable $e) {
-            return redirect()->route('canvas.password.request')->with('invalidResetToken', 'Invalid token');
+            return redirect()->route('canvas.password.request')->with('invalidResetToken', trans('passwords.token', [], app()->getLocale()));
         }
 
         Cache::forget("password.reset.{$id}");

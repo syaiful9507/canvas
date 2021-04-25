@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class LoginRequest extends FormRequest
+class AuthenticatedSessionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,7 @@ class LoginRequest extends FormRequest
         $this->redirect = route('canvas.login');
 
         return [
-            'email' => 'required|string|email:filter',
+            'email' => 'required|email:filter|exists:canvas_users',
             'password' => 'required|string',
         ];
     }
@@ -42,9 +42,9 @@ class LoginRequest extends FormRequest
      */
     public function authenticate()
     {
-        if (! Auth::guard('canvas')->attempt($this->only('email', 'password'), $this->filled('remember'))) {
+        if (! Auth::guard('canvas')->attempt($this->only('email', 'password'), $this->filled('remember_me'))) {
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                'email' => trans('auth.failed'),
             ]);
         }
     }

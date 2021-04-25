@@ -2,13 +2,13 @@
 
 namespace Canvas\Http\Controllers\Auth;
 
+use Canvas\Http\Requests\PasswordResetLinkRequest;
 use Canvas\Mail\ResetPassword;
 use Canvas\Models\User;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -29,17 +29,16 @@ class PasswordResetLinkController extends Controller
     /**
      * Handle an incoming password reset link request.
      *
-     * @param Request $request
+     * @param PasswordResetLinkRequest $request
      * @return RedirectResponse
      * @throws Exception
      */
-    public function store(Request $request)
+    public function store(PasswordResetLinkRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email:filter|exists:canvas_users',
-        ]);
+        $data = $request->validated();
 
-        $user = User::query()->firstWhere('email', $request->email);
+        $user = User::query()->firstWhere('email', $data['email']);
+
         $token = Str::random();
 
         if ($user) {
@@ -55,6 +54,6 @@ class PasswordResetLinkController extends Controller
 
         return redirect()
             ->route('canvas.password.request')
-            ->with('status', 'We have emailed your password reset link!');
+            ->with('status', trans('passwords.sent', [], app()->getLocale()));
     }
 }

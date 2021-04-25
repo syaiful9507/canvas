@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
  * Class AuthenticatedSessionControllerTest.
  *
  * @covers \Canvas\Http\Controllers\Auth\AuthenticatedSessionController
- * @covers \Canvas\Http\Requests\LoginRequest
+ * @covers \Canvas\Http\Requests\AuthenticatedSessionRequest
  */
 class AuthenticatedSessionControllerTest extends TestCase
 {
