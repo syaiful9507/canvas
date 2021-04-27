@@ -1,13 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers\Auth;
 
 use Canvas\Http\Requests\NewPasswordRequest;
 use Canvas\Models\User;
-use Exception;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -23,7 +21,7 @@ class NewPasswordController extends Controller
      * Display the password reset view.
      *
      * @param Request $request
-     * @return Application|Factory|View
+     * @return \Illuminate\Contracts\View\View
      */
     public function create(Request $request)
     {
@@ -36,8 +34,6 @@ class NewPasswordController extends Controller
      *
      * @param NewPasswordRequest $request
      * @return RedirectResponse
-     *
-     * @throws Exception
      */
     public function store(NewPasswordRequest $request)
     {
