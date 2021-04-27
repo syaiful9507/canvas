@@ -22,7 +22,7 @@ class AuthenticatedSessionControllerTest extends TestCase
         $this->get(route('canvas.login'))
              ->assertSuccessful()
              ->assertViewIs('canvas::auth.login')
-             ->assertSeeText('Please sign in');
+             ->assertSeeText(trans('canvas::app.sign_in_to_your_account'));
     }
 
     public function testLoginRequestWillValidateAnInvalidEmail(): void

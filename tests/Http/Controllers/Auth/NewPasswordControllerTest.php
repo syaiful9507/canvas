@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
  * Class NewPasswordControllerTest.
  *
  * @covers \Canvas\Http\Controllers\Auth\NewPasswordController
+ * @covers \Canvas\Http\Requests\NewPasswordRequest
  */
 class NewPasswordControllerTest extends TestCase
 {
@@ -22,7 +23,7 @@ class NewPasswordControllerTest extends TestCase
         ]))
              ->assertSuccessful()
              ->assertViewIs('canvas::auth.passwords.reset')
-             ->assertSeeText('Reset password');
+             ->assertSeeText(trans('canvas::app.update_password'));
     }
 
     public function testPasswordCanBeReset(): void

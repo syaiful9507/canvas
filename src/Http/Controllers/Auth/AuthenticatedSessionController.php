@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Canvas\Http\Controllers\Auth;
 
 use Canvas\Http\Requests\AuthenticatedSessionRequest;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -16,7 +19,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      *
-     * @return \Illuminate\Contracts\View\View
+     * @return Application|Factory|View|RedirectResponse
      */
     public function create()
     {

@@ -7,6 +7,11 @@ namespace Canvas\Http\Controllers\Auth;
 use Canvas\Http\Requests\PasswordResetLinkRequest;
 use Canvas\Mail\ResetPassword;
 use Canvas\Models\User;
+use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -16,7 +21,7 @@ class PasswordResetLinkController extends Controller
     /**
      * Display the password reset link request view.
      *
-     * @return \Illuminate\Contracts\View\View
+     * @return Application|Factory|View
      */
     public function create()
     {
@@ -27,8 +32,8 @@ class PasswordResetLinkController extends Controller
      * Handle an incoming password reset link request.
      *
      * @param PasswordResetLinkRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Exception
+     * @return RedirectResponse
+     * @throws Exception
      */
     public function store(PasswordResetLinkRequest $request)
     {

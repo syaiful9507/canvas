@@ -8,11 +8,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * Class AuthorizeTest.
  *
- * @covers \Canvas\Http\Middleware\Authenticate
+ * @covers \Canvas\Http\Middleware\AuthenticateSession
  */
 class AuthenticateTest extends TestCase
 {
     use RefreshDatabase;
+
+
 
     /**
      * @return array
@@ -84,6 +86,8 @@ class AuthenticateTest extends TestCase
     /** @test */
     public function testAuthenticatedUsersAreRedirectedToCanvas()
     {
+        $this->withoutMix();
+
         $this->actingAs($this->admin, 'canvas')
              ->get(route('canvas.login'))
              ->assertRedirect(config('canvas.path'));

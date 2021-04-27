@@ -7,7 +7,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Http\Request;
 
-class Authenticate
+class AuthenticateSession
 {
     /**
      * The authentication factory instance.

@@ -9,10 +9,10 @@ use Canvas\Http\Controllers\UploadsController;
 use Canvas\Http\Controllers\UserController;
 use Canvas\Http\Controllers\ViewController;
 use Canvas\Http\Middleware\Admin;
-use Canvas\Http\Middleware\Authenticate;
+use Canvas\Http\Middleware\AuthenticateSession;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware([Authenticate::class])->group(function () {
+Route::middleware([AuthenticateSession::class])->group(function () {
     Route::prefix('api')->group(function () {
         // Dashboard routes...
         Route::prefix('dashboard')->group(function () {
