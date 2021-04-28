@@ -33,7 +33,7 @@
                 </div>
             @endif
 
-            <form class="space-y-6" action="{{ route('canvas.password.email') }}" method="POST">
+            <form class="space-y-6" action="{{ route('canvas.forgot-password') }}" method="POST">
                 @csrf
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700"> {{ trans('canvas::app.email_address', [], app()->getLocale()) }} </label>

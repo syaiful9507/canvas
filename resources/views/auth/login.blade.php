@@ -68,7 +68,7 @@
                     </div>
 
                     <div class="text-sm">
-                        <a href="{{ route('canvas.password.request') }}" class="font-medium text-indigo-600 hover:text-indigo-500"> {{ trans('canvas::app.forgot_your_password', [], app()->getLocale()) }} </a>
+                        <a href="{{ route('canvas.forgot-password.view') }}" class="font-medium text-indigo-600 hover:text-indigo-500"> {{ trans('canvas::app.forgot_your_password', [], app()->getLocale()) }} </a>
                     </div>
                 </div>
 

@@ -10,7 +10,7 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form class="space-y-6" action="{{ route('canvas.password.update') }}" method="POST">
+            <form class="space-y-6" action="{{ route('canvas.reset-password') }}" method="POST">
                 @csrf
                 <input type="hidden" name="token" value="{{ $request->route('token') }}">
                 <div>

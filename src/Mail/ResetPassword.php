@@ -39,7 +39,7 @@ class ResetPassword extends Mailable
     {
         return $this->subject('Reset your password')
                     ->markdown('canvas::mail.password', [
-                        'link' => route('canvas.password.reset', ['token' => $this->token]),
+                        'link' => route('canvas.reset-password.view', ['token' => $this->token]),
                     ]);
     }
 }

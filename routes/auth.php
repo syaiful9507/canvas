@@ -14,16 +14,16 @@ Route::namespace('Auth')->group(function () {
 
     // Forgot password routes...
     Route::prefix('forgot-password')->group(function () {
-        Route::get('/', [PasswordResetLinkController::class, 'create'])->name('canvas.password.request');
-        Route::post('/', [PasswordResetLinkController::class, 'store'])->name('canvas.password.email');
+        Route::get('/', [PasswordResetLinkController::class, 'create'])->name('canvas.forgot-password.view');
+        Route::post('/', [PasswordResetLinkController::class, 'store'])->name('canvas.forgot-password');
     });
 
     // Reset password routes...
     Route::prefix('reset-password')->group(function () {
-        Route::get('{token}', [NewPasswordController::class, 'create'])->name('canvas.password.reset');
-        Route::post('/', [NewPasswordController::class, 'store'])->name('canvas.password.update');
+        Route::get('{token}', [NewPasswordController::class, 'create'])->name('canvas.reset-password.view');
+        Route::post('/', [NewPasswordController::class, 'store'])->name('canvas.reset-password');
     });
 
     // Logout route...
-    Route::get('logout', [AuthenticatedSessionController::class, 'destroy'])->name('canvas.logout');
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('canvas.logout');
 });

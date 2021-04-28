@@ -58,7 +58,9 @@ class NewPasswordController extends Controller
 
             Auth::guard('canvas')->login($user);
         } catch (Throwable $e) {
-            return redirect()->route('canvas.password.request')->with('invalidResetToken', trans('passwords.token', [], app()->getLocale()));
+            return redirect()
+                ->route('canvas.forgot-password.view')
+                ->with('invalidResetToken', trans('passwords.token', [], app()->getLocale()));
         }
 
         Cache::forget("password.reset.{$id}");
