@@ -41,9 +41,11 @@ class CanvasServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'canvas');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'canvas');
+
         $this->configurePublishing();
         $this->configureRoutes();
         $this->configureCommands();
+
         $this->registerMigrations();
         $this->registerAuthDriver();
         $this->registerEvents();
