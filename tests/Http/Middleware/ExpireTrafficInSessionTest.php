@@ -2,18 +2,18 @@
 
 namespace Canvas\Tests\Http\Middleware;
 
-use Canvas\Http\Middleware\Session;
+use Canvas\Http\Middleware\ExpireTrafficInSession;
 use Canvas\Models\Post;
 use Canvas\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 
 /**
- * Class SessionTest.
+ * Class ExpireTrafficInSessionTest.
  *
- * @covers \Canvas\Http\Middleware\Session
+ * @covers \Canvas\Http\Middleware\ExpireTrafficInSession
  */
-class SessionTest extends TestCase
+class ExpireTrafficInSessionTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -21,7 +21,7 @@ class SessionTest extends TestCase
     {
         parent::setUp();
 
-        Route::middleware([Session::class])->any('/_test/session', function () {
+        Route::middleware([ExpireTrafficInSession::class])->any('/_test/session', function () {
             return true;
         });
     }

@@ -1,37 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Middleware;
 
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Date;
 
-class Session
+class ExpireTrafficInSession
 {
     /**
      * Handle the incoming request.
      *
-     * @param $request
-     * @param $next
-     * @return Response
+     * @param Request $request
+     * @param Closure $next
+     * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
         $viewedPosts = collect(session()->get('viewed_posts'));
-        $visitedPosts = collect(session()->get('visited_posts'));
 
         if ($viewedPosts->isNotEmpty()) {
             $viewedPosts->each(function ($timestamp, $id) {
+                // A post is tracked as "viewed" once per hour...
                 if ($timestamp < now()->subSeconds(3600)->timestamp) {
                     session()->forget("viewed_posts.{$id}");
                 }
             });
         }
 
+        $visitedPosts = collect(session()->get('visited_posts'));
+
         if ($visitedPosts->isNotEmpty()) {
             $visitedPosts->each(function ($item, $id) {
-                if (! Date::createFromTimestamp($item['timestamp'])->isToday()) {
+                // A post is tracked as "visited" once per day...
+                if (! Carbon::createFromTimestamp($item['timestamp'])->isToday()) {
                     session()->forget("visited_posts.{$id}");
                 }
             });

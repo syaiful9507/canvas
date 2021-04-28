@@ -1,5 +1,6 @@
 # Upgrade Guide
 
+- [Upgrading to 7.0.0 from 6.0](#upgrading-to-700-from-60)
 - [Upgrading to 6.0.0 from 5.4](#upgrading-to-600-from-54)
 - [Upgrading to 5.4.0 from 5.3](#upgrading-to-540-from-53)
 - [Upgrading to 5.3.0 from 5.2](#upgrading-to-530-from-52)
@@ -40,6 +41,10 @@ To keep the assets up-to-date and avoid issues in future updates, you may add th
     }
 }
 ```
+
+## Upgrading to 7.0.0 from 6.0
+
+- Session middleware name change (ExpireTrafficInSession)
 
 ## Upgrading to 6.0.0 from 5.4
 

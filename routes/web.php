@@ -8,7 +8,7 @@ use Canvas\Http\Controllers\TopicController;
 use Canvas\Http\Controllers\UploadsController;
 use Canvas\Http\Controllers\UserController;
 use Canvas\Http\Controllers\ViewController;
-use Canvas\Http\Middleware\Admin;
+use Canvas\Http\Middleware\VerifyAdmin;
 use Canvas\Http\Middleware\AuthenticateSession;
 use Illuminate\Support\Facades\Route;
 
@@ -35,7 +35,7 @@ Route::middleware([AuthenticateSession::class])->group(function () {
         });
 
         // Tag routes...
-        Route::prefix('tags')->middleware([Admin::class])->group(function () {
+        Route::prefix('tags')->middleware([VerifyAdmin::class])->group(function () {
             Route::get('/', [TagController::class, 'index']);
             Route::get('create', [TagController::class, 'create']);
             Route::get('{id}', [TagController::class, 'show']);
@@ -45,7 +45,7 @@ Route::middleware([AuthenticateSession::class])->group(function () {
         });
 
         // Topic routes...
-        Route::prefix('topics')->middleware([Admin::class])->group(function () {
+        Route::prefix('topics')->middleware([VerifyAdmin::class])->group(function () {
             Route::get('/', [TopicController::class, 'index']);
             Route::get('create', [TopicController::class, 'create']);
             Route::get('{id}', [TopicController::class, 'show']);
@@ -56,12 +56,12 @@ Route::middleware([AuthenticateSession::class])->group(function () {
 
         // User routes...
         Route::prefix('users')->group(function () {
-            Route::get('/', [UserController::class, 'index'])->middleware([Admin::class]);
-            Route::get('create', [UserController::class, 'create'])->middleware([Admin::class]);
+            Route::get('/', [UserController::class, 'index'])->middleware([VerifyAdmin::class]);
+            Route::get('create', [UserController::class, 'create'])->middleware([VerifyAdmin::class]);
             Route::get('{id}', [UserController::class, 'show']);
             Route::get('{id}/posts', [UserController::class, 'posts']);
             Route::post('{id}', [UserController::class, 'store']);
-            Route::delete('{id}', [UserController::class, 'destroy'])->middleware([Admin::class]);
+            Route::delete('{id}', [UserController::class, 'destroy'])->middleware([VerifyAdmin::class]);
         });
 
         // Upload routes...
@@ -73,9 +73,9 @@ Route::middleware([AuthenticateSession::class])->group(function () {
         // Search routes...
         Route::prefix('search')->group(function () {
             Route::get('posts', [SearchController::class, 'posts']);
-            Route::get('tags', [SearchController::class, 'tags'])->middleware([Admin::class]);
-            Route::get('topics', [SearchController::class, 'topics'])->middleware([Admin::class]);
-            Route::get('users', [SearchController::class, 'users'])->middleware([Admin::class]);
+            Route::get('tags', [SearchController::class, 'tags'])->middleware([VerifyAdmin::class]);
+            Route::get('topics', [SearchController::class, 'topics'])->middleware([VerifyAdmin::class]);
+            Route::get('users', [SearchController::class, 'users'])->middleware([VerifyAdmin::class]);
         });
     });
 

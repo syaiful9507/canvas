@@ -6,11 +6,11 @@ use Canvas\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * Class AuthorizeTest.
+ * Class AuthenticateSessionTest.
  *
  * @covers \Canvas\Http\Middleware\AuthenticateSession
  */
-class AuthenticateTest extends TestCase
+class AuthenticateSessionTest extends TestCase
 {
     use RefreshDatabase;
 

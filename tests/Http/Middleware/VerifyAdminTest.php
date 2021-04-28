@@ -6,11 +6,11 @@ use Canvas\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * Class AdminTest.
+ * Class VerifyAdminTest.
  *
- * @covers \Canvas\Http\Middleware\Admin
+ * @covers \Canvas\Http\Middleware\VerifyAdmin
  */
-class AdminTest extends TestCase
+class VerifyAdminTest extends TestCase
 {
     use RefreshDatabase;
 

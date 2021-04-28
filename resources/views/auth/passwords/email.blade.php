@@ -8,7 +8,7 @@
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600 max-w">
             {{ trans('canvas::app.or', [], app()->getLocale()) }}
-            <a href="{{ route('canvas.login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+            <a href="{{ route('canvas.login.view') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
                 {{ trans('canvas::app.return_to_sign_in', [], app()->getLocale()) }}
             </a>
         </p>
