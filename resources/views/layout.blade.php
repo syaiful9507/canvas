@@ -30,7 +30,7 @@
     </div>
 @endif
 
-<div id="canvas"></div>
+<div id="app"></div>
 
 <script>
     window.Canvas = @json($jsVars);

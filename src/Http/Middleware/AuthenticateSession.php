@@ -42,7 +42,7 @@ class AuthenticateSession
             $this->auth->shouldUse('canvas');
         } else {
             throw new AuthenticationException(
-                'Unauthenticated.', ['canvas'], route('canvas.login')
+                'Unauthenticated.', ['canvas'], route('canvas.login.view')
             );
         }
 
