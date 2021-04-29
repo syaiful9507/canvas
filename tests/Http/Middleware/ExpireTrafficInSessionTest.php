@@ -21,6 +21,7 @@ class ExpireTrafficInSessionTest extends TestCase
     {
         parent::setUp();
 
+        // Set up a test route protected by the middleware
         Route::middleware([ExpireTrafficInSession::class])->any('/_test/session', function () {
             return true;
         });
@@ -31,21 +32,19 @@ class ExpireTrafficInSessionTest extends TestCase
         $recentPost = factory(Post::class)->create();
         $oldPost = factory(Post::class)->create();
 
-        session()->put('visited_posts.'.$recentPost->id, [
+        session()->put('canvas.visited_posts.'.$recentPost->id, [
             'timestamp' => now()->timestamp,
             'ip' => '127.0.0.1',
         ]);
 
-        session()->put('visited_posts.'.$oldPost->id, [
+        session()->put('canvas.visited_posts.'.$oldPost->id, [
             'timestamp' => now()->subDay()->timestamp,
             'ip' => '127.0.0.1',
         ]);
 
-        $this->get('/_test/session')->assertSessionHas([
-            "visited_posts.{$recentPost->id}",
-        ])->assertSessionMissing([
-            "visited_posts.{$oldPost->id}",
-        ]);
+        $this->get('/_test/session')
+             ->assertSessionHas("canvas.visited_posts.{$recentPost->id}")
+             ->assertSessionMissing("canvas.visited_posts.{$oldPost->id}");
     }
 
     public function testOldViewsArePrunedFromSession(): void
@@ -53,13 +52,11 @@ class ExpireTrafficInSessionTest extends TestCase
         $recentPost = factory(Post::class)->create();
         $oldPost = factory(Post::class)->create();
 
-        session()->put('viewed_posts.'.$recentPost->id, now()->timestamp);
-        session()->put('viewed_posts.'.$oldPost->id, now()->subHours(2)->timestamp);
+        session()->put('canvas.viewed_posts.'.$recentPost->id, now()->timestamp);
+        session()->put('canvas.viewed_posts.'.$oldPost->id, now()->subHours(2)->timestamp);
 
-        $this->get('/_test/session')->assertSessionHas([
-            "viewed_posts.{$recentPost->id}",
-        ])->assertSessionMissing([
-            "viewed_posts.{$oldPost->id}",
-        ]);
+        $this->get('/_test/session')
+             ->assertSessionHas("canvas.viewed_posts.{$recentPost->id}")
+             ->assertSessionMissing("canvas.viewed_posts.{$oldPost->id}");
     }
 }

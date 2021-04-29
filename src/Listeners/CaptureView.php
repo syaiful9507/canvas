@@ -42,7 +42,7 @@ class CaptureView
      */
     private function wasRecentlyViewed(Post $post): bool
     {
-        $viewed = session()->get('viewed_posts', []);
+        $viewed = session()->get('canvas.viewed_posts', []);
 
         return array_key_exists($post->id, $viewed);
     }
@@ -55,6 +55,6 @@ class CaptureView
      */
     private function storeInSession(Post $post): void
     {
-        session()->put("viewed_posts.{$post->id}", now()->timestamp);
+        session()->put("canvas.viewed_posts.{$post->id}", now()->timestamp);
     }
 }

@@ -45,7 +45,7 @@ class CaptureVisit
      */
     private function visitIsUnique(Post $post, string $ip): bool
     {
-        $visits = session()->get('visited_posts', []);
+        $visits = session()->get('canvas.visited_posts', []);
 
         if (array_key_exists($post->id, $visits)) {
             $visit = $visits[$post->id];
@@ -65,7 +65,7 @@ class CaptureVisit
      */
     private function storeInSession(Post $post, string $ip): void
     {
-        session()->put("visited_posts.{$post->id}", [
+        session()->put("canvas.visited_posts.{$post->id}", [
             'timestamp' => now()->timestamp,
             'ip' => $ip,
         ]);

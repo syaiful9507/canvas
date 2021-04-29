@@ -1,28 +1,4 @@
-import { store } from './store';
-import Toasted from 'vue-toasted';
-import Vue from 'vue';
-import moment from 'moment';
-import request from './mixins/request';
-import router from './router';
+import { createApp } from 'vue'
+import App from './App.vue'
 
-require('bootstrap');
-
-window.Popper = require('popper.js').default;
-
-Vue.prototype.moment = moment;
-
-Vue.use(Toasted, {
-    position: 'bottom-right',
-    theme: 'bubble',
-    duration: 2500,
-});
-
-Vue.mixin(request);
-
-Vue.config.productionTip = false;
-
-new Vue({
-    el: '#canvas',
-    router,
-    store,
-});
+createApp(App).mount('#canvas')

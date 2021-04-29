@@ -21,8 +21,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 mix.setPublicPath('public')
     .js('resources/js/app.js', 'public/js').vue()
     .postCss('resources/css/app.css', 'public/css', [
-    require('tailwindcss'),
-]);
+        require('tailwindcss'),
+    ]);
 
 if (mix.inProduction()) {
     mix.version();
