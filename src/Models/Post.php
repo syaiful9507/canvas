@@ -82,8 +82,6 @@ class Post extends Model
      */
     public function tags(): BelongsToMany
     {
-        // TODO: This should be a hasMany() relationship?
-
         return $this->belongsToMany(
             Tag::class,
             'canvas_posts_tags',
@@ -99,8 +97,6 @@ class Post extends Model
      */
     public function topic(): BelongsToMany
     {
-        // TODO: This should be a hasOne() relationship?
-
         return $this->belongsToMany(
             Topic::class,
             'canvas_posts_topics',

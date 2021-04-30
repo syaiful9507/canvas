@@ -67,7 +67,7 @@ class AuthenticatedSessionControllerTest extends TestCase
     public function testSuccessfulLogout(): void
     {
         $this->actingAs($this->admin, 'canvas')
-             ->get(route('canvas.logout'))
+             ->post(route('canvas.logout'))
              ->assertRedirect(route('canvas.login'));
     }
 }

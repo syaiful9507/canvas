@@ -63,10 +63,10 @@ class UiCommand extends Command
         });
 
         // Sass configuration...
-        copy(dirname(__DIR__, 2).'/resources/sass/ui.scss', resource_path('sass/canvas-ui.scss'));
+        copy(dirname(__DIR__, 2).'/resources/ui/sass/ui.scss', resource_path('sass/canvas-ui.scss'));
 
         // Single page application...
-        (new Filesystem)->copyDirectory(dirname(__DIR__, 2).'/resources/js/ui', resource_path('js/canvas-ui'));
+        (new Filesystem)->copyDirectory(dirname(__DIR__, 2).'/resources/ui/js', resource_path('js/canvas-ui'));
 
         $this->updateWebpackConfiguration();
         $this->flushNodeModules();
@@ -118,7 +118,7 @@ class UiCommand extends Command
             }
         }
 
-        copy(dirname(__DIR__, 2).'/resources/views/ui.blade.php', $view);
+        copy(dirname(__DIR__, 2).'/resources/ui/views/ui.blade.php', $view);
     }
 
     /**
@@ -133,13 +133,13 @@ class UiCommand extends Command
             str_replace(
                 '{{namespace}}',
                 $this->laravel->getNamespace(),
-                file_get_contents(dirname(__DIR__, 2).'/resources/stubs/controllers/CanvasUiController.stub')
+                file_get_contents(dirname(__DIR__, 2).'/resources/ui/controllers/CanvasUiController.stub')
             )
         );
 
         file_put_contents(
             base_path('routes/web.php'),
-            file_get_contents(dirname(__DIR__, 2).'/resources/stubs/routes/web.stub'),
+            file_get_contents(dirname(__DIR__, 2).'/resources/ui/routes/web.stub'),
             FILE_APPEND
         );
     }
@@ -181,7 +181,7 @@ class UiCommand extends Command
     {
         file_put_contents(
             base_path('webpack.mix.js'),
-            file_get_contents(dirname(__DIR__, 2).'/resources/stubs/webpack.mix.stub'),
+            file_get_contents(dirname(__DIR__, 2).'/resources/ui/webpack.mix.stub'),
             FILE_APPEND
         );
     }

@@ -18,7 +18,7 @@ class NewPasswordControllerTest extends TestCase
     {
         $this->withoutMix();
 
-        $this->get(route('canvas.password.reset', [
+        $this->get(route('canvas.reset-password.view', [
             'token' => Str::random(60),
         ]))
              ->assertSuccessful()
@@ -36,7 +36,7 @@ class NewPasswordControllerTest extends TestCase
             now()->addMinutes(60)
         );
 
-        $this->post(route('canvas.password.update', [
+        $this->post(route('canvas.reset-password', [
             'token' => $token,
             'email' => $this->admin->email,
             'password' => 'password',
@@ -50,7 +50,7 @@ class NewPasswordControllerTest extends TestCase
     {
         $token = encrypt($this->admin->id.'|'.Str::random());
 
-        $response = $this->post(route('canvas.password.update'), [
+        $response = $this->post(route('canvas.reset-password'), [
             'token' => $token,
             'email' => 'not-an-email',
             'password' => 'password',
@@ -64,7 +64,7 @@ class NewPasswordControllerTest extends TestCase
     {
         $token = encrypt($this->admin->id.'|'.Str::random());
 
-        $response = $this->post(route('canvas.password.update'), [
+        $response = $this->post(route('canvas.reset-password'), [
             'token' => $token,
             'email' => $this->admin->email,
             'password' => 'password',
@@ -76,7 +76,7 @@ class NewPasswordControllerTest extends TestCase
 
     public function testNewPasswordRequestWillValidateBadTokens(): void
     {
-        $this->post(route('canvas.password.update'), [
+        $this->post(route('canvas.reset-password'), [
             'token' => Str::random(),
             'email' => $this->admin->email,
             'password' => 'password',

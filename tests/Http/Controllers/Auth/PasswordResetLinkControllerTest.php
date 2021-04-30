@@ -19,7 +19,7 @@ class PasswordResetLinkControllerTest extends TestCase
     {
         $this->withoutMix();
 
-        $this->get(route('canvas.password.request'))
+        $this->get(route('canvas.forgot-password.view'))
              ->assertSuccessful()
              ->assertViewIs('canvas::auth.passwords.email')
              ->assertSeeText(trans('canvas::app.send_password_reset_link'));
@@ -27,7 +27,7 @@ class PasswordResetLinkControllerTest extends TestCase
 
     public function testForgotPasswordLinkRequestWillValidateAnInvalidEmail(): void
     {
-        $response = $this->post(route('canvas.password.email'), [
+        $response = $this->post(route('canvas.forgot-password'), [
             'email' => 'not-an-email',
         ]);
 
@@ -38,10 +38,9 @@ class PasswordResetLinkControllerTest extends TestCase
     {
         Mail::fake();
 
-        $this->post(route('canvas.password.email'), [
+        $this->post(route('canvas.forgot-password'), [
             'email' => $this->admin->email,
-        ])
-             ->assertRedirect(route('canvas.password.request'));
+        ])->assertRedirect(route('canvas.forgot-password.view'));
 
         Mail::assertSent(ResetPassword::class, function ($mail) {
             $this->assertIsString($mail->token);

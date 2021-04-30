@@ -17,7 +17,7 @@ class CanvasTest extends TestCase
 
     public function testInstalledVersion(): void
     {
-        $this->assertEmpty(version());
+        $this->assertEmpty(Canvas::installedVersion());
     }
 
     public function testAvailableLanguageCodes(): void
