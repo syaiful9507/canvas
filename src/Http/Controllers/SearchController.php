@@ -10,6 +10,7 @@ use Canvas\Models\Topic;
 use Canvas\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 
@@ -22,17 +23,14 @@ class SearchController extends Controller
      */
     public function posts(): JsonResponse
     {
-        $lastUpdated = optional(Post::query()->latest()->first())->updated_at;
-
         $key = vsprintf('%s-%s-%s', [
             'posts',
             request()->user('canvas')->id,
-            optional($lastUpdated)->timestamp ?? 0,
+            Post::latest()->first()->updated_at->timestamp ?? 0,
         ]);
 
         return Cache::remember($key, now()->addHours(4), function () {
-            $posts = Post::query()
-                         ->select('id', 'title')
+            $posts = Post::select('id', 'title')
                          ->when(request()->user('canvas')->isContributor, function (Builder $query) {
                              return $query->where('user_id', request()->user('canvas')->id);
                          }, function (Builder $query) {
@@ -60,17 +58,14 @@ class SearchController extends Controller
      */
     public function tags(): JsonResponse
     {
-        $lastUpdated = optional(Tag::query()->latest()->first())->updated_at;
-
         $key = vsprintf('%s-%s-%s', [
             'tags',
             request()->user('canvas')->id,
-            optional($lastUpdated)->timestamp ?? 0,
+            Tag::latest()->first()->updated_at->timestamp ?? 0,
         ]);
 
         return Cache::remember($key, now()->addHours(4), function () {
-            $tags = Tag::query()
-                       ->select('id', 'name')
+            $tags = Tag::select('id', 'name')
                        ->latest()
                        ->get()
                        ->map(function ($tag) {
@@ -92,17 +87,14 @@ class SearchController extends Controller
      */
     public function topics(): JsonResponse
     {
-        $lastUpdated = optional(Topic::query()->latest()->first())->updated_at;
-
         $key = vsprintf('%s-%s-%s', [
             'topics',
             request()->user('canvas')->id,
-            optional($lastUpdated)->timestamp ?? 0,
+            Topic::latest()->first()->updated_at->timestamp ?? 0,
         ]);
 
         return Cache::remember($key, now()->addHours(4), function () {
-            $topics = Topic::query()
-                           ->select('id', 'name')
+            $topics = Topic::select('id', 'name')
                            ->latest()
                            ->get()
                            ->map(function ($topic) {
@@ -124,17 +116,14 @@ class SearchController extends Controller
      */
     public function users(): JsonResponse
     {
-        $lastUpdated = optional(User::query()->latest()->first())->updated_at;
-
         $key = vsprintf('%s-%s-%s', [
             'users',
             request()->user('canvas')->id,
-            optional($lastUpdated)->timestamp ?? 0,
+            User::latest()->first()->updated_at->timestamp ?? 0,
         ]);
 
         return Cache::remember($key, now()->addHours(4), function () {
-            $users = User::query()
-                         ->select('id', 'name')
+            $users = User::select('id', 'name')
                          ->latest()
                          ->get()
                          ->map(function ($user) {

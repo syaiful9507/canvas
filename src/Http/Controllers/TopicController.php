@@ -21,8 +21,7 @@ class TopicController extends Controller
     public function index(): JsonResponse
     {
         return response()->json(
-            Topic::query()
-                 ->select('id', 'name', 'created_at')
+            Topic::select('id', 'name', 'created_at')
                  ->latest()
                  ->withCount('posts')
                  ->paginate()
@@ -36,7 +35,7 @@ class TopicController extends Controller
      */
     public function create(): JsonResponse
     {
-        return response()->json(Topic::query()->make([
+        return response()->json(Topic::make([
             'id' => Uuid::uuid4()->toString(),
         ]));
     }
@@ -52,7 +51,7 @@ class TopicController extends Controller
     {
         $data = $request->validated();
 
-        $topic = Topic::query()->find($id);
+        $topic = Topic::find($id);
 
         if (! $topic) {
             if ($topic = Topic::onlyTrashed()->firstWhere('slug', $data['slug'])) {
@@ -81,7 +80,7 @@ class TopicController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $topic = Topic::query()->findOrFail($id);
+        $topic = Topic::findOrFail($id);
 
         return response()->json($topic);
     }
@@ -94,7 +93,7 @@ class TopicController extends Controller
      */
     public function posts($id): JsonResponse
     {
-        $topic = Topic::query()->with('posts')->findOrFail($id);
+        $topic = Topic::with('posts')->findOrFail($id);
 
         return response()->json($topic->posts()->withCount('views')->paginate());
     }
@@ -108,7 +107,7 @@ class TopicController extends Controller
      */
     public function destroy($id)
     {
-        $topic = Topic::query()->findOrFail($id);
+        $topic = Topic::findOrFail($id);
 
         $topic->delete();
 

@@ -24,8 +24,7 @@ class UserController extends Controller
     public function index(): JsonResponse
     {
         return response()->json(
-            User::query()
-                ->select('id', 'name', 'email', 'avatar', 'role')
+            User::select('id', 'name', 'email', 'avatar', 'role')
                 ->latest()
                 ->withCount('posts')
                 ->paginate()
@@ -39,7 +38,7 @@ class UserController extends Controller
      */
     public function create(): JsonResponse
     {
-        return response()->json(User::query()->make([
+        return response()->json(User::make([
             'id' => Uuid::uuid4()->toString(),
             'role' => User::CONTRIBUTOR,
         ]));
@@ -56,7 +55,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::query()->find($id);
+        $user = User::find($id);
 
         if (! $user) {
             if ($user = User::onlyTrashed()->firstWhere('email', $data['email'])) {
@@ -99,7 +98,7 @@ class UserController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $user = User::query()->withCount('posts')->findOrFail($id);
+        $user = User::withCount('posts')->findOrFail($id);
 
         return response()->json($user);
     }
@@ -112,7 +111,7 @@ class UserController extends Controller
      */
     public function posts($id): JsonResponse
     {
-        $user = User::query()->with('posts')->findOrFail($id);
+        $user = User::with('posts')->findOrFail($id);
 
         return response()->json($user->posts()->withCount('views')->paginate());
     }
@@ -131,7 +130,7 @@ class UserController extends Controller
             return response()->json(null, 403);
         }
 
-        $user = User::query()->findOrFail($id);
+        $user = User::findOrFail($id);
 
         $user->delete();
 

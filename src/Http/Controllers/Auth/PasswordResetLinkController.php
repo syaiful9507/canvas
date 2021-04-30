@@ -39,7 +39,7 @@ class PasswordResetLinkController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::query()->firstWhere('email', $data['email']);
+        $user = User::firstWhere('email', $data['email']);
 
         $token = Str::random();
 

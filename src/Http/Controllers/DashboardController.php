@@ -41,8 +41,7 @@ class DashboardController extends Controller
             ->pluck('id')
             ->toArray();
 
-        $lookupViews = View::query()
-                ->select('id')
+        $lookupViews = View::select('id')
                 ->whereBetween('created_at', [
                     $this->lookup['start'],
                     $this->lookup['end'],
@@ -50,8 +49,7 @@ class DashboardController extends Controller
                 ->whereIn('post_id', $postIds)
                 ->count();
 
-        $lookbackViews = View::query()
-                ->select('id')
+        $lookbackViews = View::select('id')
                 ->whereBetween('created_at', [
                     $this->lookback['start'],
                     $this->lookback['end'],
@@ -59,8 +57,7 @@ class DashboardController extends Controller
                 ->whereIn('post_id', $postIds)
                 ->count();
 
-        $lookupVisits = Visit::query()
-                        ->select('id')
+        $lookupVisits = Visit::select('id')
                         ->whereBetween('created_at', [
                             $this->lookup['start'],
                             $this->lookup['end'],
@@ -68,8 +65,7 @@ class DashboardController extends Controller
                         ->whereIn('post_id', $postIds)
                         ->count();
 
-        $lookbackVisits = Visit::query()
-                        ->select('id')
+        $lookbackVisits = Visit::select('id')
                         ->whereBetween('created_at', [
                             $this->lookback['start'],
                             $this->lookback['end'],
@@ -93,19 +89,17 @@ class DashboardController extends Controller
 
     public function chart(): JsonResponse
     {
-        $postIds = Post::query()
-            ->published()
-            ->when(request()->query('scope', 'user') === 'all', function (Builder $query) {
+        $postIds = Post::when(request()->query('scope', 'user') === 'all', function (Builder $query) {
                 return $query;
             }, function (Builder $query) {
                 return $query->where('user_id', request()->user('canvas')->id);
             })
+            ->published()
             ->pluck('id')
             ->toArray();
 
 
-        $views = View::query()
-                ->select('created_at')
+        $views = View::select('created_at')
                 ->whereBetween('created_at', [
                     $this->lookup['start'],
                     $this->lookup['end'],
@@ -113,8 +107,7 @@ class DashboardController extends Controller
                 ->whereIn('post_id', $postIds)
                 ->get();
 
-        $visits = Visit::query()
-            ->select('created_at')
+        $visits = Visit::select('created_at')
             ->whereBetween('created_at', [
                 $this->lookup['start'],
                 $this->lookup['end'],
