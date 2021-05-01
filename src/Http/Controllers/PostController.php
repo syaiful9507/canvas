@@ -166,6 +166,8 @@ class PostController extends Controller
      */
     public function stats(string $id): JsonResponse
     {
+        // TODO: Move this to the dashboard view with query params
+
         $post = Post::when(request()->user('canvas')->isContributor, function (Builder $query) {
             return $query->where('user_id', request()->user('canvas')->id);
         }, function (Builder $query) {
