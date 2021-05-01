@@ -146,44 +146,44 @@ class DashboardController extends Controller
         $from = request('date', now());
         $period = request('period', '30d');
 
-        switch ($period) {
-            case 'day':
-                $primaryEnd = Carbon::parse($from)->endOfDay()->toDateTimeString();
-                $primaryStart = Carbon::parse($primaryEnd)->startOfDay()->toDateTimeString();
-                break;
-
-            case '7d':
-                $primaryStart = $primaryEnd->subDays(7)->startOfDay();
-                break;
-
-            case '30d':
-                $primaryStart = $primaryEnd->subDays(30)->startOfDay();
-                break;
-
-            case 'month':
-                $primaryStart = $primaryEnd->startOfDay();
-                break;
-
-            case '6mo':
-                $primaryStart = $primaryEnd->startOfDay();
-                break;
-
-            case '12mo':
-                $primaryStart = $primaryEnd->startOfDay();
-                break;
-
-            default:
-                # code...
-                break;
-        }
-
-
+//        switch ($period) {
+//            case 'day':
+//                $primaryEnd = Carbon::parse($from)->endOfDay()->toDateTimeString();
+//                $primaryStart = Carbon::parse($primaryEnd)->startOfDay()->toDateTimeString();
+//                break;
+//
+//            case '7d':
+//                $primaryStart = $primaryEnd->subDays(7)->startOfDay();
+//                break;
+//
+//            case '30d':
+//                $primaryStart = $primaryEnd->subDays(30)->startOfDay();
+//                break;
+//
+//            case 'month':
+//                $primaryStart = $primaryEnd->startOfDay();
+//                break;
+//
+//            case '6mo':
+//                $primaryStart = $primaryEnd->startOfDay();
+//                break;
+//
+//            case '12mo':
+//                $primaryStart = $primaryEnd->startOfDay();
+//                break;
+//
+//            default:
+//                # code...
+//                break;
+//        }
 
 
-        $days = $primaryStart->diffInDays($primaryEnd);
-
-        $secondaryStart = $primaryStart->copy()->subDays($days)->startOfDay();
-        $secondaryEnd = $primaryStart->copy()->startOfDay();
+//
+//
+//        $days = $primaryStart->diffInDays($primaryEnd);
+//
+//        $secondaryStart = $primaryStart->copy()->subDays($days)->startOfDay();
+//        $secondaryEnd = $primaryStart->copy()->startOfDay();
 
         // return [
         //     'period' => $days,
