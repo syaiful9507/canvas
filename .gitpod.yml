@@ -7,9 +7,13 @@ checkoutLocation: canvas
 
 vscode:
   extensions:
-    - octref.vetur@0.28.0:bW1RGNnmWYQO43JdJgK34w==
-    - eamodio.gitlens@10.2.1:WIWu3zHU4VPT8r/v866LUw==
-    - esbenp.prettier-vscode@5.7.1:GDba64T6G+TUi1qmc6BE3A==
+    - octref.vetur
+    - esbenp.prettier-vscode
+    - equinusocio.vsc-material-theme
+    - equinusocio.vsc-community-material-theme
+    - equinusocio.vsc-material-theme-icons
+    - eamodio.gitlens
+    - github.vscode-pull-request-github
 
 github:
   prebuilds:
