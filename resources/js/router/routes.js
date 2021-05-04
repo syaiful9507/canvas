@@ -17,11 +17,6 @@ export default [
     {
         path: '/',
         name: 'home',
-        redirect: '/dashboard',
-    },
-    {
-        path: '/dashboard',
-        name: 'stats',
         component: AllStats,
     },
     {
@@ -128,6 +123,6 @@ export default [
     {
         path: '*',
         name: 'catch-all',
-        redirect: '/dashboard',
+        redirect: '/',
     },
 ];

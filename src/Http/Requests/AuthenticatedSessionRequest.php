@@ -27,7 +27,7 @@ class AuthenticatedSessionRequest extends FormRequest
      */
     public function rules()
     {
-        $this->redirect = route('canvas.login');
+        $this->redirect = route('canvas.login.view');
 
         return [
             'email' => 'required|email:filter|exists:canvas_users',

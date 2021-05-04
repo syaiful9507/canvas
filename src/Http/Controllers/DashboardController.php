@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Canvas\Http\Controllers;
 
+use Canvas\Canvas;
 use Canvas\Models\Post;
 use Canvas\Models\View;
 use Canvas\Models\Visit;
@@ -28,7 +29,7 @@ class DashboardController extends Controller
      *
      * @return JsonResponse
      */
-    public function stats(): JsonResponse
+    public function index(): JsonResponse
     {
         $this->getRangeLookups();
 
@@ -140,6 +141,61 @@ class DashboardController extends Controller
     // {
     //     # code...
     // }
+
+    /**
+     * Display stats for the specified resource.
+     *
+     * @param string $id
+     * @return JsonResponse
+     */
+    public function stats(string $id): JsonResponse
+    {
+        // TODO: Move this to the dashboard view with query params
+
+        $post = Post::when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })
+                    ->published()
+                    ->findOrFail($id);
+
+        $currentViews = $post->views->whereBetween('created_at', [
+            today()->startOfMonth()->startOfDay()->toDateTimeString(),
+            today()->endOfMonth()->endOfDay()->toDateTimeString(),
+        ]);
+
+        $currentVisits = $post->visits->whereBetween('created_at', [
+            today()->startOfMonth()->startOfDay()->toDateTimeString(),
+            today()->endOfMonth()->endOfDay()->toDateTimeString(),
+        ]);
+
+        $previousViews = $post->views->whereBetween('created_at', [
+            today()->subMonth()->startOfMonth()->startOfDay()->toDateTimeString(),
+            today()->subMonth()->endOfMonth()->endOfDay()->toDateTimeString(),
+        ]);
+
+        $previousVisits = $post->visits->whereBetween('created_at', [
+            today()->subMonth()->startOfMonth()->startOfDay()->toDateTimeString(),
+            today()->subMonth()->endOfMonth()->endOfDay()->toDateTimeString(),
+        ]);
+
+        return response()->json([
+            'post' => $post,
+            'readTime' => Canvas::calculateReadTime($post->body),
+            'popularReadingTimes' => Canvas::calculatePopularReadingTimes($post),
+            'topReferers' => Canvas::calculateTopReferers($post),
+            'monthlyViews' => $currentViews->count(),
+            'totalViews' => $post->views->count(),
+            'monthlyVisits' => $currentVisits->count(),
+            'monthOverMonthViews' => Canvas::compareMonthOverMonth($currentViews, $previousViews),
+            'monthOverMonthVisits' => Canvas::compareMonthOverMonth($currentVisits, $previousVisits),
+            'graph' => [
+                'views' => Canvas::calculateTotalForDays($currentViews)->toJson(),
+                'visits' => Canvas::calculateTotalForDays($currentVisits)->toJson(),
+            ],
+        ]);
+    }
 
     protected function getRangeLookups(): void
     {
