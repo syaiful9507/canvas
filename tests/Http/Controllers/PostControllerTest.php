@@ -39,18 +39,18 @@ class PostControllerTest extends TestCase
         })->first();
 
         $this->actingAs($this->admin, 'canvas')
-             ->getJson('canvas/api/posts')
+             ->getJson(route('canvas.posts.index'))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'posts',
-                 'draftCount',
-                 'publishedCount',
+                 'drafts_count',
+                 'published_count',
              ])
              ->assertJsonFragment([
                  'id' => $primaryPost->id,
                  'total' => $this->admin->posts()->published()->count(),
-                 'draftCount' => $this->admin->posts()->draft()->count(),
-                 'publishedCount' => $this->admin->posts()->published()->count(),
+                 'drafts_count' => $this->admin->posts()->draft()->count(),
+                 'published_count' => $this->admin->posts()->published()->count(),
              ])
              ->assertJsonMissing([
                  'id' => $secondaryPost->id,
