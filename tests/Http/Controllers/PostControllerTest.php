@@ -24,18 +24,18 @@ class PostControllerTest extends TestCase
 
     public function testPublishedPostsAreFetchedByDefault(): void
     {
-        $publishedPost = factory(Post::class, 1)->create([
+        $published = factory(Post::class)->create([
             'user_id' => $this->admin->id,
             'published_at' => now()->subDay(),
         ]);
 
-        $draftPost = factory(Post::class, 1)->create([
+        $draft = factory(Post::class)->create([
             'user_id' => $this->admin->id,
             'published_at' => null,
         ]);
 
         $this->actingAs($this->admin, 'canvas')
-             ->getJson(route('canvas.posts.index', ['scope' => 'all', 'type' => 'published']))
+             ->getJson(route('canvas.posts.index'))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'posts',
@@ -43,13 +43,13 @@ class PostControllerTest extends TestCase
                  'published_count',
              ])
              ->assertJsonFragment([
-                 'id' => $publishedPost->id,
+                 'id' => $published->id,
                  'total' => $this->admin->posts()->published()->count(),
                  'drafts_count' => $this->admin->posts()->draft()->count(),
                  'published_count' => $this->admin->posts()->published()->count(),
              ])
              ->assertJsonMissing([
-                 'id' => $draftPost->id,
+                 'id' => $draft->id,
              ]);
     }
 
