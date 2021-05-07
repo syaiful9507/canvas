@@ -24,22 +24,18 @@ class PostControllerTest extends TestCase
 
     public function testPublishedPostsAreFetchedByDefault(): void
     {
-        $primaryPost = factory(Post::class, 1)->create([
+        $publishedPost = factory(Post::class, 1)->create([
             'user_id' => $this->admin->id,
             'published_at' => now()->subDay(),
-        ])->each(function ($post) {
-            $post->views()->createMany(factory(View::class, 3)->make()->toArray());
-        })->first();
+        ]);
 
-        $secondaryPost = factory(Post::class, 1)->create([
+        $draftPost = factory(Post::class, 1)->create([
             'user_id' => $this->admin->id,
             'published_at' => null,
-        ])->each(function ($post) {
-            $post->views()->createMany(factory(View::class, 3)->make()->toArray());
-        })->first();
+        ]);
 
         $this->actingAs($this->admin, 'canvas')
-             ->getJson(route('canvas.posts.index'))
+             ->getJson(route('canvas.posts.index', ['scope' => 'all', 'type' => 'published']))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'posts',
@@ -47,13 +43,13 @@ class PostControllerTest extends TestCase
                  'published_count',
              ])
              ->assertJsonFragment([
-                 'id' => $primaryPost->id,
+                 'id' => $publishedPost->id,
                  'total' => $this->admin->posts()->published()->count(),
                  'drafts_count' => $this->admin->posts()->draft()->count(),
                  'published_count' => $this->admin->posts()->published()->count(),
              ])
              ->assertJsonMissing([
-                 'id' => $secondaryPost->id,
+                 'id' => $draftPost->id,
              ]);
     }
 

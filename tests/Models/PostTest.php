@@ -42,6 +42,17 @@ class PostTest extends TestCase
         ])->published);
     }
 
+    public function testDraftAttribute(): void
+    {
+        $this->assertTrue(factory(Post::class)->create([
+            'published_at' => null,
+        ])->draft);
+
+        $this->assertTrue(factory(Post::class)->create([
+            'published_at' => now()->addWeek(),
+        ])->draft);
+    }
+
     public function testPostsCanShareTheSameSlugWithUniqueUsers(): void
     {
         $data = [

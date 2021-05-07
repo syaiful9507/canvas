@@ -142,29 +142,39 @@ class Post extends Model
      */
     public function getPublishedAttribute(): bool
     {
-        return ! is_null($this->published_at) && $this->published_at <= now();
+        return isset($this->published_at) && $this->published_at <= now();
     }
 
     /**
-     * Scope a query to only include published posts.
+     * Check to see if the post is a draft.
+     *
+     * @return bool
+     */
+    public function getDraftAttribute(): bool
+    {
+        return is_null($this->published_at) || $this->published_at > now();
+    }
+
+    /**
+     * Scope a query to include published posts.
      *
      * @param Builder $query
      * @return Builder
      */
     public function scopePublished(Builder $query): Builder
     {
-        return $query->orWhereDate('published_at', '<=', now());
+        return $query->where('published_at', '<=', now());
     }
 
     /**
-     * Scope a query to only include drafted posts.
+     * Scope a query to include drafted posts.
      *
      * @param Builder $query
      * @return Builder
      */
     public function scopeDraft(Builder $query): Builder
     {
-        return $query->whereNull('published_at')->orWhereDate('published_at', '>', now());
+        return $query->whereNull('published_at')->orWhere('published_at', '>', now());
     }
 
     /**
