@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
+use Canvas\Http\Requests\TrafficLookupRequest;
 use Canvas\Models\Post;
 use Canvas\Models\View;
 use Canvas\Models\Visit;
@@ -20,9 +21,74 @@ use Illuminate\Routing\Controller;
 
 class DashboardController extends Controller
 {
-    protected $period;
     protected $lookup;
     protected $lookback;
+
+    public function views(TrafficLookupRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        dd($data);
+    }
+
+    public function visits(): JsonResponse
+    {
+        // code...
+    }
+
+    public function chart(): JsonResponse
+    {
+        $postIds = Post::when(request()->query('scope', 'user') === 'all', function (Builder $query) {
+            return $query;
+        }, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        })
+                       ->published()
+                       ->pluck('id')
+                       ->toArray();
+
+
+        $views = View::select('created_at')
+                     ->whereBetween('created_at', [
+                         $this->lookup['start'],
+                         $this->lookup['end'],
+                     ])
+                     ->whereIn('post_id', $postIds)
+                     ->get();
+
+        $visits = Visit::select('created_at')
+                       ->whereBetween('created_at', [
+                           $this->lookup['start'],
+                           $this->lookup['end'],
+                       ])
+                       ->whereIn('post_id', $postIds)
+                       ->get();
+
+        return response()->json([
+            'views' => $this->datePlots($views)->toJson(),
+            'visits' => $this->datePlots($visits)->toJson(),
+        ]);
+    }
+
+     public function sources(): JsonResponse
+     {
+         // code...
+     }
+
+     public function pages(): JsonResponse
+     {
+         // code...
+     }
+
+     public function countries(): JsonResponse
+     {
+         // code...
+     }
+
+     public function devices(): JsonResponse
+     {
+         // code...
+     }
 
     /**
      * Display a listing of the resource.
@@ -87,60 +153,6 @@ class DashboardController extends Controller
             ],
         ]);
     }
-
-    public function chart(): JsonResponse
-    {
-        $postIds = Post::when(request()->query('scope', 'user') === 'all', function (Builder $query) {
-                return $query;
-            }, function (Builder $query) {
-                return $query->where('user_id', request()->user('canvas')->id);
-            })
-            ->published()
-            ->pluck('id')
-            ->toArray();
-
-
-        $views = View::select('created_at')
-                ->whereBetween('created_at', [
-                    $this->lookup['start'],
-                    $this->lookup['end'],
-                ])
-                ->whereIn('post_id', $postIds)
-                ->get();
-
-        $visits = Visit::select('created_at')
-            ->whereBetween('created_at', [
-                $this->lookup['start'],
-                $this->lookup['end'],
-            ])
-            ->whereIn('post_id', $postIds)
-            ->get();
-
-        return response()->json([
-            'views' => $this->datePlots($views)->toJson(),
-            'visits' => $this->datePlots($visits)->toJson(),
-        ]);
-    }
-
-    // public function sources(): JsonResponse
-    // {
-    //     # code...
-    // }
-
-    // public function pages(): JsonResponse
-    // {
-    //     # code...
-    // }
-
-    // public function countries(): JsonResponse
-    // {
-    //     # code...
-    // }
-
-    // public function devices(): JsonResponse
-    // {
-    //     # code...
-    // }
 
     /**
      * Display stats for the specified resource.
@@ -305,12 +317,8 @@ class DashboardController extends Controller
 
     /**
      * Return the percentage of change between two given numbers.
-     *
-     * @param string|int $numberOne
-     * @param string|int $numberTwo
-     * @return float|int
      */
-    protected function percentOfChange(string|int $numberOne, string|int $numberTwo): float|int
+    protected function percentOfChange($numberOne, $numberTwo)
     {
         $difference = (int) $numberOne - (int) $numberTwo;
 

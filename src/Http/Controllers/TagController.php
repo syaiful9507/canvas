@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Canvas\Http\Controllers;
 
-use Canvas\Http\Requests\TagRequest;
+use Canvas\Http\Requests\StoreTagRequest;
 use Canvas\Models\Tag;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -43,11 +43,11 @@ class TagController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param TagRequest $request
+     * @param StoreTagRequest $request
      * @param $id
      * @return JsonResponse
      */
-    public function store(TagRequest $request, $id): JsonResponse
+    public function store(StoreTagRequest $request, $id): JsonResponse
     {
         $data = $request->validated();
 

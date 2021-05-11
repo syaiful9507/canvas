@@ -7,7 +7,7 @@ namespace Canvas\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class TopicRequest extends FormRequest
+class StoreTagRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,7 +31,7 @@ class TopicRequest extends FormRequest
             'slug' => [
                 'required',
                 'alpha_dash',
-                Rule::unique('canvas_topics')->where(function ($query) {
+                Rule::unique('canvas_tags')->where(function ($query) {
                     return $query->where('slug', request('slug'))->where('user_id', request()->user('canvas')->id);
                 })->ignore(request('id'))->whereNull('deleted_at'),
             ],
