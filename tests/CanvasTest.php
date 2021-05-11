@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * Class CanvasTest.
  *
- * @covers /helpers.php
+ * @covers \Canvas\Canvas
  */
 class CanvasTest extends TestCase
 {
