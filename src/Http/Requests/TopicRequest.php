@@ -14,7 +14,7 @@ class TopicRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return $this->user('canvas')->isAdmin;
     }
@@ -24,7 +24,7 @@ class TopicRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => 'required',

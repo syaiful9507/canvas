@@ -144,12 +144,12 @@ class PostControllerTest extends TestCase
                  'drafts_count' => Post::draft()->count(),
                  'published_count' => Post::published()->count(),
              ])
-            ->assertJsonFragment([
-                'id' => $byAdmin->id,
-            ])
-            ->assertJsonFragment([
-                'id' => $byEditor->id,
-            ]);
+             ->assertJsonFragment([
+                 'id' => $byAdmin->id,
+             ])
+             ->assertJsonFragment([
+                 'id' => $byEditor->id,
+             ]);
     }
 
     public function testUserPostsCanBeFetchedWithAGivenQueryScope(): void
@@ -175,14 +175,14 @@ class PostControllerTest extends TestCase
              ->assertJsonFragment([
                  'id' => $byAdmin->id,
              ])
-            ->assertJsonMissing([
-                'id' => $byEditor->id,
-            ]);
+             ->assertJsonMissing([
+                 'id' => $byEditor->id,
+             ]);
     }
 
     public function testNewPostData(): void
     {
-        $response = $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($this->admin, 'canvas')
              ->getJson(route('canvas.posts.create'))
              ->assertSuccessful()
              ->assertJsonStructure([
@@ -223,7 +223,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->contributor, 'canvas')
-            ->getJson(route('canvas.posts.show', ['id' => $post->id]))
+             ->getJson(route('canvas.posts.show', ['id' => $post->id]))
              ->assertNotFound();
     }
 
@@ -236,7 +236,7 @@ class PostControllerTest extends TestCase
         ];
 
         $this->actingAs($this->admin, 'canvas')
-             ->postJson("canvas/api/posts/{$data['id']}", $data)
+             ->postJson(route('canvas.posts.store', ['id' => $data['id']]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $data['id'],
@@ -256,7 +256,7 @@ class PostControllerTest extends TestCase
         ];
 
         $this->actingAs($this->admin, 'canvas')
-             ->postJson("canvas/api/posts/{$post->id}", $data)
+             ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $post->id,
@@ -265,7 +265,7 @@ class PostControllerTest extends TestCase
              ]);
     }
 
-    public function testAContributorCanOnlyUpdateTheirOwnPost(): void
+    public function testAContributorCanUpdateTheirOwnPost(): void
     {
         $post = factory(Post::class)->create([
             'user_id' => $this->contributor->id,
@@ -277,13 +277,29 @@ class PostControllerTest extends TestCase
         ];
 
         $this->actingAs($this->contributor, 'canvas')
-             ->postJson("canvas/api/posts/{$post->id}", $data)
+             ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $post->id,
                  'title' => $data['title'],
                  'slug' => $data['slug'],
              ]);
+    }
+
+    public function testAContributorCannotUpdateAnEditorsPost(): void
+    {
+        $post = factory(Post::class)->create([
+            'user_id' => $this->editor->id,
+        ]);
+
+        $data = [
+            'title' => 'Updated Title',
+            'slug' => 'updated-slug',
+        ];
+
+        $this->actingAs($this->contributor, 'canvas')
+             ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
+             ->assertForbidden();
     }
 
     public function testSyncNewTags(): void
@@ -306,7 +322,7 @@ class PostControllerTest extends TestCase
         ];
 
         $this->actingAs($this->admin, 'canvas')
-             ->postJson("canvas/api/posts/{$post->id}", $data)
+             ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $post->id,
@@ -337,7 +353,7 @@ class PostControllerTest extends TestCase
         ];
 
         $this->actingAs($this->admin, 'canvas')
-             ->postJson("canvas/api/posts/{$post->id}", $data)
+             ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $post->id,
@@ -368,7 +384,7 @@ class PostControllerTest extends TestCase
         ];
 
         $this->actingAs($this->admin, 'canvas')
-             ->postJson("canvas/api/posts/{$post->id}", $data)
+             ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $post->id,
@@ -399,7 +415,7 @@ class PostControllerTest extends TestCase
         ];
 
         $this->actingAs($this->admin, 'canvas')
-             ->postJson("canvas/api/posts/{$post->id}", $data)
+             ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $post->id,
@@ -419,8 +435,9 @@ class PostControllerTest extends TestCase
         $post = factory(Post::class)->create();
 
         $this->actingAs($this->admin, 'canvas')
-             ->postJson("canvas/api/posts/{$post->id}", [
+             ->postJson(route('canvas.posts.store', ['id' => $post->id]), [
                  'slug' => 'a new.slug',
+                 'title' => $post->title,
              ])
              ->assertStatus(422)
              ->assertJsonStructure([
@@ -438,15 +455,15 @@ class PostControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->contributor, 'canvas')
-             ->deleteJson("canvas/api/posts/{$post->id}")
+             ->deleteJson(route('canvas.posts.store', ['id' => $post->id]))
              ->assertNotFound();
 
         $this->actingAs($this->editor, 'canvas')
-             ->deleteJson('canvas/api/posts/not-a-post')
+             ->deleteJson(route('canvas.posts.store', ['id' => 'not-a-post']))
              ->assertNotFound();
 
         $this->actingAs($this->admin, 'canvas')
-             ->deleteJson("canvas/api/posts/{$post->id}")
+             ->deleteJson(route('canvas.posts.store', ['id' => $post->id]))
              ->assertSuccessful()
              ->assertNoContent();
 
@@ -483,7 +500,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->admin, 'canvas')
-             ->deleteJson("canvas/api/posts/{$post->id}")
+             ->deleteJson(route('canvas.posts.store', ['id' => $post->id]))
              ->assertSuccessful()
              ->assertNoContent();
 
