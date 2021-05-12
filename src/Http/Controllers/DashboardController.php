@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
-use Canvas\Http\Requests\TrafficLookupRequest;
 use Canvas\Models\Post;
 use Canvas\Models\View;
 use Canvas\Models\Visit;
@@ -21,14 +20,11 @@ use Illuminate\Support\Collection;
 
 class DashboardController extends Controller
 {
-    protected $lookup;
-    protected $lookback;
-
-    public function views(TrafficLookupRequest $request): JsonResponse
+    public function views(): JsonResponse
     {
-        $data = $request->validated();
+        [$period, $lookup, $lookback] = $this->getRangeLookups(request()->query('from'), request()->query('to'));
 
-        dd($data);
+
     }
 
     public function visits(): JsonResponse
@@ -208,60 +204,22 @@ class DashboardController extends Controller
         ]);
     }
 
-    protected function getRangeLookups(): void
+    protected function getRangeLookups($from, $to): array
     {
-        $from = request('date', now());
-        $period = request('period', '30d');
+        $primaryStart = Carbon::parse($from) ?? now()->subDays(30);
+        $primaryEnd = Carbon::parse($to) ?? now();
 
-//        switch ($period) {
-//            case 'day':
-//                $primaryEnd = Carbon::parse($from)->endOfDay()->toDateTimeString();
-//                $primaryStart = Carbon::parse($primaryEnd)->startOfDay()->toDateTimeString();
-//                break;
-//
-//            case '7d':
-//                $primaryStart = $primaryEnd->subDays(7)->startOfDay();
-//                break;
-//
-//            case '30d':
-//                $primaryStart = $primaryEnd->subDays(30)->startOfDay();
-//                break;
-//
-//            case 'month':
-//                $primaryStart = $primaryEnd->startOfDay();
-//                break;
-//
-//            case '6mo':
-//                $primaryStart = $primaryEnd->startOfDay();
-//                break;
-//
-//            case '12mo':
-//                $primaryStart = $primaryEnd->startOfDay();
-//                break;
-//
-//            default:
-//                # code...
-//                break;
-//        }
-
-//
-//
-//        $days = $primaryStart->diffInDays($primaryEnd);
-//
-//        $secondaryStart = $primaryStart->copy()->subDays($days)->startOfDay();
-//        $secondaryEnd = $primaryStart->copy()->startOfDay();
-
-        // return [
-        //     'period' => $days,
-        //     'lookup' => [
-        //         'start' => $primaryStart->toDateTimeString(),
-        //         'end' => $primaryEnd->toDateTimeString(),
-        //     ],
-        //     'lookback' => [
-        //         'start' => $secondaryStart->toDateTimeString(),
-        //         'end' => $secondaryEnd->toDateTimeString(),
-        //     ],
-        // ];
+         return [
+             'period' => $days,
+             'lookup' => [
+                 'start' => $primaryStart->toDateTimeString(),
+                 'end' => $primaryEnd->toDateTimeString(),
+             ],
+             'lookback' => [
+                 'start' => $secondaryStart->toDateTimeString(),
+                 'end' => $secondaryEnd->toDateTimeString(),
+             ],
+         ];
     }
 
     protected function datePlots(Collection $data): Collection
