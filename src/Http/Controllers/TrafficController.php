@@ -10,6 +10,7 @@ use Canvas\Models\View;
 use Canvas\Models\Visit;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Carbon\CarbonPeriod;
 use DateInterval;
 use DatePeriod;
 use DateTimeInterface;
@@ -18,11 +19,32 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 
-class DashboardController extends Controller
+class TrafficController extends Controller
 {
     public function views(): JsonResponse
     {
-        [$period, $lookup, $lookback] = $this->getRangeLookups(request()->query('from'), request()->query('to'));
+
+
+        CarbonInterval::hours(24);
+        $data = CarbonPeriod::createFromArray([
+            now()->startOfDay(),
+            now()->endOfDay()
+        ]);
+//        $data = CarbonPeriod::createFromArray([
+//            request()->query('from'),
+//            request()->query('to')
+//        ]);
+
+        dd($data->toArray());
+
+        dd(CarbonPeriod::createFromArray([
+            request()->query('from'),
+            request()->query('to')
+        ]));
+
+        $data = $this->rangeLookups(request()->query('from'), request()->query('to'));
+
+        dd($data);
     }
 
     public function visits(): JsonResponse
@@ -204,24 +226,23 @@ class DashboardController extends Controller
 
     protected function rangeLookups($from, $to): array
     {
-        if (!$from || !$to) {
-
-        }
-
         $primaryStart = Carbon::parse($from) ?? now()->subDays(30);
-        $primaryEnd = Carbon::parse($to) ?? now();
+        $primaryEnd = Carbon::parse($to)->greaterThan($primaryStart) ? Carbon::parse($to) : now();
 
+        $days = $primaryStart->daysUntil($primaryEnd)->count();
 
+        $secondaryStart = $primaryStart->clone()->subDays($days);
+        $secondaryEnd = $secondaryStart->clone()->addDays($days);
 
         return [
-//            'period' => $days,
+            'period' => $days,
             'lookup' => [
                 'start' => $primaryStart->toDateTimeString(),
                 'end' => $primaryEnd->toDateTimeString(),
             ],
             'lookback' => [
-//                'start' => $secondaryStart->toDateTimeString(),
-//                'end' => $secondaryEnd->toDateTimeString(),
+                'start' => $secondaryStart->toDateTimeString(),
+                'end' => $secondaryEnd->toDateTimeString(),
             ],
         ];
     }

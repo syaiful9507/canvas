@@ -1,6 +1,6 @@
 <?php
 
-use Canvas\Http\Controllers\DashboardController;
+use Canvas\Http\Controllers\TrafficController;
 use Canvas\Http\Controllers\PostController;
 use Canvas\Http\Controllers\SearchController;
 use Canvas\Http\Controllers\TagController;
@@ -16,13 +16,13 @@ Route::middleware([AuthenticateSession::class])->group(function () {
     Route::prefix('api')->group(function () {
         // Traffic routes...
         Route::prefix('traffic')->group(function () {
-            Route::get('views', [DashboardController::class, 'views'])->name('canvas.traffic.views');
-            Route::get('visits', [DashboardController::class, 'visits'])->name('canvas.traffic.visits');
-            Route::get('chart', [DashboardController::class, 'chart'])->name('canvas.traffic.chart');
-            Route::get('sources', [DashboardController::class, 'sources'])->name('canvas.traffic.sources');
-            Route::get('pages', [DashboardController::class, 'pages'])->name('canvas.traffic.pages');
-            Route::get('countries', [DashboardController::class, 'countries'])->name('canvas.traffic.countries');
-            Route::get('devices', [DashboardController::class, 'devices'])->name('canvas.traffic.devices');
+            Route::get('views', [TrafficController::class, 'views'])->name('canvas.traffic.views');
+            Route::get('visits', [TrafficController::class, 'visits'])->name('canvas.traffic.visits');
+            Route::get('chart', [TrafficController::class, 'chart'])->name('canvas.traffic.chart');
+            Route::get('sources', [TrafficController::class, 'sources'])->name('canvas.traffic.sources');
+            Route::get('pages', [TrafficController::class, 'pages'])->name('canvas.traffic.pages');
+            Route::get('countries', [TrafficController::class, 'countries'])->name('canvas.traffic.countries');
+            Route::get('devices', [TrafficController::class, 'devices'])->name('canvas.traffic.devices');
         });
 
         // Post routes...

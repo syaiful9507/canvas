@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * Class HomeControllerTest.
  *
- * @covers \Canvas\Http\Controllers\DashboardController
+ * @covers \Canvas\Http\Controllers\TrafficController
  */
 class DashboardControllerTest extends TestCase
 {
