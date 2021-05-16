@@ -28,7 +28,7 @@ class TrafficController extends Controller
         CarbonInterval::hours(24);
         $data = CarbonPeriod::createFromArray([
             now()->startOfDay(),
-            now()->endOfDay()
+            now()->endOfDay(),
         ]);
 //        $data = CarbonPeriod::createFromArray([
 //            request()->query('from'),
@@ -39,7 +39,7 @@ class TrafficController extends Controller
 
         dd(CarbonPeriod::createFromArray([
             request()->query('from'),
-            request()->query('to')
+            request()->query('to'),
         ]));
 
         $data = $this->rangeLookups(request()->query('from'), request()->query('to'));
@@ -115,45 +115,45 @@ class TrafficController extends Controller
         $this->getRangeLookups();
 
         $postIds = Post::published()
-            ->when(request()->query('scope', 'user') === 'all', function (Builder $query) {
-                return $query;
-            }, function (Builder $query) {
-                return $query->where('user_id', request()->user('canvas')->id);
-            })
-            ->pluck('id')
-            ->toArray();
+                       ->when(request()->query('scope', 'user') === 'all', function (Builder $query) {
+                           return $query;
+                       }, function (Builder $query) {
+                           return $query->where('user_id', request()->user('canvas')->id);
+                       })
+                       ->pluck('id')
+                       ->toArray();
 
         $lookupViews = View::select('id')
-                ->whereBetween('created_at', [
-                    $this->lookup['start'],
-                    $this->lookup['end'],
-                ])
-                ->whereIn('post_id', $postIds)
-                ->count();
+                           ->whereBetween('created_at', [
+                               $this->lookup['start'],
+                               $this->lookup['end'],
+                           ])
+                           ->whereIn('post_id', $postIds)
+                           ->count();
 
         $lookbackViews = View::select('id')
-                ->whereBetween('created_at', [
-                    $this->lookback['start'],
-                    $this->lookback['end'],
-                ])
-                ->whereIn('post_id', $postIds)
-                ->count();
+                             ->whereBetween('created_at', [
+                                 $this->lookback['start'],
+                                 $this->lookback['end'],
+                             ])
+                             ->whereIn('post_id', $postIds)
+                             ->count();
 
         $lookupVisits = Visit::select('id')
-                        ->whereBetween('created_at', [
-                            $this->lookup['start'],
-                            $this->lookup['end'],
-                        ])
-                        ->whereIn('post_id', $postIds)
-                        ->count();
+                             ->whereBetween('created_at', [
+                                 $this->lookup['start'],
+                                 $this->lookup['end'],
+                             ])
+                             ->whereIn('post_id', $postIds)
+                             ->count();
 
         $lookbackVisits = Visit::select('id')
-                        ->whereBetween('created_at', [
-                            $this->lookback['start'],
-                            $this->lookback['end'],
-                        ])
-                        ->whereIn('post_id', $postIds)
-                        ->count();
+                               ->whereBetween('created_at', [
+                                   $this->lookback['start'],
+                                   $this->lookback['end'],
+                               ])
+                               ->whereIn('post_id', $postIds)
+                               ->count();
 
         return response()->json([
             [
@@ -229,11 +229,6 @@ class TrafficController extends Controller
         $primaryStart = Carbon::parse($from) ?? now()->subDays(30);
         $primaryEnd = Carbon::parse($to)->greaterThan($primaryStart) ? Carbon::parse($to) : now();
 
-        $days = $primaryStart->daysUntil($primaryEnd)->count();
-
-        $secondaryStart = $primaryStart->clone()->subDays($days);
-        $secondaryEnd = $secondaryStart->clone()->addDays($days);
-
         return [
             'period' => $days,
             'lookup' => [
@@ -300,7 +295,7 @@ class TrafficController extends Controller
      */
     protected function percentOfChange($numberOne, $numberTwo)
     {
-        $difference = (int) $numberOne - (int) $numberTwo;
+        $difference = (int)$numberOne - (int)$numberTwo;
 
         $change = $numberOne != 0 ? ($difference / $numberTwo) * 100 : $numberOne * 100;
 
@@ -323,7 +318,8 @@ class TrafficController extends Controller
         int $recurrences,
         int $exclusive = 1,
         string $format = 'Y-m-d'
-    ): array {
+    ): array
+    {
         $period = new DatePeriod($start_date, $interval, $recurrences, $exclusive);
         $dates = new Collection();
 
