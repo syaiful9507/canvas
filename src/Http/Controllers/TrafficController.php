@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
+use Canvas\Http\Requests\TrafficLookupRequest;
 use Canvas\Models\Post;
 use Canvas\Models\View;
 use Canvas\Models\Visit;
+use Canvas\Services\StatisticsService;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
@@ -21,28 +23,17 @@ use Illuminate\Support\Collection;
 
 class TrafficController extends Controller
 {
-    public function views(): JsonResponse
+    public function views(TrafficLookupRequest $request): JsonResponse
     {
-        CarbonInterval::hours(24);
-        $data = CarbonPeriod::createFromArray([
-            now()->startOfDay(),
-            now()->endOfDay(),
-        ]);
-//        $data = CarbonPeriod::createFromArray([
-//            request()->query('from'),
-//            request()->query('to')
-//        ]);
+        $data = $request->validated();
 
-        dd($data->toArray());
+        $service = new StatisticsService();
 
-        dd(CarbonPeriod::createFromArray([
-            request()->query('from'),
-            request()->query('to'),
-        ]));
+        // $data['date']
+        // $data['from']
+        // $data['to']
 
-        $data = $this->rangeLookups(request()->query('from'), request()->query('to'));
-
-        dd($data);
+        return response()->json($service->getViewsForRange());
     }
 
     public function visits(): JsonResponse
