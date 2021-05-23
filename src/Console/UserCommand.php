@@ -17,9 +17,7 @@ class UserCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'canvas:user
-                    { role : The role to be assigned (admin, editor, contributor) }
-                    { --email= : Email associated with the user }';
+    protected $signature = 'canvas:user';
 
     /**
      * The console command description.
@@ -35,55 +33,36 @@ class UserCommand extends Command
      */
     public function handle()
     {
-        if (! filter_var($this->option('email'), FILTER_VALIDATE_EMAIL)) {
+        $email = $this->ask('What email should be attached to the user?');
+        $password = 'password';
+
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->error('Please enter a valid email.');
 
             return;
         }
 
-        $email = $this->option('email');
-        $password = 'password';
+        $role = $this->choice(
+            'What role should the user have?',
+            Canvas::availableRoles(),
+            null,
+            $maxAttempts = null,
+            $allowMultipleSelections = false
+        );
 
-        $user = new User();
-        $user->fill([
+        $user = User::query()->make([
             'id' => Uuid::uuid4()->toString(),
+            'name' => 'New User',
             'email' => $email,
             'password' => Hash::make($password),
             'avatar' => Canvas::gravatar($email),
+            'role' => $role,
         ]);
-
-        switch ($this->argument('role')) {
-            case 'admin':
-                $user->fill([
-                    'name' => 'New Admin',
-                    'role' => User::ADMIN,
-                ]);
-                break;
-
-            case 'editor':
-                $user->fill([
-                    'name' => 'New Editor',
-                    'role' => User::EDITOR,
-                ]);
-                break;
-
-            case 'contributor':
-                $user->fill([
-                    'name' => 'New Contributor',
-                    'role' => User::CONTRIBUTOR,
-                ]);
-                break;
-
-            default:
-                $this->error('Please enter a valid role.');
-
-                return;
-        }
 
         $user->save();
 
         $this->info('New user created.');
         $this->table(['Email', 'Password'], [[$email, $password]]);
-        $this->info('First things first, login at <info>'.route('canvas.login').'</info> and update your credentials.');
+        $this->info('First things first, head to <info>'.route('canvas.users.show', $user->id).'</info> and update your credentials.');
     }
 }
