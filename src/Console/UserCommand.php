@@ -44,10 +44,7 @@ class UserCommand extends Command
 
         $role = $this->choice(
             'What role should the user have?',
-            Canvas::availableRoles(),
-            null,
-            $maxAttempts = null,
-            $allowMultipleSelections = false
+            Canvas::availableRoles()
         );
 
         $user = User::query()->make([
