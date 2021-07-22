@@ -15,46 +15,29 @@
 
 Canvas is a fully open source package to extend your existing [Laravel](https://laravel.com) application and get you up-and-running with a blog in just a few minutes. In addition to a distraction-free writing experience, you can view monthly trends on your content, get insights into reader traffic and more!
 
-<<<<<<< HEAD
 - Prologue
     - [Release Notes](https://github.com/austintoddj/canvas/releases)
     - [Upgrade Guide](https://github.com/austintoddj/canvas/blob/master/.github/UPGRADE.md)
     - [Contributing Guide](https://github.com/austintoddj/canvas/blob/master/.github/CONTRIBUTING.md)
- 
+
 - Getting Started
     - [System Requirements](#system-requirements)
     - [Installation](#installation)
     - [Configuration](#configuration)
- 
+
 - The Basics
     - [Roles & Permissions](#roles--permissions)
-    - [Frontend UI](#frontend-ui)
-    - [Unsplash Integration](#unsplash-integration)
-    - [Weekly Digest](#weekly-digest)
- 
+    - [Canvas UI](#canvas-ui)
+    - [Unsplash](#unsplash-integration)
+    - [Email](#e-mail-notifications)
+
 - Digging Deeper
+    - [API](#api)
+    - [Updates](#updates)
     - [Testing](#testing)
     - [Troubleshooting](#troubleshooting)
     - [License](#license)
     - [Credits](#credits)
-=======
-## Table of Contents
-
-- [System Requirements](#system-requirements)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Roles & Permissions](#roles--permissions)
-- [Features](#features)
-    - [Canvas UI](#canvas-ui)
-    - [Unsplash](#unsplash-integration)
-    - [E-mail](#e-mail-notifications)
-- [API](#api)
-- [Updates](#updates)
-- [Contributing](#contributing)
-- [Testing](#testing)
-- [License](#license)
-- [Credits](#credits)
->>>>>>> develop
 
 ## System Requirements
 
@@ -160,24 +143,13 @@ Canvas uses the storage disk for media uploads. You may configure the different 
 
 Canvas comes with 3 pre-defined roles out-of-the-box:
 
-- **Contributor** (Somebody who can write and manage their own posts but cannot publish them)
-- **Editor** (Somebody who can publish and manage posts including the posts of other users)
-- **Admin** (Somebody who can do everything and see everything)
+- **Contributor** (A user who can write and manage their own posts but cannot publish them)
+- **Editor** (A user who can publish and manage posts including the posts of other users)
+- **Admin** (A user who can do everything and see everything)
 
-<<<<<<< HEAD
-When you install a fresh version of Canvas, you'll have a default admin user set up automatically. From there, you
- can perform any basic CRUD actions on users, as well as assign their various roles.
-
-## Frontend UI
-=======
 When you install a fresh version of Canvas, you'll have a default admin user set up automatically. From there, you can perform any basic CRUD actions on users, as well as assign their various roles.
 
-## Features
-
-> **Note:** The following features are completely optional, you are not required to use them.
-
-### Canvas UI
->>>>>>> develop
+## Canvas UI
 
 **Want a beautiful, Medium.com-inspired frontend?** Use the `canvas:ui` Artisan command to install the scaffolding:
 
@@ -221,11 +193,7 @@ that you'd like.
 ]
 ```
 
-<<<<<<< HEAD
-## Weekly Digest
-=======
-### E-mail Notifications
->>>>>>> develop
+## E-mail Notifications
 
 **Want a weekly summary?** Canvas allows users to receive a weekly digest of their authored content. Once your application is [configured for sending mail](https://laravel.com/docs/master/mail), update `config/canvas.php`:
 
@@ -253,8 +221,6 @@ Since this feature runs on [Laravel's Scheduler](https://laravel.com/docs/master
 * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-<<<<<<< HEAD
-=======
 ## API
 
 Installing [Canvas UI](#canvas-ui) will be the most efficient way to get up and running with a frontend interface to display your data. However many users will opt for creating this by hand since it gives flexibility to their design aesthetic.
@@ -277,7 +243,7 @@ To return a single post, you'll likely want to find it by a given slug, as well 
 $post = Canvas\Models\Post::with('user', 'tags', 'topic')->firstWhere('slug', $slug);
 ```
 
-> **Important:** In the same method that returns a post, make sure you include the `PostViewed` event, or else a 
+> **Important:** In the same method that returns a post, make sure you include the `PostViewed` event, or else a
 > view/visit will not be recorded.
 
 ```php
@@ -347,19 +313,6 @@ To keep the assets up-to-date and avoid issues in future updates, you may add th
 }
 ```
 
-## Contributing
-
-Thank you for considering contributing to Canvas!
-
-You can open a completely prebuilt, ready-to-code development environment using Gitpod.
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/austintoddj/canvas/tree/master)
-
-Alternatively, you can use the [contribution guide](.github/CONTRIBUTING.md) to assist you in manually setting up an environment on your own machine.
-
-One of the ongoing goals for Canvas is to make it as accessible as possible. If you come across any translation mistakes or issues and want to make a contribution, please [create a pull request](https://github.com/austintoddj/canvas/pulls). If you don't see your native language included in the `resources/lang` directory, feel free to add it.
-
->>>>>>> develop
 ## Testing
 
 Run the tests with:
@@ -370,7 +323,7 @@ composer test
 
 ## Troubleshooting
 
-If you're running into problems, feel free to [open a new issue](https://github.com/austintoddj/canvas/issues) or check the [Discussions](https://github.com/austintoddj/canvas/discussions) forum to see if anyone else has run into something similar. 
+If you're running into problems, feel free to [open a new issue](https://github.com/austintoddj/canvas/issues) or check the [Discussions](https://github.com/austintoddj/canvas/discussions) forum to see if anyone else has run into something similar.
 
 ## License
 
