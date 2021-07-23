@@ -8,6 +8,7 @@ use Canvas\Canvas;
 use Canvas\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
+use Faker\Factory;
 use Ramsey\Uuid\Uuid;
 
 class UserCommand extends Command
@@ -17,7 +18,7 @@ class UserCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'canvas:user';
+    protected $signature = 'canvas:user { role : The role to be assigned }';
 
     /**
      * The console command description.
@@ -33,8 +34,34 @@ class UserCommand extends Command
      */
     public function handle()
     {
+        $user = User::query()->make();
+
+        switch ($this->argument('role')) {
+            case 'admin':
+                $user->fill([
+                    'role' => User::ADMIN,
+                ]);
+                break;
+
+            case 'editor':
+                $user->fill([
+                    'role' => User::EDITOR,
+                ]);
+                break;
+
+            case 'contributor':
+                $user->fill([
+                    'role' => User::CONTRIBUTOR,
+                ]);
+                break;
+
+            default:
+                $this->error('Please enter a valid role. [contributor|editor|admin]');
+
+                return;
+        }
+
         $email = $this->ask('What email should be attached to the user?');
-        $password = 'password';
 
         if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->error('Please enter a valid email.');
@@ -42,24 +69,20 @@ class UserCommand extends Command
             return;
         }
 
-        $role = $this->choice(
-            'What role should the user have?',
-            Canvas::availableRoles()
-        );
+        $password = 'password';
 
-        $user = User::query()->make([
+        $user->fill([
             'id' => Uuid::uuid4()->toString(),
-            'name' => 'New User',
+            'name' => Factory::create()->name,
             'email' => $email,
             'password' => Hash::make($password),
             'avatar' => Canvas::gravatar($email),
-            'role' => $role,
         ]);
 
         $user->save();
 
         $this->info('New user created.');
         $this->table(['Email', 'Password'], [[$email, $password]]);
-        $this->info('First things first, head to <info>'.route('canvas.users.show', $user->id).'</info> and update your credentials.');
+        $this->info('First things first, head to <info>'.route('canvas.login').'</info> and update your credentials.');
     }
 }

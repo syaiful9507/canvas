@@ -18,27 +18,30 @@ class UserCommandTest extends TestCase
     public function testCanvasUserCommandWillValidateAnEmptyEmail(): void
     {
         $this->artisan('canvas:user admin')
+             ->expectsQuestion('What email should be attached to the user?', '')
              ->assertExitCode(0)
              ->expectsOutput('Please enter a valid email.');
     }
 
     public function testCanvasUserCommandWillValidateAnInvalidEmail(): void
     {
-        $this->artisan('canvas:user admin --email bad.email')
+        $this->artisan('canvas:user admin')
+             ->expectsQuestion('What email should be attached to the user?', 'bad.email')
              ->assertExitCode(0)
              ->expectsOutput('Please enter a valid email.');
     }
 
     public function testCanvasUserCommandWillValidateAnInvalidRole(): void
     {
-        $this->artisan('canvas:user ad --email email@example.com')
+        $this->artisan('canvas:user ad')
              ->assertExitCode(0)
-             ->expectsOutput('Please enter a valid role.');
+             ->expectsOutput('Please enter a valid role. [contributor|editor|admin]');
     }
 
     public function testCanvasUserCommandCanCreateANewContributor(): void
     {
-        $this->artisan('canvas:user contributor --email contributor@example.com')
+        $this->artisan('canvas:user contributor')
+             ->expectsQuestion('What email should be attached to the user?', 'contributor@example.com')
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
 
@@ -50,7 +53,8 @@ class UserCommandTest extends TestCase
 
     public function testCanvasUserCommandCanCreateANewEditor(): void
     {
-        $this->artisan('canvas:user editor --email editor@example.com')
+        $this->artisan('canvas:user editor')
+             ->expectsQuestion('What email should be attached to the user?', 'editor@example.com')
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
 
@@ -62,7 +66,8 @@ class UserCommandTest extends TestCase
 
     public function testCanvasUserCommandCanCreateANewAdmin(): void
     {
-        $this->artisan('canvas:user admin --email admin@example.com')
+        $this->artisan('canvas:user admin')
+             ->expectsQuestion('What email should be attached to the user?', 'admin@example.com')
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
 
