@@ -15,7 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class CanvasUiController extends Controller
 {
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -30,7 +30,7 @@ class CanvasUiController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getPosts(Request $request): LengthAwarePaginator
@@ -43,7 +43,7 @@ class CanvasUiController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $slug
      * @return \Illuminate\Http\JsonResponse
      */
@@ -63,7 +63,7 @@ class CanvasUiController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @return string
      */
     public function getTags(Request $request): string
@@ -72,7 +72,7 @@ class CanvasUiController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $slug
      * @return \Illuminate\Http\JsonResponse
      */
@@ -88,7 +88,7 @@ class CanvasUiController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $slug
      * @return \Illuminate\Http\JsonResponse
      */
@@ -106,7 +106,7 @@ class CanvasUiController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @return string
      */
     public function getTopics(Request $request): string
@@ -115,7 +115,7 @@ class CanvasUiController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $slug
      * @return \Illuminate\Http\JsonResponse
      */
@@ -131,7 +131,7 @@ class CanvasUiController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $slug
      * @return \Illuminate\Http\JsonResponse
      */
@@ -147,7 +147,7 @@ class CanvasUiController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
@@ -163,7 +163,7 @@ class CanvasUiController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
@@ -175,6 +175,6 @@ class CanvasUiController extends Controller
             return response()->json(null, 404);
         }
 
-        return response()->json($user->posts()->published()->with('topic')->paginate(), 200);
+        return $user ? response()->json($user->posts()->published()->with('user', 'topic')->paginate(), 200) : response()->json(null, 200);
     }
 }

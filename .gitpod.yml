@@ -51,8 +51,7 @@ tasks:
       touch database/database.sqlite
 
       # Write the database configuration to the .env file
-      sed -i 's/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/g' .env
-      sed -i 's/DB_DATABASE=laravel/#DB_DATABASE=laravel/g' .env
+      sed -i 's/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/g' .env && sed -i 's/DB_DATABASE=laravel/#DB_DATABASE=laravel/g' .env
 
       # Link Canvas to the Laravel app
       composer-link ../canvas/
@@ -69,12 +68,6 @@ tasks:
       cd public/vendor/canvas
       ln -s ../../../../canvas/public/* .
 
-      cd /workspace/laravel
-
-      # Trust any proxy in a chain of proxies
-      php artisan vendor:publish --provider="Fideloper\Proxy\TrustedProxyServiceProvider"
-      sed -Ei "s|'proxies' => null|'proxies' => '**'|g" config/trustedproxy.php
-
     command: |
       cd /workspace/laravel
 
@@ -83,6 +76,10 @@ tasks:
 
       # Write the local asset URL to the .env file
       export url=$(gp url 8000); sed -Ei "1i\ASSET_URL=${url}" .env
+
+      # Trust any proxy in a chain of proxies
+      export url=$(gp url 8000); sed -Ei "s|APP_URL=http://localhost|APP_URL=${url}|g" .env
+      sed -Ei "s|\\\$proxies|\\\$proxies = '*'|g" app/Http/Middleware/TrustProxies.php
 
       # Clear and cache the app configuration
       php artisan config:clear
