@@ -19,7 +19,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      *
-     * @return Application|Factory|View|RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function create()
     {
@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      *
      * @param AuthenticatedSessionRequest $request
-     * @return RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
      * @throws ValidationException
      */
     public function store(AuthenticatedSessionRequest $request)
@@ -50,7 +50,7 @@ class AuthenticatedSessionController extends Controller
      * Destroy an authenticated session.
      *
      * @param Request $request
-     * @return RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Request $request)
     {

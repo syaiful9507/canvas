@@ -19,7 +19,7 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -80,7 +80,7 @@ class PostController extends Controller
      *
      * @param StorePostRequest $request
      * @param $id
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      * @throws Exception
      */
     public function store(StorePostRequest $request, $id): JsonResponse
@@ -152,7 +152,7 @@ class PostController extends Controller
      * Display the specified resource.
      *
      * @param $id
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id): JsonResponse
     {
@@ -173,10 +173,10 @@ class PostController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
      * @throws Exception
      */
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $post = Post::when(request()->user('canvas')->isContributor, function (Builder $query) {
             return $query->where('user_id', request()->user('canvas')->id);

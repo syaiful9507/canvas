@@ -90,6 +90,11 @@ class UserTest extends TestCase
 
     public function testContributorAttribute(): void
     {
+        $user = factory(User::class)->create([
+            'role' => null
+        ]);
+
+        $this->assertTrue($user->isContributor);
         $this->assertTrue($this->contributor->isContributor);
     }
 

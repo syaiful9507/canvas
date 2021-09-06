@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage;
 
@@ -39,7 +40,7 @@ class UploadsController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy()
+    public function destroy(): JsonResponse
     {
         if (empty(request()->getContent())) {
             return response()->json(null, 400);

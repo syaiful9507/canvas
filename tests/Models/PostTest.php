@@ -8,6 +8,7 @@ use Canvas\Models\Topic;
 use Canvas\Models\User;
 use Canvas\Models\View;
 use Canvas\Models\Visit;
+use Faker\Factory;
 use Canvas\Tests\TestCase;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,22 +36,9 @@ class PostTest extends TestCase
         $this->assertIsArray(factory(Post::class)->create()->meta);
     }
 
-    public function testPublishedAttribute(): void
+    public function testEstimatedReadTimeInMinutesIsAppendedToModel(): void
     {
-        $this->assertTrue(factory(Post::class)->create([
-            'published_at' => now()->subDay(),
-        ])->published);
-    }
-
-    public function testDraftAttribute(): void
-    {
-        $this->assertTrue(factory(Post::class)->create([
-            'published_at' => null,
-        ])->draft);
-
-        $this->assertTrue(factory(Post::class)->create([
-            'published_at' => now()->addWeek(),
-        ])->draft);
+        $this->assertArrayHasKey('estimated_read_time_in_minutes', factory(Post::class)->create()->toArray());
     }
 
     public function testPostsCanShareTheSameSlugWithUniqueUsers(): void
@@ -135,6 +123,39 @@ class PostTest extends TestCase
 
         $this->assertInstanceOf(HasMany::class, $post->visits());
         $this->assertInstanceOf(Visit::class, $post->visits->first());
+    }
+
+    public function testEstimatedReadTimeInMinutesAttribute(): void
+    {
+        $post = factory(Post::class)->create([
+            'body' => Factory::create()->words(249, true),
+        ]);
+
+        $this->assertSame(1, $post->estimatedReadTimeInMinutes);
+
+        $post = factory(Post::class)->create([
+            'body' => Factory::create()->words(251, true),
+        ]);
+
+        $this->assertSame(2, $post->estimatedReadTimeInMinutes);
+    }
+
+    public function testPublishedAttribute(): void
+    {
+        $this->assertTrue(factory(Post::class)->create([
+            'published_at' => now()->subDay(),
+        ])->published);
+    }
+
+    public function testDraftAttribute(): void
+    {
+        $this->assertTrue(factory(Post::class)->create([
+            'published_at' => null,
+        ])->draft);
+
+        $this->assertTrue(factory(Post::class)->create([
+            'published_at' => now()->addWeek(),
+        ])->draft);
     }
 
     public function testPublishedScope(): void

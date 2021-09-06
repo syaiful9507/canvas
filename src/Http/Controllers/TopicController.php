@@ -16,7 +16,7 @@ class TopicController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -31,7 +31,7 @@ class TopicController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create(): JsonResponse
     {
@@ -45,7 +45,7 @@ class TopicController extends Controller
      *
      * @param StoreTopicRequest $request
      * @param $id
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreTopicRequest $request, $id): JsonResponse
     {
@@ -76,7 +76,7 @@ class TopicController extends Controller
      * Display the specified resource.
      *
      * @param $id
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id): JsonResponse
     {
@@ -89,7 +89,7 @@ class TopicController extends Controller
      * Display the specified relationship.
      *
      * @param $id
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function posts($id): JsonResponse
     {
@@ -102,10 +102,10 @@ class TopicController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
      * @throws Exception
      */
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $topic = Topic::findOrFail($id);
 

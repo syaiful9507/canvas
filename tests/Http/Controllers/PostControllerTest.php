@@ -124,7 +124,7 @@ class PostControllerTest extends TestCase
              ]);
     }
 
-    public function testAllPostsCanBeFetchedWithAGivenQueryScope(): void
+    public function testAllPublishedPostsCanBeFetchedWithAGivenQueryScope(): void
     {
         $byAdmin = factory(Post::class)->create([
             'user_id' => $this->admin->id,
@@ -137,10 +137,10 @@ class PostControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->admin, 'canvas')
-             ->getJson(route('canvas.posts.index', ['scope' => 'all']))
+             ->getJson(route('canvas.posts.index', ['scope' => 'all', 'type' => 'published']))
              ->assertSuccessful()
              ->assertJsonFragment([
-                 'total' => Post::all()->count(),
+                 'total' => Post::published()->count(),
                  'drafts_count' => Post::draft()->count(),
                  'published_count' => Post::published()->count(),
              ])
@@ -148,6 +148,34 @@ class PostControllerTest extends TestCase
                  'id' => $byAdmin->id,
              ])
              ->assertJsonFragment([
+                 'id' => $byEditor->id,
+             ]);
+    }
+
+    public function testAllDraftPostsCanBeFetchedWithAGivenQueryScope(): void
+    {
+        $byAdmin = factory(Post::class)->create([
+            'user_id' => $this->admin->id,
+            'published_at' => now()->subDay(),
+        ]);
+
+        $byEditor = factory(Post::class)->create([
+            'user_id' => $this->editor->id,
+            'published_at' => now()->subDay(),
+        ]);
+
+        $this->actingAs($this->admin, 'canvas')
+             ->getJson(route('canvas.posts.index', ['scope' => 'all', 'type' => 'draft']))
+             ->assertSuccessful()
+             ->assertJsonFragment([
+                 'total' => Post::draft()->count(),
+                 'drafts_count' => Post::draft()->count(),
+                 'published_count' => Post::published()->count(),
+             ])
+             ->assertJsonMissing([
+                 'id' => $byAdmin->id,
+             ])
+             ->assertJsonMissing([
                  'id' => $byEditor->id,
              ]);
     }

@@ -14,21 +14,21 @@ class User extends Authenticatable
     use SoftDeletes;
 
     /**
-     * Role identifier for a Contributor.
+     * Role identifier used for a Contributor.
      *
      * @const int
      */
     public const CONTRIBUTOR = 1;
 
     /**
-     * Role identifier for an Editor.
+     * Role identifier used for an Editor.
      *
      * @const int
      */
     public const EDITOR = 2;
 
     /**
-     * Role identifier for an Admin.
+     * Role identifier used for an Admin.
      *
      * @const int
      */
@@ -143,7 +143,7 @@ class User extends Authenticatable
      */
     public function getIsContributorAttribute(): bool
     {
-        return $this->role === self::CONTRIBUTOR;
+        return is_null($this->role) || $this->role === self::CONTRIBUTOR;
     }
 
     /**

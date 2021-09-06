@@ -19,7 +19,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -34,7 +34,7 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create(): JsonResponse
     {
@@ -49,7 +49,7 @@ class UserController extends Controller
      *
      * @param StoreUserRequest $request
      * @param $id
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreUserRequest $request, $id): JsonResponse
     {
@@ -94,7 +94,7 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param $id
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id): JsonResponse
     {
@@ -107,7 +107,7 @@ class UserController extends Controller
      * Display the specified relationship.
      *
      * @param $id
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function posts($id): JsonResponse
     {
@@ -120,10 +120,10 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @return mixed
+     * @return \Illuminate\Http\Response
      * @throws Exception
      */
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         // Prevent a user from deleting their own account
         if (request()->user('canvas')->id == $id) {
