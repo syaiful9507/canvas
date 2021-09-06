@@ -21,7 +21,8 @@ class TagController extends Controller
     public function index(): JsonResponse
     {
         return response()->json(
-            Tag::select('id', 'name', 'created_at')
+            Tag::query()
+               ->select('id', 'name', 'created_at')
                ->latest()
                ->withCount('posts')
                ->paginate()
@@ -35,7 +36,7 @@ class TagController extends Controller
      */
     public function create(): JsonResponse
     {
-        return response()->json(Tag::make([
+        return response()->json(Tag::query()->make([
             'id' => Uuid::uuid4()->toString(),
         ]));
     }
@@ -51,7 +52,7 @@ class TagController extends Controller
     {
         $data = $request->validated();
 
-        $tag = Tag::find($id);
+        $tag = Tag::query()->find($id);
 
         if (! $tag) {
             if ($tag = Tag::onlyTrashed()->firstWhere('slug', $data['slug'])) {
@@ -80,7 +81,7 @@ class TagController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $tag = Tag::findOrFail($id);
+        $tag = Tag::query()->findOrFail($id);
 
         return response()->json($tag);
     }
@@ -93,7 +94,7 @@ class TagController extends Controller
      */
     public function posts($id): JsonResponse
     {
-        $tag = Tag::with('posts')->findOrFail($id);
+        $tag = Tag::query()->with('posts')->findOrFail($id);
 
         return response()->json($tag->posts()->withCount('views')->paginate());
     }
@@ -107,7 +108,7 @@ class TagController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        $tag = Tag::findOrFail($id);
+        $tag = Tag::query()->findOrFail($id);
 
         $tag->delete();
 

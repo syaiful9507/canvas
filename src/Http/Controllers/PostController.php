@@ -26,7 +26,8 @@ class PostController extends Controller
         $scopeToUser = request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all';
         $wantsDrafts = request()->query('type', 'published') == 'draft';
 
-        $posts = Post::select('id', 'title', 'summary', 'featured_image', 'published_at', 'created_at', 'updated_at')
+        $posts = Post::query()
+                     ->select('id', 'title', 'summary', 'featured_image', 'published_at', 'created_at', 'updated_at')
                      ->when($scopeToUser, function (Builder $query) {
                          return $query->where('user_id', request()->user('canvas')->id);
                      }, function (Builder $query) {
@@ -43,12 +44,12 @@ class PostController extends Controller
 
         return response()->json([
             'posts' => $posts,
-            'drafts_count' => $wantsDrafts ? $posts->total() : Post::when($scopeToUser, function (Builder $query) {
+            'drafts_count' => $wantsDrafts ? $posts->total() : Post::query()->when($scopeToUser, function (Builder $query) {
                 return $query->where('user_id', request()->user('canvas')->id);
             }, function (Builder $query) {
                 return $query;
             })->draft()->count(),
-            'published_count' => ! $wantsDrafts ? $posts->total() : Post::when($scopeToUser, function (Builder $query) {
+            'published_count' => !$wantsDrafts ? $posts->total() : Post::query()->when($scopeToUser, function (Builder $query) {
                 return $query->where('user_id', request()->user('canvas')->id);
             }, function (Builder $query) {
                 return $query;
@@ -66,7 +67,7 @@ class PostController extends Controller
         $uuid = Uuid::uuid4();
 
         return response()->json([
-            'post' => Post::make([
+            'post' => Post::query()->make([
                 'id' => $uuid->toString(),
                 'slug' => "post-{$uuid->toString()}",
             ]),
@@ -87,7 +88,7 @@ class PostController extends Controller
     {
         $data = $request->validated();
 
-        $post = Post::when($request->user('canvas')->isContributor, function (Builder $query) {
+        $post = Post::query()->when($request->user('canvas')->isContributor, function (Builder $query) {
             return $query->where('user_id', request()->user('canvas')->id);
         }, function (Builder $query) {
             return $query;
@@ -98,7 +99,7 @@ class PostController extends Controller
             abort(403);
         }
 
-        if (! $post) {
+        if (!$post) {
             $post = new Post(['id' => $id]);
         }
 
@@ -108,14 +109,14 @@ class PostController extends Controller
 
         $post->save();
 
-        $tags = Tag::get(['id', 'name', 'slug']);
-        $topics = Topic::get(['id', 'name', 'slug']);
+        $tags = Tag::query()->get(['id', 'name', 'slug']);
+        $topics = Topic::query()->get(['id', 'name', 'slug']);
 
         $tagsToSync = collect($request->input('tags', []))->map(function ($item) use ($tags) {
             $tag = $tags->firstWhere('slug', $item['slug']);
 
-            if (! $tag) {
-                $tag = Tag::create([
+            if (!$tag) {
+                $tag = Tag::query()->create([
                     'id' => Uuid::uuid4()->toString(),
                     'name' => $item['name'],
                     'slug' => $item['slug'],
@@ -123,14 +124,14 @@ class PostController extends Controller
                 ]);
             }
 
-            return (string) $tag->id;
+            return (string)$tag->id;
         })->toArray();
 
         $topicToSync = collect($request->input('topic', []))->map(function ($item) use ($topics) {
             $topic = $topics->firstWhere('slug', $item['slug']);
 
-            if (! $topic) {
-                $topic = Topic::create([
+            if (!$topic) {
+                $topic = Topic::query()->create([
                     'id' => Uuid::uuid4()->toString(),
                     'name' => $item['name'],
                     'slug' => $item['slug'],
@@ -138,7 +139,7 @@ class PostController extends Controller
                 ]);
             }
 
-            return (string) $topic->id;
+            return (string)$topic->id;
         })->toArray();
 
         $post->tags()->sync($tagsToSync);
@@ -156,7 +157,7 @@ class PostController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $post = Post::when(request()->user('canvas')->isContributor, function (Builder $query) {
+        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
             return $query->where('user_id', request()->user('canvas')->id);
         }, function (Builder $query) {
             return $query;
@@ -164,8 +165,8 @@ class PostController extends Controller
 
         return response()->json([
             'post' => $post,
-            'tags' => Tag::get(['name', 'slug']),
-            'topics' => Topic::get(['name', 'slug']),
+            'tags' => Tag::query()->get(['name', 'slug']),
+            'topics' => Topic::query()->get(['name', 'slug']),
         ]);
     }
 
@@ -178,7 +179,7 @@ class PostController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        $post = Post::when(request()->user('canvas')->isContributor, function (Builder $query) {
+        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
             return $query->where('user_id', request()->user('canvas')->id);
         }, function (Builder $query) {
             return $query;
