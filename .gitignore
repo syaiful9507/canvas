@@ -1,4 +1,5 @@
 /node_modules
+/public/js/app.js.LICENSE.txt
 /vendor
 /coverage
 /.idea
