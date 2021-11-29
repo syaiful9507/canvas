@@ -12,6 +12,7 @@ use Canvas\Models\Visit;
 use Canvas\Services\StatisticsService;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Carbon\CarbonPeriod;
 use DateInterval;
 use DatePeriod;
 use DateTimeInterface;
@@ -26,13 +27,23 @@ class TrafficController extends Controller
     {
         $data = $request->validated();
 
-        $service = new StatisticsService();
+        $post = Post::when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })
+                    ->published()
+                    ->findOrFail($id);
 
-        // $data['date']
-        // $data['from']
-        // $data['to']
+        $currentViews = $post->views->whereBetween('created_at', [
+            today()->startOfMonth()->startOfDay()->toDateTimeString(),
+            today()->endOfMonth()->endOfDay()->toDateTimeString(),
+        ]);
 
-        return response()->json($service->getViewsForRange());
+        $previousViews = $post->views->whereBetween('created_at', [
+            today()->subMonth()->startOfMonth()->startOfDay()->toDateTimeString(),
+            today()->subMonth()->endOfMonth()->endOfDay()->toDateTimeString(),
+        ]);
     }
 
     public function visits(): JsonResponse
@@ -315,5 +326,30 @@ class TrafficController extends Controller
         }
 
         return $dates->toArray();
+    }
+
+    public function getViewsForRange(): array
+    {
+        CarbonInterval::hours(24);
+        $data = CarbonPeriod::createFromArray([
+            now()->startOfDay(),
+            now()->endOfDay(),
+        ]);
+//        $data = CarbonPeriod::createFromArray([
+//            request()->query('from'),
+//            request()->query('to')
+//        ]);
+
+//        dd(CarbonPeriod::createFromArray([
+//            request()->query('from'),
+//            request()->query('to'),
+//        ]));
+
+        $data = $this->rangeLookups(request()->query('from'), request()->query('to'));
+
+        return [
+            'count' => 0,
+            'change' => 0,
+        ];
     }
 }

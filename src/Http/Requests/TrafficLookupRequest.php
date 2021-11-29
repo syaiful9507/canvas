@@ -26,8 +26,7 @@ class TrafficLookupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => 'nullable|date',
-            'from' => 'required_with:from|date',
+            'from' => 'required_with:to|date',
             'to' => 'required_with:from|date',
         ];
     }
