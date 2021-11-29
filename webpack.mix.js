@@ -16,10 +16,19 @@ mix.webpackConfig({
     plugins: [
         // new BundleAnalyzerPlugin(),
     ],
-});
-
-mix.setPublicPath('public')
-    .js('resources/js/app.js', 'public/js').vue()
+})
+    .options({
+        terser: {
+            terserOptions: {
+                compress: {
+                    drop_console: true,
+                }
+            }
+        }
+    })
+    .setPublicPath('public')
+    .js('resources/js/app.js', 'public/js')
+    .vue()
     .postCss('resources/css/app.css', 'public/css', [
         require('tailwindcss'),
     ]);
