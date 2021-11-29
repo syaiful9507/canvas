@@ -1,4 +1,4 @@
-## Sponsors
+# Sponsors
 
 [Canvas](https://trycanvas.app) is a freely available, open source project that gives something back to the greater
  [Laravel](https://laravel.com) community. Since blog platforms dominate so much of the Internet today, it makes
@@ -12,7 +12,7 @@ If you haven't already, [star the repo](https://github.com/austintoddj/canvas/st
 
 ---
 
-### Open Source Sponsor (Licenses/Services)
+## Open Source Sponsor (Licenses/Services)
 
 <table width="100%" border="0" cellpadding="5">
 

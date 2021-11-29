@@ -48,7 +48,11 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+<<<<<<< HEAD
      * @param  StoreUserRequest  $request
+=======
+     * @param  UserRequest  $request
+>>>>>>> develop
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
@@ -121,7 +125,11 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
+<<<<<<< HEAD
      * @return \Illuminate\Http\Response
+=======
+     * @return mixed
+>>>>>>> develop
      *
      * @throws Exception
      */

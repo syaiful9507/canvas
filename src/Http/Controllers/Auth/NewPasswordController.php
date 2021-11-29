@@ -35,7 +35,11 @@ class NewPasswordController extends Controller
     /**
      * Handle an incoming new password request.
      *
+<<<<<<< HEAD
      * @param  NewPasswordRequest  $request
+=======
+     * @param  Request  $request
+>>>>>>> develop
      * @return RedirectResponse
      */
     public function store(NewPasswordRequest $request)

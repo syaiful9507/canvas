@@ -79,9 +79,15 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+<<<<<<< HEAD
      * @param  StorePostRequest  $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
+=======
+     * @param  PostRequest  $request
+     * @param $id
+     * @return JsonResponse
+>>>>>>> develop
      *
      * @throws Exception
      */
@@ -172,10 +178,41 @@ class PostController extends Controller
     }
 
     /**
+<<<<<<< HEAD
      * Remove the specified resource from storage.
      *
      * @param $id
      * @return \Illuminate\Http\JsonResponse
+=======
+     * Display stats for the specified resource.
+     *
+     * @param  string  $id
+     * @return JsonResponse
+     */
+    public function stats(string $id): JsonResponse
+    {
+        $post = Post::query()
+                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
+                        return $query->where('user_id', request()->user('canvas')->id);
+                    }, function (Builder $query) {
+                        return $query;
+                    })
+                    ->published()
+                    ->findOrFail($id);
+
+        $stats = new StatsAggregator(request()->user('canvas'));
+
+        $results = $stats->getStatsForPost($post);
+
+        return response()->json($results);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param $id
+     * @return mixed
+>>>>>>> develop
      *
      * @throws Exception
      */
