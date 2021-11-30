@@ -109,7 +109,7 @@ class User extends Authenticatable
     /**
      * Get the posts relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function posts(): HasMany
     {
@@ -119,7 +119,7 @@ class User extends Authenticatable
     /**
      * Get the tags relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function tags(): HasMany
     {
@@ -129,7 +129,7 @@ class User extends Authenticatable
     /**
      * Get the topics relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function topics(): HasMany
     {

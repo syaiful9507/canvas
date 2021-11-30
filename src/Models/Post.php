@@ -87,7 +87,7 @@ class Post extends Model
     /**
      * Get the tags relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function tags(): BelongsToMany
     {
@@ -102,7 +102,7 @@ class Post extends Model
     /**
      * Get the topic relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function topic(): BelongsToMany
     {
@@ -117,7 +117,7 @@ class Post extends Model
     /**
      * Get the user relationship.
      *
-     * @return BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -127,7 +127,7 @@ class Post extends Model
     /**
      * Get the views relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function views(): HasMany
     {
@@ -137,7 +137,7 @@ class Post extends Model
     /**
      * Get the visits relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function visits(): HasMany
     {
@@ -177,8 +177,8 @@ class Post extends Model
     /**
      * Scope a query to include published posts.
      *
-     * @param  Builder  $query
-     * @return Builder
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePublished(Builder $query): Builder
     {
@@ -188,8 +188,8 @@ class Post extends Model
     /**
      * Scope a query to include drafted posts.
      *
-     * @param  Builder  $query
-     * @return Builder
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeDraft(Builder $query): Builder
     {

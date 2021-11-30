@@ -12,7 +12,7 @@ class VerifyAdmin
     /**
      * Handle the incoming request.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  Closure  $next
      * @return mixed|void
      */

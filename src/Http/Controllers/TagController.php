@@ -44,7 +44,7 @@ class TagController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  StoreTagRequest  $request
+     * @param  \Canvas\Http\Requests\StoreTagRequest  $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */

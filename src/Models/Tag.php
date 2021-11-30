@@ -58,7 +58,7 @@ class Tag extends Model
     /**
      * Get the posts relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function posts(): BelongsToMany
     {
@@ -68,7 +68,7 @@ class Tag extends Model
     /**
      * Get the user relationship.
      *
-     * @return BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {

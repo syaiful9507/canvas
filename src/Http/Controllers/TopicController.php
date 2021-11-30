@@ -44,7 +44,7 @@ class TopicController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  StoreTopicRequest  $request
+     * @param  \Canvas\Http\Requests\StoreTopicRequest  $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */

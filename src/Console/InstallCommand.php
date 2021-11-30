@@ -72,7 +72,7 @@ class InstallCommand extends Command
      */
     protected function createDefaultUser(string $email, string $password)
     {
-        User::create([
+        User::query()->create([
             'id' => Uuid::uuid4()->toString(),
             'name' => 'Example User',
             'email' => $email,

@@ -40,7 +40,7 @@ class AuthenticatedSessionRequest extends FormRequest
      *
      * @return void
      *
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function authenticate()
     {

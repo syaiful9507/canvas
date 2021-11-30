@@ -60,7 +60,7 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create(): JsonResponse
     {
@@ -79,7 +79,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  StorePostRequest  $request
+     * @param  \Canvas\Http\Requests\StorePostRequest  $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      *

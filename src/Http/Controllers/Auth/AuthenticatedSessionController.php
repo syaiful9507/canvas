@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Canvas\Http\Controllers\Auth;
 
 use Canvas\Http\Requests\AuthenticatedSessionRequest;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -30,10 +28,10 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      *
-     * @param  AuthenticatedSessionRequest  $request
+     * @param  \Canvas\Http\Requests\AuthenticatedSessionRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(AuthenticatedSessionRequest $request)
     {
@@ -47,7 +45,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Request $request)

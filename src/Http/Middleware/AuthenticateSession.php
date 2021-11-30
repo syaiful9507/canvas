@@ -35,7 +35,7 @@ class AuthenticateSession
      * @param  Closure  $next
      * @return mixed
      *
-     * @throws AuthenticationException
+     * @throws \Illuminate\Auth\AuthenticationException
      */
     public function handle(Request $request, Closure $next)
     {

@@ -8,10 +8,6 @@ use Canvas\Http\Requests\PasswordResetLinkRequest;
 use Canvas\Mail\ResetPassword;
 use Canvas\Models\User;
 use Exception;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -21,7 +17,7 @@ class PasswordResetLinkController extends Controller
     /**
      * Display the password reset link request view.
      *
-     * @return Application|Factory|View
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -31,8 +27,8 @@ class PasswordResetLinkController extends Controller
     /**
      * Handle an incoming password reset link request.
      *
-     * @param  PasswordResetLinkRequest  $request
-     * @return RedirectResponse
+     * @param  \Canvas\Http\Requests\PasswordResetLinkRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws Exception
      */
@@ -40,7 +36,7 @@ class PasswordResetLinkController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::firstWhere('email', $data['email']);
+        $user = User::query()->firstWhere('email', $data['email']);
 
         $token = Str::random();
 

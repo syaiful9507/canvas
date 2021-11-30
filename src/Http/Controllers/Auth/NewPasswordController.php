@@ -6,10 +6,6 @@ namespace Canvas\Http\Controllers\Auth;
 
 use Canvas\Http\Requests\NewPasswordRequest;
 use Canvas\Models\User;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -23,8 +19,8 @@ class NewPasswordController extends Controller
     /**
      * Display the password reset view.
      *
-     * @param  Request  $request
-     * @return Application|Factory|View
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
     public function create(Request $request)
     {
@@ -35,8 +31,8 @@ class NewPasswordController extends Controller
     /**
      * Handle an incoming new password request.
      *
-     * @param  NewPasswordRequest  $request
-     * @return RedirectResponse
+     * @param  \Canvas\Http\Requests\NewPasswordRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(NewPasswordRequest $request)
     {
@@ -45,7 +41,7 @@ class NewPasswordController extends Controller
         try {
             [$id, $token] = explode('|', decrypt($data['token']));
 
-            $user = User::findOrFail($id);
+            $user = User::query()->findOrFail($id);
 
             // Here we will attempt to reset the user's password. If it is successful we
             // will update the password on an actual user model and persist it to the
