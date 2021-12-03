@@ -80,13 +80,6 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import { defineComponent } from "vue";
 
-const navigation = [
-    { name: 'Dashboard', href: '#', current: true },
-    { name: 'Team', href: '#', current: false },
-    { name: 'Projects', href: '#', current: false },
-    { name: 'Calendar', href: '#', current: false },
-]
-
 export default defineComponent({
     name: 'page-header',
     components: {
@@ -100,11 +93,6 @@ export default defineComponent({
         BellIcon,
         MenuIcon,
         XIcon,
-    },
-    setup() {
-        return {
-            navigation,
-        }
-    },
+    }
 })
 </script>
