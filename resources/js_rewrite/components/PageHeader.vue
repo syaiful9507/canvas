@@ -1,124 +1,110 @@
 <template>
-    <h1>Page Header</h1>
-<!--    <div class="border-bottom">-->
-<!--        <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">-->
-<!--            <nav class="navbar d-flex px-0 py-1">-->
-<!--                <router-link :to="{ name: 'home' }" class="navbar-brand hover font-weight-bolder font-serif mr-3">-->
-<!--                    Canvas-->
-<!--                </router-link>-->
+    <Disclosure as="nav" class="bg-white shadow" v-slot="{ open }">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+            <div class="relative flex justify-between h-16">
+                <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                    <!-- Mobile menu button -->
+                    <DisclosureButton class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                        <span class="sr-only">Open main menu</span>
+                        <MenuIcon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
+                        <XIcon v-else class="block h-6 w-6" aria-hidden="true" />
+                    </DisclosureButton>
+                </div>
+                <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img class="block lg:hidden h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />
+                        <img class="hidden lg:block h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg" alt="Workflow" />
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+                        <a href="#" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Team
+                        </a>
+                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Projects
+                        </a>
+                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Calendar
+                        </a>
+                    </div>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <button type="button" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <span class="sr-only">View notifications</span>
+                        <BellIcon class="h-6 w-6" aria-hidden="true" />
+                    </button>
 
-<!--                <slot name="status" />-->
+                    <!-- Profile dropdown -->
+                    <Menu as="div" class="ml-3 relative">
+                        <div>
+                            <MenuButton class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <span class="sr-only">Open user menu</span>
+                                <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                            </MenuButton>
+                        </div>
+                        <transition enter-active-class="transition ease-out duration-200" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
+                            <MenuItems class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                <MenuItem v-slot="{ active }">
+                                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Your Profile</a>
+                                </MenuItem>
+                                <MenuItem v-slot="{ active }">
+                                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Settings</a>
+                                </MenuItem>
+                                <MenuItem v-slot="{ active }">
+                                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign out</a>
+                                </MenuItem>
+                            </MenuItems>
+                        </transition>
+                    </Menu>
+                </div>
+            </div>
+        </div>
 
-<!--                <a href="#" class="ml-auto" @click="showSearchModal">-->
-<!--                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" class="icon-search pr-1">-->
-<!--                        <circle cx="10" cy="10" r="7" style="fill: none" />-->
-<!--                        <path-->
-<!--                            class="fill-light-gray"-->
-<!--                            d="M16.32 14.9l1.1 1.1c.4-.02.83.13 1.14.44l3 3a1.5 1.5 0 0 1-2.12 2.12l-3-3a1.5 1.5 0 0 1-.44-1.14l-1.1-1.1a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"-->
-<!--                        />-->
-<!--                    </svg>-->
-<!--                </a>-->
-
-<!--                <slot name="options" />-->
-
-<!--                <div v-cloak class="dropdown ml-3">-->
-<!--                    <a-->
-<!--                        id="navbarDropdown"-->
-<!--                        href="#"-->
-<!--                        class="nav-link px-0 text-secondary"-->
-<!--                        role="button"-->
-<!--                        data-toggle="dropdown"-->
-<!--                        aria-haspopup="true"-->
-<!--                        aria-expanded="false"-->
-<!--                    >-->
-<!--                        <img-->
-<!--                            :src="settings.user.avatar || settings.user.default_avatar"-->
-<!--                            :alt="settings.user.name"-->
-<!--                            class="rounded-circle my-0 shadow-inner"-->
-<!--                            style="width: 33px"-->
-<!--                        />-->
-<!--                    </a>-->
-<!--                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">-->
-<!--                        <h6 class="dropdown-header">-->
-<!--                            <strong>{{ settings.user.name }}</strong>-->
-<!--                            <br />-->
-<!--                            {{ settings.user.email }}-->
-<!--                        </h6>-->
-
-<!--                        <div class="dropdown-divider" />-->
-
-<!--                        <router-link-->
-<!--                            :to="{ name: 'edit-user', params: { id: settings.user.id } }"-->
-<!--                            class="dropdown-item"-->
-<!--                        >-->
-<!--                            {{ trans.your_profile }}-->
-<!--                        </router-link>-->
-<!--                        <router-link :to="{ name: 'posts' }" class="dropdown-item">-->
-<!--                            <span>{{ trans.posts }}</span>-->
-<!--                        </router-link>-->
-<!--                        <router-link v-if="isAdmin" :to="{ name: 'users' }" class="dropdown-item">-->
-<!--                            <span>{{ trans.users }}</span>-->
-<!--                        </router-link>-->
-<!--                        <router-link v-if="isAdmin" :to="{ name: 'tags' }" class="dropdown-item">-->
-<!--                            <span>{{ trans.tags }}</span>-->
-<!--                        </router-link>-->
-<!--                        <router-link v-if="isAdmin" :to="{ name: 'topics' }" class="dropdown-item">-->
-<!--                            <span>{{ trans.topics }}</span>-->
-<!--                        </router-link>-->
-<!--                        <router-link :to="{ name: 'stats' }" class="dropdown-item">-->
-<!--                            <span>{{ trans.stats }}</span>-->
-<!--                        </router-link>-->
-
-<!--                        <div class="dropdown-divider" />-->
-
-<!--                        <router-link :to="{ name: 'edit-settings' }" class="dropdown-item">-->
-<!--                            <span>{{ trans.settings }}</span>-->
-<!--                        </router-link>-->
-<!--                        <a href="" class="dropdown-item" @click.prevent="logout">-->
-<!--                            {{ trans.sign_out }}-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </nav>-->
-<!--        </div>-->
-
-<!--        <search-modal ref="searchModal" />-->
-<!--    </div>-->
+        <DisclosurePanel class="sm:hidden">
+            <div class="pt-2 pb-4 space-y-1">
+                <!-- Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
+                <DisclosureButton as="a" href="#" class="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Dashboard</DisclosureButton>
+                <DisclosureButton as="a" href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Team</DisclosureButton>
+                <DisclosureButton as="a" href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Projects</DisclosureButton>
+                <DisclosureButton as="a" href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Calendar</DisclosureButton>
+            </div>
+        </DisclosurePanel>
+    </Disclosure>
 </template>
 
-<script>
-import { mapGetters, mapState } from 'vuex';
-import $ from 'jquery';
-import SearchModal from './modals/SearchModal';
-import { store } from '../store';
+<script lang="ts">
+import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
+import { defineComponent } from "vue";
 
-export default {
+const navigation = [
+    { name: 'Dashboard', href: '#', current: true },
+    { name: 'Team', href: '#', current: false },
+    { name: 'Projects', href: '#', current: false },
+    { name: 'Calendar', href: '#', current: false },
+]
+
+export default defineComponent({
     name: 'page-header',
-
     components: {
-        // SearchModal,
+        Disclosure,
+        DisclosureButton,
+        DisclosurePanel,
+        Menu,
+        MenuButton,
+        MenuItem,
+        MenuItems,
+        BellIcon,
+        MenuIcon,
+        XIcon,
     },
-
-    computed: {
-        // ...mapState(['settings']),
-        // ...mapGetters({
-        //     isAdmin: 'settings/isAdmin',
-        //     trans: 'settings/trans',
-        // }),
+    setup() {
+        return {
+            navigation,
+        }
     },
-
-    methods: {
-        // logout() {
-        //     if (store.state.settings.path === '/') {
-        //         window.location.href = `/logout`;
-        //     } else {
-        //         window.location.href = `${store.state.settings.path}/logout`;
-        //     }
-        // },
-        //
-        // showSearchModal() {
-        //     $(this.$refs.searchModal.$el).modal('show');
-        // },
-    },
-};
+})
 </script>

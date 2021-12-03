@@ -1,3 +1,4 @@
+import { createRouter, createWebHistory } from 'vue-router';
 import NProgress from 'nprogress';
 import Router from 'vue-router';
 import Vue from 'vue';

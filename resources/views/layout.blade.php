@@ -8,9 +8,10 @@
 
     <title>{{ config('app.name') }} ― Canvas</title>
 
-    <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/canvas') }}">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="stylesheet" href="//fonts.googleapis.com/css2?family=Karla&family=Merriweather:wght@400;700&display=swap">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap">
+    <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/canvas') }}">
 
     @if(\Canvas\Canvas::enabledDarkMode($jsVars['user']['dark_mode']))
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/sunburst.min.css">
