@@ -15,7 +15,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 mix.webpackConfig({
     plugins: [
         // new BundleAnalyzerPlugin(),
-    ],
+    ]
 })
     .options({
         terser: {
