@@ -4,7 +4,7 @@
         "module": "esnext",
         "strict": true,
         "jsx": "preserve",
-        "moduleResolution": "node"
+        "moduleResolution": "node",
     },
     "exclude": [
         "node_modules"

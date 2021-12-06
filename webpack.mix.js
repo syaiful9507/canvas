@@ -32,7 +32,10 @@ mix.webpackConfig({
     .vue({ version: 3 })
     .postCss('resources/css/app.css', 'public/css', [
         require('tailwindcss'),
-    ]);
+    ])
+    .alias({
+        '@': 'resources/js_rewrite'
+    });
 
 if (mix.inProduction()) {
     mix.version();

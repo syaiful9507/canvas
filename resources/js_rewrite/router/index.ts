@@ -4,7 +4,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         name: 'dashboard',
-        component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
+        component: () => import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
     },
     {
         path: '/:catchAll(.*)',

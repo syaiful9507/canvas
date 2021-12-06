@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts">
-import PageHeader from "./components/PageHeader.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
