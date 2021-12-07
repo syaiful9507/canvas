@@ -1,10 +1,11 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
+import Dashboard from "@/views/Dashboard.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         name: 'dashboard',
-        component: () => import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
+        component: Dashboard,
     },
     {
         path: '/:catchAll(.*)',
@@ -13,7 +14,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory('canvas'),
     routes: routes
 })
 

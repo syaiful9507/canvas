@@ -34,7 +34,7 @@ mix.webpackConfig({
         require('tailwindcss'),
     ])
     .alias({
-        '@': 'resources/js_rewrite'
+        '@': 'resources/js_rewrite',
     });
 
 if (mix.inProduction()) {
