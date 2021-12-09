@@ -76,7 +76,7 @@ class Canvas
     }
 
     /**
-     * Return true if the publishable assets are up to date.
+     * Return true if the publishable assets are up-to-date.
      *
      * @return bool
      */
@@ -88,14 +88,12 @@ class Canvas
 
         $path = public_path('vendor/canvas/mix-manifest.json');
 
-        $message = sprintf('%s%s.  %s',
-            trans('canvas::app.assets_are_not_up_to_date'),
-            trans('canvas::app.to_update_run'),
-            'php artisan canvas:publish'
-        );
-
         if (! File::exists($path)) {
-            throw new RuntimeException($message);
+            throw new RuntimeException(vsprintf('%s%s. %s', [
+                trans('canvas::app.assets_are_not_up_to_date'),
+                trans('canvas::app.to_update_run'),
+                'php artisan canvas:publish'
+            ]));
         }
 
         return File::get($path) === File::get(dirname(__DIR__).'/public/mix-manifest.json');
