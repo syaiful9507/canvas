@@ -5,8 +5,8 @@ module.exports = {
         removeDeprecatedGapUtilities: true,
         purgeLayersByDefault: true
     },
-    purge: [ './resources/**/*.{vue,js,blade.php}' ],
-    darkMode: false, // Also supports 'media' or 'class'
+    content: [ './resources/**/*.{vue,js,blade.php}' ],
+    darkMode: 'class',
     theme: {
         extend: {
             fontFamily: {
