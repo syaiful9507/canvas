@@ -1,18 +1,18 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import Dashboard from "@/views/Dashboard.vue";
 import PostList from "@/views/PostList.vue";
-import EditPost from "@/views/EditPost.vue";
+import ShowPost from "@/views/ShowPost.vue";
 import TagList from "@/views/TagList.vue";
-import EditTag from "@/views/EditTag.vue";
+import ShowTag from "@/views/ShowTag.vue";
 import TopicList from "@/views/TopicList.vue";
-import EditTopic from "@/views/EditTopic.vue";
+import ShowTopic from "@/views/ShowTopic.vue";
 import UserList from "@/views/UserList.vue";
-import EditUser from "@/views/EditUser.vue";
-import EditSettings from "@/views/EditSettings.vue";
+import ShowUser from "@/views/ShowUser.vue";
+import Settings from "@/views/Settings.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
-        path: '/',
+        path: '/dashboard',
         name: 'dashboard',
         component: Dashboard,
     },
@@ -24,12 +24,12 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/posts/create',
         name: 'create-post',
-        component: EditPost,
+        component: ShowPost,
     },
     {
-        path: '/posts/:id/edit',
-        name: 'edit-post',
-        component: EditPost,
+        path: '/posts/:id',
+        name: 'show-post',
+        component: ShowPost,
     },
     {
         path: '/tags',
@@ -39,12 +39,12 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/tags/create',
         name: 'create-tag',
-        component: EditTag,
+        component: ShowTag,
     },
     {
-        path: '/tags/:id/edit',
-        name: 'edit-tag',
-        component: EditTag,
+        path: '/tags/:id',
+        name: 'show-tag',
+        component: ShowTag,
     },
     {
         path: '/topics',
@@ -54,12 +54,12 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/topics/create',
         name: 'create-topic',
-        component: EditTopic,
+        component: ShowTopic,
     },
     {
-        path: '/topics/:id/edit',
-        name: 'edit-topic',
-        component: EditTopic,
+        path: '/topics/:id',
+        name: 'show-topic',
+        component: ShowTopic,
     },
     {
         path: '/users',
@@ -69,21 +69,21 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/users/create',
         name: 'create-user',
-        component: EditUser,
+        component: ShowUser,
     },
     {
-        path: '/users/:id/edit',
-        name: 'edit-user',
-        component: EditUser,
+        path: '/users/:id',
+        name: 'show-user',
+        component: ShowUser,
     },
     {
         path: '/settings',
         name: 'settings',
-        component: EditSettings,
+        component: Settings,
     },
     {
         path: '/:catchAll(.*)',
-        redirect: '/',
+        redirect: 'dashboard',
     },
 ]
 

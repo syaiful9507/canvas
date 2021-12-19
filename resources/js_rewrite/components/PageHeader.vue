@@ -1,5 +1,5 @@
 <template>
-    <Disclosure as="nav" class="bg-white shadow" v-slot="{ open }">
+    <Disclosure as="nav" class="bg-white border-b" v-slot="{ open }">
         <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
             <div class="relative flex justify-between h-16">
                 <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -18,27 +18,33 @@
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                         <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
                         <router-link
+                            v-slot="{ isActive }"
                             :to="{ name: 'dashboard' }"
-                            class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            :class="isActive ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Dashboard
                         </router-link>
                         <router-link
                             :to="{ name: 'posts' }"
+                            active-class="border-indigo-500 text-gray-900"
                             class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Posts
                         </router-link>
                         <router-link
                             :to="{ name: 'tags' }"
+                            active-class="border-indigo-500 text-gray-900"
                             class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Tags
                         </router-link>
                         <router-link
                             :to="{ name: 'topics' }"
+                            active-class="border-indigo-500 text-gray-900"
                             class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Topics
                         </router-link>
                         <router-link
                             :to="{ name: 'users' }"
+                            active-class="border-indigo-500 text-gray-900"
                             class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Users
                         </router-link>
@@ -67,14 +73,28 @@
                         </div>
                         <transition enter-active-class="transition ease-out duration-200" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                             <MenuItems class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                <MenuItem v-slot="{ active }">
-                                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Your Profile</a>
+                                <MenuItem v-slot="{ active }" as="profile">
+                                    <!-- TODO: Removed hard coded user ID -->
+                                    <router-link
+                                        :to="{ name: 'show-user', params: { id: 1 } }"
+                                        :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
+                                        Your Profile
+                                    </router-link>
                                 </MenuItem>
-                                <MenuItem v-slot="{ active }">
-                                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Settings</a>
+                                <MenuItem v-slot="{ active }" as="settings">
+                                    <router-link
+                                        :to="{ name: 'settings' }"
+                                        :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
+                                        Settings
+                                    </router-link>
                                 </MenuItem>
-                                <MenuItem v-slot="{ active }">
-                                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign out</a>
+                                <MenuItem v-slot="{ active }" as="logout">
+                                    <a
+                                        href="#"
+                                        @click.prevent="logout"
+                                        :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
+                                        Sign out
+                                    </a>
                                 </MenuItem>
                             </MenuItems>
                         </transition>
@@ -115,6 +135,11 @@ export default defineComponent({
         MenuIcon,
         SearchIcon,
         XIcon,
+    },
+    methods: {
+        logout() {
+            window.location.href = `/logout`;
+        },
     }
 })
 </script>
