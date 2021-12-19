@@ -17,37 +17,41 @@
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                         <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
-                        <router-link
-                            v-slot="{ isActive }"
+                        <app-link
                             :to="{ name: 'dashboard' }"
-                            :class="isActive ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'"
+                            active-class="border-indigo-500 text-gray-900"
+                            inactive-class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Dashboard
-                        </router-link>
-                        <router-link
+                        </app-link>
+                        <app-link
                             :to="{ name: 'posts' }"
                             active-class="border-indigo-500 text-gray-900"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            inactive-class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Posts
-                        </router-link>
-                        <router-link
+                        </app-link>
+                        <app-link
                             :to="{ name: 'tags' }"
                             active-class="border-indigo-500 text-gray-900"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            inactive-class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Tags
-                        </router-link>
-                        <router-link
+                        </app-link>
+                        <app-link
                             :to="{ name: 'topics' }"
                             active-class="border-indigo-500 text-gray-900"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            inactive-class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Topics
-                        </router-link>
-                        <router-link
+                        </app-link>
+                        <app-link
                             :to="{ name: 'users' }"
                             active-class="border-indigo-500 text-gray-900"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            inactive-class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Users
-                        </router-link>
+                        </app-link>
                     </div>
                 </div>
                 <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
@@ -117,6 +121,7 @@
 </template>
 
 <script lang="ts">
+import AppLink from "@/components/AppLink.vue";
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, SearchIcon, XIcon } from '@heroicons/vue/outline'
 import { defineComponent } from "vue";
@@ -124,6 +129,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
     name: 'page-header',
     components: {
+        AppLink,
         Disclosure,
         DisclosureButton,
         DisclosurePanel,
