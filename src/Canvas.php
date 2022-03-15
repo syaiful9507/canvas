@@ -60,22 +60,6 @@ class Canvas
     }
 
     /**
-     * Return an array of available user roles.
-     *
-     * @return array
-     */
-    public static function availableRoles(): array
-    {
-        // TODO: Should this go in the user model?
-
-        return [
-            User::CONTRIBUTOR => 'Contributor',
-            User::EDITOR => 'Editor',
-            User::ADMIN => 'Admin',
-        ];
-    }
-
-    /**
      * Return true if the publishable assets are up-to-date.
      *
      * @return bool

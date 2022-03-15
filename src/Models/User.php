@@ -5,34 +5,14 @@ declare(strict_types=1);
 namespace Canvas\Models;
 
 use Canvas\Canvas;
+use Canvas\Traits\HasRole;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use SoftDeletes;
-
-    /**
-     * Role identifier used for a Contributor.
-     *
-     * @const int
-     */
-    public const CONTRIBUTOR = 1;
-
-    /**
-     * Role identifier used for an Editor.
-     *
-     * @const int
-     */
-    public const EDITOR = 2;
-
-    /**
-     * Role identifier used for an Admin.
-     *
-     * @const int
-     */
-    public const ADMIN = 3;
+    use SoftDeletes, HasRole;
 
     /**
      * The table associated with the model.
@@ -143,7 +123,7 @@ class User extends Authenticatable
      */
     public function getIsContributorAttribute(): bool
     {
-        return is_null($this->role) || $this->role === self::CONTRIBUTOR;
+        return is_null($this->role) || $this->role === self::$contributor;
     }
 
     /**
@@ -153,7 +133,7 @@ class User extends Authenticatable
      */
     public function getIsEditorAttribute(): bool
     {
-        return $this->role === self::EDITOR;
+        return $this->role === self::$editor;
     }
 
     /**
@@ -163,7 +143,7 @@ class User extends Authenticatable
      */
     public function getIsAdminAttribute(): bool
     {
-        return $this->role === self::ADMIN;
+        return $this->role === self::$admin;
     }
 
     /**

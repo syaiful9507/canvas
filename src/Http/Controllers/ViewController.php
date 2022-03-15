@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
+use Canvas\Models\User;
 use Illuminate\Routing\Controller;
 
 class ViewController extends Controller
@@ -21,7 +22,7 @@ class ViewController extends Controller
                 'languageCodes' => Canvas::availableLanguageCodes(),
                 'maxUpload' => config('canvas.upload_filesize'),
                 'path' => Canvas::basePath(),
-                'roles' => Canvas::availableRoles(),
+                'roles' => User::availableRoles(),
                 'timezone' => config('app.timezone'),
                 'translations' => Canvas::availableTranslations(request()->user('canvas')->locale),
                 'unsplash' => config('canvas.unsplash.access_key'),
