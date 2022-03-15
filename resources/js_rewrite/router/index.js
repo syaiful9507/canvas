@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
+import {createRouter, createWebHistory} from "vue-router";
 import Dashboard from "@/views/Dashboard.vue";
 import PostList from "@/views/PostList.vue";
 import ShowPost from "@/views/ShowPost.vue";
@@ -10,7 +10,7 @@ import UserList from "@/views/UserList.vue";
 import ShowUser from "@/views/ShowUser.vue";
 import Settings from "@/views/Settings.vue";
 
-const routes: Array<RouteRecordRaw> = [
+const routes = [
     {
         path: '/dashboard',
         name: 'dashboard',
@@ -88,8 +88,8 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-    history: createWebHistory('canvas'), // TODO: Use the env() path instead of hard coding this
-    routes: routes
+    history: createWebHistory('canvas'),
+    routes
 })
 
-export default router;
+export default router

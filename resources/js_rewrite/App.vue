@@ -5,7 +5,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
 import PageHeader from "@/components/PageHeader.vue";
 import { defineComponent } from "vue";
 

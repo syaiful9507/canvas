@@ -28,7 +28,7 @@ mix.webpackConfig({
     })
     .setPublicPath('public')
     // .js('resources/js/app.js', 'public/js')
-    .ts('resources/js_rewrite/app.ts', 'public/js')
+    .js('resources/js_rewrite/app.js', 'public/js')
     .vue({ version: 3 })
     .postCss('resources/css/app.css', 'public/css', [
         require('tailwindcss'),

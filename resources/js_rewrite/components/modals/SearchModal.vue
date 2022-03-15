@@ -32,7 +32,7 @@
     </TransitionRoot>
 </template>
 
-<script lang="ts">
+<script>
 import {defineComponent, ref} from 'vue'
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { CheckIcon } from '@heroicons/vue/outline'

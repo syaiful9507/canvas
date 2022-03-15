@@ -62,7 +62,7 @@
     </Disclosure>
 </template>
 
-<script lang="ts">
+<script>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import { defineComponent } from "vue";
