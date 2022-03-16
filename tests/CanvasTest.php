@@ -38,7 +38,7 @@ class CanvasTest extends TestCase
             User::$contributor => 'Contributor',
             User::$editor => 'Editor',
             User::$admin => 'Admin',
-        ], Canvas::availableRoles());
+        ], User::availableRoles());
     }
 
     public function testAssetsAreUpToDate(): void
