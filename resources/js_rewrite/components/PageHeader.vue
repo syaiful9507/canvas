@@ -18,7 +18,34 @@
                     </div>
                     <div class="hidden sm:block sm:ml-6">
                         <div class="flex space-x-4">
-                            <a v-for="item in navigation" :key="item.name" :href="item.href" :class="[item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900', 'rounded-md py-2 px-3 inline-flex items-center text-sm font-medium']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</a>
+                            <app-link
+                                :to="{ name: 'posts' }"
+                                class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
+                                active-class="bg-gray-100 text-gray-900"
+                                inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
+                                Posts
+                            </app-link>
+                            <app-link
+                                :to="{ name: 'users' }"
+                                class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
+                                active-class="bg-gray-100 text-gray-900"
+                                inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
+                                Users
+                            </app-link>
+                            <app-link
+                                :to="{ name: 'tags' }"
+                                class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
+                                active-class="bg-gray-100 text-gray-900"
+                                inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
+                                Tags
+                            </app-link>
+                            <app-link
+                                :to="{ name: 'topics' }"
+                                class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
+                                active-class="bg-gray-100 text-gray-900"
+                                inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
+                                Topics
+                            </app-link>
                         </div>
                     </div>
                 </div>
@@ -38,15 +65,27 @@
                         </div>
                         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                             <MenuItems class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                <MenuItem v-slot="{ active }">
-                                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Your Profile</a>
-                                </MenuItem>
-                                <MenuItem v-slot="{ active }">
-                                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Settings</a>
-                                </MenuItem>
-                                <MenuItem v-slot="{ active }">
-                                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign out</a>
-                                </MenuItem>
+                                <app-link
+                                    :to="{ name: 'show-user', params: { id: 1 } }"
+                                    class="block px-4 py-2 text-sm"
+                                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+                                    active-class="bg-gray-100 text-gray-900">
+                                    Your Profile
+                                </app-link>
+                                <app-link
+                                    :to="{ name: 'settings' }"
+                                    class="block px-4 py-2 text-sm"
+                                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+                                    active-class="bg-gray-100 text-gray-900">
+                                    Settings
+                                </app-link>
+                                <app-link
+                                    :to="{ name: 'show-user', params: { id: 1 } }"
+                                    class="block px-4 py-2 text-sm"
+                                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+                                    active-class="bg-gray-100 text-gray-900">
+                                    Sign out
+                                </app-link>
                             </MenuItems>
                         </transition>
                     </Menu>
@@ -56,33 +95,54 @@
 
         <DisclosurePanel class="sm:hidden">
             <div class="px-2 pt-2 pb-3 space-y-1">
-                <DisclosureButton v-for="item in navigation" :key="item.name" as="a" :href="item.href" :class="[item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900', 'block rounded-md py-2 px-3 text-base font-medium']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</DisclosureButton>
+                <app-link
+                    :to="{ name: 'posts' }"
+                    class="block rounded-md py-2 px-3 text-base font-medium"
+                    active-class="bg-gray-100 text-gray-900"
+                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
+                    Posts
+                </app-link>
+                <app-link
+                    :to="{ name: 'users' }"
+                    class="block rounded-md py-2 px-3 text-base font-medium"
+                    active-class="bg-gray-100 text-gray-900"
+                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
+                    Users
+                </app-link>
+                <app-link
+                    :to="{ name: 'tags' }"
+                    class="block rounded-md py-2 px-3 text-base font-medium"
+                    active-class="bg-gray-100 text-gray-900"
+                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
+                    Tags
+                </app-link>
+                <app-link
+                    :to="{ name: 'topics' }"
+                    class="block rounded-md py-2 px-3 text-base font-medium"
+                    active-class="bg-gray-100 text-gray-900"
+                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
+                    Topics
+                </app-link>
             </div>
         </DisclosurePanel>
     </Disclosure>
 </template>
 
 <script>
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import { defineComponent } from "vue";
-
-const navigation = [
-    { name: 'Dashboard', href: '#', current: true },
-    { name: 'Team', href: '#', current: false },
-    { name: 'Projects', href: '#', current: false },
-    { name: 'Calendar', href: '#', current: false },
-]
+import AppLink from "./AppLink";
 
 export default defineComponent({
     name: 'page-header',
     components: {
+        AppLink,
         Disclosure,
         DisclosureButton,
         DisclosurePanel,
         Menu,
         MenuButton,
-        MenuItem,
         MenuItems,
         BellIcon,
         MenuIcon,
@@ -90,8 +150,8 @@ export default defineComponent({
     },
     setup() {
         return {
-            navigation,
+            //
         }
-    },
+    }
 })
 </script>
