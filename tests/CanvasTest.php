@@ -35,9 +35,9 @@ class CanvasTest extends TestCase
         $this->markTestSkipped();
 
         $this->assertSame([
-            User::CONTRIBUTOR => 'Contributor',
-            User::EDITOR => 'Editor',
-            User::ADMIN => 'Admin',
+            User::$contributor => 'Contributor',
+            User::$editor => 'Editor',
+            User::$admin => 'Admin',
         ], Canvas::availableRoles());
     }
 
