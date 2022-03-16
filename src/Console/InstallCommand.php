@@ -77,7 +77,7 @@ class InstallCommand extends Command
             'name' => 'Example User',
             'email' => $email,
             'password' => Hash::make($password),
-            'role' => User::ADMIN,
+            'role' => User::$admin,
         ]);
     }
 

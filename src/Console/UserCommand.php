@@ -39,19 +39,19 @@ class UserCommand extends Command
         switch ($this->argument('role')) {
             case 'admin':
                 $user->fill([
-                    'role' => User::ADMIN,
+                    'role' => User::$admin,
                 ]);
                 break;
 
             case 'editor':
                 $user->fill([
-                    'role' => User::EDITOR,
+                    'role' => User::$editor,
                 ]);
                 break;
 
             case 'contributor':
                 $user->fill([
-                    'role' => User::CONTRIBUTOR,
+                    'role' => User::$contributor,
                 ]);
                 break;
 

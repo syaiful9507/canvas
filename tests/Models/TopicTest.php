@@ -39,7 +39,7 @@ class TopicTest extends TestCase
         ]);
 
         $secondaryAdmin = factory(User::class)->create([
-            'role' => User::ADMIN,
+            'role' => User::$admin,
         ]);
         $secondaryTopic = factory(Topic::class)->create([
             'user_id' => $secondaryAdmin->id,
