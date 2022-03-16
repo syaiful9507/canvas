@@ -14,21 +14,21 @@ abstract class TestCase extends OrchestraTestCase
     use RefreshDatabase;
 
     /**
-     * A test user with the role of Contributor.
+     * A test user with Contributor access.
      *
      * @var User
      */
     protected $contributor;
 
     /**
-     * A test user with the role of Editor.
+     * A test user with Editor access.
      *
      * @var User
      */
     protected $editor;
 
     /**
-     * A test user with the role of Admin.
+     * A test user with Admin access.
      *
      * @var User
      */
@@ -45,17 +45,7 @@ abstract class TestCase extends OrchestraTestCase
 
         $this->setUpDatabase($this->app);
 
-        $this->contributor = factory(User::class)->create([
-            'role' => User::CONTRIBUTOR,
-        ]);
-
-        $this->editor = factory(User::class)->create([
-            'role' => User::EDITOR,
-        ]);
-
-        $this->admin = factory(User::class)->create([
-            'role' => User::ADMIN,
-        ]);
+        $this->createTestUsers();
     }
 
     /**
@@ -124,5 +114,25 @@ abstract class TestCase extends OrchestraTestCase
         $this->loadFactoriesUsing($app, __DIR__.'/../database/factories');
 
         $this->artisan('migrate');
+    }
+
+    /**
+     * Create a test user for each role.
+     *
+     * @return void
+     */
+    protected function createTestUsers(): void
+    {
+        $this->contributor = factory(User::class)->create([
+            'role' => User::$contributor,
+        ]);
+
+        $this->editor = factory(User::class)->create([
+            'role' => User::$editor,
+        ]);
+
+        $this->admin = factory(User::class)->create([
+            'role' => User::$admin,
+        ]);
     }
 }
