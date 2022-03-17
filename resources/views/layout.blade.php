@@ -1,5 +1,12 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    @if(\Canvas\Canvas::usingRightToLeftLanguage($jsVars['user']['locale'])) dir="rtl" @endif
+    @class([
+        'h-full' => true,
+        'dark' => \Canvas\Canvas::enabledDarkMode($jsVars['user']['dark_mode'])
+    ])
+>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,17 +21,14 @@
     <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/canvas') }}">
 
     @if(\Canvas\Canvas::enabledDarkMode($jsVars['user']['dark_mode']))
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/sunburst.min.css">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/sunburst.min.css">
     @else
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/github.min.css">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/github.min.css">
     @endif
 
-    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js"></script>
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/highlight.min.js"></script>
 </head>
-<body class="h-full"
-      @if(\Canvas\Canvas::enabledDarkMode($jsVars['user']['dark_mode'])) data-theme="dark" @endif
-      @if(\Canvas\Canvas::usingRightToLeftLanguage($jsVars['user']['locale'])) data-lang="rtl" @endif
->
+<body class="h-full">
 
 @if(!\Canvas\Canvas::assetsUpToDate())
     <div class="alert alert-danger border-0 text-center rounded-0 mb-0">
@@ -35,7 +39,7 @@
 
 <div id="app"></div>
 
-<script>
+<script type="text/javascript">
     window.Canvas = @json($jsVars);
 </script>
 

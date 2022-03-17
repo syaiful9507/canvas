@@ -1,4 +1,4 @@
-import request from '../../mixins/request';
+import request from '@/request';
 
 const initialState = {
     i18n: window.Canvas.translations,
@@ -16,9 +16,7 @@ const state = { ...initialState };
 
 const actions = {
     updateDigest(context, payload) {
-        request.methods
-            .request()
-            .post(`/api/users/${state.user.id}`, {
+        request.post(`/api/users/${state.user.id}`, {
                 name: state.user.name,
                 email: state.user.email,
                 digest: payload,
@@ -29,9 +27,7 @@ const actions = {
     },
 
     updateLocale(context, payload) {
-        request.methods
-            .request()
-            .post(`/api/users/${state.user.id}`, {
+        request.post(`/api/users/${state.user.id}`, {
                 name: state.user.name,
                 email: state.user.email,
                 locale: payload,
@@ -42,9 +38,7 @@ const actions = {
     },
 
     updateDarkMode(context, payload) {
-        request.methods
-            .request()
-            .post(`/api/users/${state.user.id}`, {
+        request.post(`/api/users/${state.user.id}`, {
                 name: state.user.name,
                 email: state.user.email,
                 dark_mode: payload,

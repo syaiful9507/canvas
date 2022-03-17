@@ -28,7 +28,8 @@
 </template>
 
 <script>
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, onMounted } from 'vue'
+import { useStore } from 'vuex';
 import { SearchIcon } from '@heroicons/vue/solid'
 import {
     Combobox,
@@ -59,6 +60,10 @@ export default defineComponent({
         TransitionRoot,
     },
     setup() {
+        const store = useStore()
+        const searchIndex = computed(() => store.state.search)
+        const trans = computed(() => store.getters["settings/trans"])
+
         const open = ref(true)
         const query = ref('')
         const filteredPeople = computed(() =>
@@ -69,6 +74,10 @@ export default defineComponent({
                 })
         )
 
+        onMounted(() => {
+            store.dispatch('search/buildIndex');
+        });
+
         return {
             open,
             query,
@@ -76,6 +85,8 @@ export default defineComponent({
             onSelect(person) {
                 window.location = person.url
             },
+            searchIndex,
+            trans
         }
     },
 })

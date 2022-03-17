@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { store } from "@/store";
 
 export default axios.create({
-    baseURL: store.state.settings.path,
+    baseURL: window.Canvas.path,
     headers: {
         'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content
     }

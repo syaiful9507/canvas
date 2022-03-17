@@ -52,7 +52,7 @@
                 <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <button type="button" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <span class="sr-only">View notifications</span>
-                        <BellIcon class="h-6 w-6" aria-hidden="true" />
+                        <SearchIcon class="h-6 w-6" aria-hidden="true" />
                     </button>
 
                     <!-- Profile dropdown -->
@@ -124,15 +124,18 @@
             </div>
         </DisclosurePanel>
     </Disclosure>
+
+    <search-modal></search-modal>
 </template>
 
 <script>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItems } from '@headlessui/vue'
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
+import { SearchIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import { defineComponent } from "vue";
 import AppLink from "@/components/AppLink";
 import { store} from "@/store";
 import request from "@/request";
+import SearchModal from '@/components/modals/SearchModal'
 
 export default defineComponent({
     name: 'page-header',
@@ -144,7 +147,8 @@ export default defineComponent({
         Menu,
         MenuButton,
         MenuItems,
-        BellIcon,
+        SearchIcon,
+        SearchModal,
         MenuIcon,
         XIcon,
     },
