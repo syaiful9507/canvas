@@ -22,6 +22,7 @@ return [
     'convert_to_draft' => 'Convert to draft',
     'created' => 'Created',
     'dark_mode' => 'Dark mode',
+    'dashboard' => 'Dashboard',
     'default_layout' => 'Default layout',
     'delete' => 'Delete',
     'deleted_posts_are_gone_forever' => 'Are you sure you want to delete this post? This action cannot be undone.',

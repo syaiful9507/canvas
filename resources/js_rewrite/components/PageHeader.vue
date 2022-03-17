@@ -5,7 +5,6 @@
                 <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
                     <!-- Mobile menu button -->
                     <DisclosureButton class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-                        <span class="sr-only">Open main menu</span>
                         <MenuIcon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
                         <XIcon v-else class="block h-6 w-6" aria-hidden="true" />
                     </DisclosureButton>
@@ -24,35 +23,34 @@
                                 class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
                                 active-class="bg-gray-100 text-gray-900"
                                 inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
-                                Posts
+                                {{ trans.posts }}
                             </app-link>
                             <app-link
                                 :to="{ name: 'users' }"
                                 class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
                                 active-class="bg-gray-100 text-gray-900"
                                 inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
-                                Users
+                                {{ trans.users }}
                             </app-link>
                             <app-link
                                 :to="{ name: 'tags' }"
                                 class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
                                 active-class="bg-gray-100 text-gray-900"
                                 inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
-                                Tags
+                                {{ trans.tags }}
                             </app-link>
                             <app-link
                                 :to="{ name: 'topics' }"
                                 class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
                                 active-class="bg-gray-100 text-gray-900"
                                 inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
-                                Topics
+                                {{ trans.topics }}
                             </app-link>
                         </div>
                     </div>
                 </div>
                 <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <button type="button" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <span class="sr-only">View notifications</span>
                         <SearchIcon class="h-6 w-6" aria-hidden="true" />
                     </button>
 
@@ -60,7 +58,6 @@
                     <Menu as="div" class="ml-3 relative">
                         <div>
                             <MenuButton class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                                <span class="sr-only">Open user menu</span>
                                 <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
                             </MenuButton>
                         </div>
@@ -71,19 +68,19 @@
                                     class="block px-4 py-2 text-sm"
                                     inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
                                     active-class="bg-gray-100 text-gray-900">
-                                    Your Profile
+                                    {{ trans.your_profile }}
                                 </app-link>
                                 <app-link
                                     :to="{ name: 'settings' }"
                                     class="block px-4 py-2 text-sm"
                                     inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
                                     active-class="bg-gray-100 text-gray-900">
-                                    Settings
+                                    {{ trans.settings }}
                                 </app-link>
                                 <a
                                     @click="logout"
                                     class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-50 hover:text-gray-900 cursor-pointer">
-                                    Sign out
+                                    {{ trans.sign_out }}
                                 </a>
                             </MenuItems>
                         </transition>
@@ -100,28 +97,28 @@
                     class="block rounded-md py-2 px-3 text-base font-medium"
                     active-class="bg-gray-100 text-gray-900"
                     inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
-                    Posts
+                    {{ trans.posts }}
                 </app-link>
                 <app-link
                     :to="{ name: 'users' }"
                     class="block rounded-md py-2 px-3 text-base font-medium"
                     active-class="bg-gray-100 text-gray-900"
                     inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
-                    Users
+                    {{ trans.users }}
                 </app-link>
                 <app-link
                     :to="{ name: 'tags' }"
                     class="block rounded-md py-2 px-3 text-base font-medium"
                     active-class="bg-gray-100 text-gray-900"
                     inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
-                    Tags
+                    {{ trans.tags }}
                 </app-link>
                 <app-link
                     :to="{ name: 'topics' }"
                     class="block rounded-md py-2 px-3 text-base font-medium"
                     active-class="bg-gray-100 text-gray-900"
                     inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900">
-                    Topics
+                    {{ trans.topics }}
                 </app-link>
             </div>
         </DisclosurePanel>
@@ -134,9 +131,13 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItems } from '@headlessui/vue'
 import { SearchIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import AppLink from "@/components/AppLink";
-import { store} from "@/store";
+import { useStore } from 'vuex';
 import request from "@/request";
 import SearchModal from '@/components/modals/SearchModal'
+import { computed } from 'vue'
+
+const store = useStore()
+const trans = computed(() => store.getters["settings/trans"])
 
 function logout() {
     request

@@ -3,7 +3,7 @@
         <header>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h1 class="text-3xl font-bold leading-tight text-gray-900">
-                    Dashboard
+                    {{ trans.dashboard }}
                 </h1>
             </div>
         </header>
@@ -20,5 +20,9 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex';
 
+const store = useStore()
+const trans = computed(() => store.getters["settings/trans"])
 </script>
