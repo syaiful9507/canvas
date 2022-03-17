@@ -43,7 +43,7 @@ Canvas is a fully open source package to extend your existing [Laravel](https://
 
 - PHP >= 7.3
 - Laravel >= 6.0
-- One of the [four supported databases](https://laravel.com/docs/8.x/database#introduction) by Laravel
+- One of the [five supported databases](https://laravel.com/docs/9.x/database) by Laravel
 
 ## Installation
 
@@ -195,7 +195,8 @@ that you'd like.
 
 ## E-mail Notifications
 
-**Want a weekly summary?** Canvas allows users to receive a weekly digest of their authored content. Once your application is [configured for sending mail](https://laravel.com/docs/master/mail), update `config/canvas.php`:
+**Want a weekly summary?** Canvas allows users to receive a weekly digest of their authored content. Once your 
+application is [configured for sending mail](https://laravel.com/docs/9.x/mail), update `config/canvas.php`:
 
 ```php
 /*
@@ -215,7 +216,8 @@ that you'd like.
 ]
 ```
 
-Since this feature runs on [Laravel's Scheduler](https://laravel.com/docs/master/scheduling), you'll need to add the following cron entry to your server:
+Since this feature runs on [Laravel's Scheduler](https://laravel.com/docs/9.x/scheduling), you'll need to add the 
+following cron entry to your server:
 
 ```bash
 * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
