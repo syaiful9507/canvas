@@ -1,10 +1,9 @@
-<!-- This example requires Tailwind CSS v2.0+ -->
 <template>
     <Disclosure as="nav" class="bg-white shadow" v-slot="{ open }">
         <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
             <div class="relative flex items-center justify-between h-16">
                 <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                    <!-- Mobile menu button-->
+                    <!-- Mobile menu button -->
                     <DisclosureButton class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                         <span class="sr-only">Open main menu</span>
                         <MenuIcon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
@@ -16,6 +15,8 @@
                         <img class="block lg:hidden h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />
                         <img class="hidden lg:block h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg" alt="Workflow" />
                     </div>
+
+                    <!-- Desktop main navigation -->
                     <div class="hidden sm:block sm:ml-6">
                         <div class="flex space-x-4">
                             <app-link
@@ -91,6 +92,7 @@
             </div>
         </div>
 
+        <!-- Mobile main navigation -->
         <DisclosurePanel class="sm:hidden">
             <div class="px-2 pt-2 pb-3 space-y-1">
                 <app-link
@@ -128,43 +130,19 @@
     <search-modal></search-modal>
 </template>
 
-<script>
+<script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItems } from '@headlessui/vue'
 import { SearchIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
-import { defineComponent } from "vue";
 import AppLink from "@/components/AppLink";
 import { store} from "@/store";
 import request from "@/request";
 import SearchModal from '@/components/modals/SearchModal'
 
-export default defineComponent({
-    name: 'page-header',
-    components: {
-        AppLink,
-        Disclosure,
-        DisclosureButton,
-        DisclosurePanel,
-        Menu,
-        MenuButton,
-        MenuItems,
-        SearchIcon,
-        SearchModal,
-        MenuIcon,
-        XIcon,
-    },
-    setup() {
-        return {
-            //
-        }
-    },
-    methods: {
-        async logout() {
-            await request
-                .post('logout')
-                .then(() => {
-                    window.location.href = store.state.settings.path;
-                });
-        }
-    }
-})
+function logout() {
+    request
+        .post('logout')
+        .then(() => {
+            window.location.href = store.state.settings.path;
+        });
+}
 </script>

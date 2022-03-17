@@ -5,13 +5,6 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import PageHeader from "@/components/PageHeader.vue";
-import { defineComponent } from "vue";
-
-export default  defineComponent({
-    components: {
-        PageHeader
-    }
-})
 </script>
