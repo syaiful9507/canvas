@@ -4,7 +4,6 @@
 /coverage
 /.idea
 /.vscode
-composer.lock
 npm-debug.log
 yarn-error.log
 Thumbs.db
