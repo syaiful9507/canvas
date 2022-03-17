@@ -79,13 +79,11 @@
                                     active-class="bg-gray-100 text-gray-900">
                                     Settings
                                 </app-link>
-                                <app-link
-                                    :to="{ name: 'show-user', params: { id: 1 } }"
-                                    class="block px-4 py-2 text-sm"
-                                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
-                                    active-class="bg-gray-100 text-gray-900">
+                                <a
+                                    @click="logout"
+                                    class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-50 hover:text-gray-900 cursor-pointer">
                                     Sign out
-                                </app-link>
+                                </a>
                             </MenuItems>
                         </transition>
                     </Menu>
@@ -132,7 +130,9 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import { defineComponent } from "vue";
-import AppLink from "./AppLink";
+import AppLink from "@/components/AppLink";
+import { store} from "@/store";
+import request from "@/request";
 
 export default defineComponent({
     name: 'page-header',
@@ -151,6 +151,15 @@ export default defineComponent({
     setup() {
         return {
             //
+        }
+    },
+    methods: {
+        async logout() {
+            await request
+                .post('logout')
+                .then(() => {
+                    window.location.href = store.state.settings.path;
+                });
         }
     }
 })

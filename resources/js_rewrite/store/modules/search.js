@@ -1,4 +1,4 @@
-import request from '../../mixins/request';
+import request from "@/request";
 
 const initialState = {
     index: [],
@@ -12,29 +12,21 @@ const actions = {
             context.commit('RESET_STATE');
         }
 
-        request.methods
-            .request()
-            .get('/api/search/posts')
+        request.get('/api/search/posts')
             .then(({ data }) => {
                 context.commit('UPDATE_INDEX', data);
             });
 
         if (context.rootGetters['settings/isAdmin']) {
-            request.methods
-                .request()
-                .get('/api/search/tags')
+            request.get('/api/search/tags')
                 .then(({ data }) => {
                     context.commit('UPDATE_INDEX', data);
                 });
-            request.methods
-                .request()
-                .get('/api/search/topics')
+            request.get('/api/search/topics')
                 .then(({ data }) => {
                     context.commit('UPDATE_INDEX', data);
                 });
-            request.methods
-                .request()
-                .get('/api/search/users')
+            request.get('/api/search/users')
                 .then(({ data }) => {
                     context.commit('UPDATE_INDEX', data);
                 });

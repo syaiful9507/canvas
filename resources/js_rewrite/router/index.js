@@ -1,4 +1,5 @@
 import {createRouter, createWebHistory} from "vue-router";
+import { store } from "@/store";
 import Dashboard from "@/views/Dashboard.vue";
 import PostList from "@/views/PostList.vue";
 import ShowPost from "@/views/ShowPost.vue";
@@ -88,7 +89,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory('canvas'),
+    history: createWebHistory(store.state.settings.path),
     routes
 })
 

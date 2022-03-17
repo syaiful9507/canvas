@@ -1,4 +1,4 @@
-import request from '../../mixins/request';
+// import request from '../../mixins/request';
 
 const initialState = {
     i18n: window.Canvas.translations,
@@ -16,42 +16,42 @@ const state = { ...initialState };
 
 const actions = {
     updateDigest(context, payload) {
-        request.methods
-            .request()
-            .post(`/api/users/${state.user.id}`, {
-                name: state.user.name,
-                email: state.user.email,
-                digest: payload,
-            })
-            .then(({ data }) => {
-                context.commit('UPDATE_DIGEST', data.user);
-            });
+        // request.methods
+        //     .request()
+        //     .post(`/api/users/${state.user.id}`, {
+        //         name: state.user.name,
+        //         email: state.user.email,
+        //         digest: payload,
+        //     })
+        //     .then(({ data }) => {
+        //         context.commit('UPDATE_DIGEST', data.user);
+        //     });
     },
 
     updateLocale(context, payload) {
-        request.methods
-            .request()
-            .post(`/api/users/${state.user.id}`, {
-                name: state.user.name,
-                email: state.user.email,
-                locale: payload,
-            })
-            .then(({ data }) => {
-                context.commit('UPDATE_LOCALE', data);
-            });
+        // request.methods
+        //     .request()
+        //     .post(`/api/users/${state.user.id}`, {
+        //         name: state.user.name,
+        //         email: state.user.email,
+        //         locale: payload,
+        //     })
+        //     .then(({ data }) => {
+        //         context.commit('UPDATE_LOCALE', data);
+        //     });
     },
 
     updateDarkMode(context, payload) {
-        request.methods
-            .request()
-            .post(`/api/users/${state.user.id}`, {
-                name: state.user.name,
-                email: state.user.email,
-                dark_mode: payload,
-            })
-            .then(({ data }) => {
-                context.commit('UPDATE_DARK_MODE', data.user);
-            });
+        // request.methods
+        //     .request()
+        //     .post(`/api/users/${state.user.id}`, {
+        //         name: state.user.name,
+        //         email: state.user.email,
+        //         dark_mode: payload,
+        //     })
+        //     .then(({ data }) => {
+        //         context.commit('UPDATE_DARK_MODE', data.user);
+        //     });
     },
 
     setUser(context, user) {
