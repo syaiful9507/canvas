@@ -2,7 +2,7 @@
     <a v-if="isExternalLink" v-bind="$attrs" :href="to" target="_blank">
         <slot />
     </a>
-    <router-link
+    <RouterLink
         v-else
         v-bind="$props"
         custom
@@ -16,7 +16,7 @@
         >
             <slot />
         </a>
-    </router-link>
+    </RouterLink>
 </template>
 
 <script>
@@ -24,7 +24,6 @@ import { RouterLink, useLink } from 'vue-router'
 import { defineComponent } from "vue";
 
 export default defineComponent({
-    name: 'app-link',
     inheritAttrs: false,
     props: {
         ...RouterLink.props,

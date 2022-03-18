@@ -1,10 +1,10 @@
 <template>
     <div class="min-h-full">
-        <page-header></page-header>
-        <router-view></router-view>
+        <PageHeader></PageHeader>
+        <RouterView></RouterView>
     </div>
 </template>
 
 <script setup>
-import PageHeader from "@/components/PageHeader.vue";
+import PageHeader from "@/components/PageHeader";
 </script>

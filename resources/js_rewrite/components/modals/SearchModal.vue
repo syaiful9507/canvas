@@ -9,18 +9,18 @@
                <Combobox as="div" class="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all" @update:modelValue="onSelect">
                    <div class="relative">
                        <SearchIcon class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400" aria-hidden="true" />
-                       <ComboboxInput class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 focus:ring-0 sm:text-sm" placeholder="Search..." @change="query = $event.target.value" />
+                       <ComboboxInput class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 focus:ring-0 sm:text-sm" :placeholder="trans.search_canvas" @change="query = $event.target.value" />
                    </div>
 
-                   <ComboboxOptions v-if="filteredPeople.length > 0" static class="max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800">
-                       <ComboboxOption v-for="person in filteredPeople" :key="person.id" :value="person" as="template" v-slot="{ active }">
+                   <ComboboxOptions v-if="filteredSearch.length > 0" static class="max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800">
+                       <ComboboxOption v-for="item in filteredSearch" :key="item.id" :value="item" as="template" v-slot="{ active }">
                            <li :class="['cursor-pointer select-none px-4 py-2', active && 'bg-indigo-600 text-white']">
-                               {{ person.name }}
+                               {{ item.name }}
                            </li>
                        </ComboboxOption>
                    </ComboboxOptions>
 
-                   <p v-if="query !== '' && filteredPeople.length === 0" class="p-4 text-sm text-gray-500">No people found.</p>
+                   <p v-if="query !== '' && filteredSearch.length === 0" class="p-4 text-sm text-gray-500">No people found.</p>
                </Combobox>
            </TransitionChild>
        </Dialog>
@@ -31,6 +31,7 @@
 import { computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex';
 import { SearchIcon } from '@heroicons/vue/solid'
+import Fuse from 'fuse.js';
 import {
   Combobox,
   ComboboxInput,
@@ -43,22 +44,36 @@ import {
 } from '@headlessui/vue'
 
 const store = useStore()
-const searchIndex = computed(() => store.state.search)
+const search = computed(() => store.state.search)
 const trans = computed(() => store.getters["settings/trans"])
+const options = {
+  isCaseSensitive: false,
+  includeScore: true,
+  defaultAll: false,
+  shouldSort: true,
+  includeMatches: false,
+  findAllMatches: false,
+  minMatchCharLength: 1,
+  location: 0,
+  threshold: 0.6,
+  distance: 100,
+  useExtendedSearch: false,
+  ignoreLocation: false,
+  ignoreFieldNorm: false,
+  fieldNormWeight: 1,
+  keys: [
+    "name",
+  ]
+};
 
-const people = [
-  { id: 1, name: 'Leslie Alexander', url: '#' },
-  // More people...
-]
+const fuse = new Fuse(search.index, options);
 
 const open = ref(true)
 const query = ref('')
-const filteredPeople = computed(() =>
+const filteredSearch = computed(() =>
     query.value === ''
     ? []
-    : people.filter((person) => {
-        return person.name.toLowerCase().includes(query.value.toLowerCase())
-        })
+    : fuse.search(query.value)
 )
 
 function onSelect(person) {
