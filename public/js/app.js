@@ -19789,13 +19789,17 @@ __webpack_require__.r(__webpack_exports__);
     var expose = _ref.expose;
     expose();
     var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.useStore)();
-    var search = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
-      return store.state.search;
-    });
     var trans = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
       return store.getters["settings/trans"];
     });
-    var options = {
+    var search = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
+      return store.getters["search/index"];
+    }); // works
+    // const posts = [{"id":"015ff504-bc4e-49e6-b5d4-2c26557fcf81","title":"I Ran to Escape My Problems. Then Running Became One.","name":"I Ran to Escape My Problems. Then Running Became One.","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0},{"id":"d118281a-0593-485e-a7e6-248b2fe18572","title":"Being Happy Is Hard Work","name":"Being Happy Is Hard Work","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0},{"id":"401b7e4f-bf3e-44ea-a226-877046320994","title":"The Architect of Tomorow","name":"The Architect of Tomorow","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0},{"id":"afc7362a-f168-4271-be23-3d24e15f36ce","title":"Here\u2019s How Robots Can Help Us Deal With Pollution","name":"Here\u2019s How Robots Can Help Us Deal With Pollution","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0},{"id":"421a03b1-8742-42e0-aa7e-061d240a513e","title":"How Facebook Borrows From the NSA Playbook","name":"How Facebook Borrows From the NSA Playbook","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0},{"id":"6e227148-20f6-4ad8-9d98-bea906674c8c","title":"A New Vision for the Future of Driving","name":"A New Vision for the Future of Driving","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0}];
+    // const fuse = new Fuse(posts, options);
+    // doesn't work
+
+    var fuse = new fuse_js__WEBPACK_IMPORTED_MODULE_2__["default"](search.value, {
       isCaseSensitive: false,
       includeScore: true,
       defaultAll: false,
@@ -19811,8 +19815,7 @@ __webpack_require__.r(__webpack_exports__);
       ignoreFieldNorm: false,
       fieldNormWeight: 1,
       keys: ["name"]
-    };
-    var fuse = new fuse_js__WEBPACK_IMPORTED_MODULE_2__["default"](search.index, options);
+    });
     var open = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(true);
     var query = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
     var filteredSearch = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
@@ -19828,9 +19831,8 @@ __webpack_require__.r(__webpack_exports__);
     });
     var __returned__ = {
       store: store,
-      search: search,
       trans: trans,
-      options: options,
+      search: search,
       fuse: fuse,
       open: open,
       query: query,
@@ -20566,17 +20568,17 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                     "class": "max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800"
                   }, {
                     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-                      return [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.filteredSearch, function (item) {
+                      return [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.filteredSearch, function (items) {
                         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)($setup["ComboboxOption"], {
-                          key: item.id,
-                          value: item,
+                          key: items.item.id,
+                          value: items.item,
                           as: "template"
                         }, {
                           "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref) {
                             var active = _ref.active;
                             return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", {
                               "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(['cursor-pointer select-none px-4 py-2', active && 'bg-indigo-600 text-white'])
-                            }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.name), 3
+                            }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(items.item.title), 3
                             /* TEXT, CLASS */
                             )];
                           }),
@@ -21143,7 +21145,10 @@ var mutations = {
     state.index = [];
   }
 };
-var getters = {//
+var getters = {
+  index: function index(state) {
+    return state.index;
+  }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   namespaced: true,
