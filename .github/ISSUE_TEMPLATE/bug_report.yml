@@ -1,54 +1,54 @@
-name: "\U0001F41E Bug report"
-description: Create a report to help us improve
-labels: ['bug']
+name: 🐞 Bug
+description: File a bug/issue
+labels: [bug]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        "Thanks for taking the time to fill out this bug report!"
-  - type: textarea
-    id: bug-description
-    attributes:
-      label: Describe the bug
-      description: A clear and concise description of what the bug is.
-      placeholder: Bug description
-    validations:
+- type: checkboxes
+  attributes:
+    label: Is there an existing issue for this?
+    description: Please search to see if an issue already exists for the bug you encountered.
+    options:
+    - label: I have searched the existing issues
       required: true
-  - type: textarea
-    id: reproduction
-    attributes:
-      label: Reproduction
-      description: Steps to reproduce the behavior.
-      placeholder: Reproducible steps
-    validations:
-      required: true
-  - type: textarea
-    id: expected
-    attributes:
-      label: Expected behavior
-      description: A clear and concise description of what you expected to happen.
-      placeholder: Expected behavior
-    validations:
-      required: true
-  - type: textarea
-    id: system-info
-    attributes:
-      label: System Info
-      description: System information when you experience the issue.
-      render: shell
-      placeholder: PHP/Laravel version, browser, database
-    validations:
-      required: true
-  - type: textarea
-    id: additional-context
-    attributes:
-      label: Additional context
-      description: Add any other context or screenshots about the bug report here.
-  - type: checkboxes
-    id: checkboxes
-    attributes:
-      label: Validations
-      description: Before submitting the issue, please make sure you do the following:
-      options:
-        - label: Check that there isn't already an issue that reports the same bug to avoid creating a duplicate.
-          required: true
+- type: textarea
+  attributes:
+    label: Current Behavior
+    description: A concise description of what you're experiencing.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Expected Behavior
+    description: A concise description of what you expected to happen.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Steps To Reproduce
+    description: Steps to reproduce the behavior.
+    placeholder: |
+      1. In this environment...
+      2. With this config...
+      3. Run '...'
+      4. See error...
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Environment
+    description: |
+      examples:
+        - **PHP Version**: #.#.#
+        - **Laravel Version**: #.#.#
+        - **Database Driver & Version**:
+    render: markdown
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Anything else?
+    description: |
+      Links? References? Anything that will give us more context about the issue you are encountering!
+
+      Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
+  validations:
+    required: false

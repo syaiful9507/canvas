@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://trycanvas.app">
-        <img src=".github/docs/header.png" alt="Canvas">
+        <img src=".github/docs/header.png" alt="Homepage for trycanvas.app">
     </a>
 </p>
 
@@ -15,39 +15,11 @@
 
 Canvas is a fully open source package to extend your existing [Laravel](https://laravel.com) application and get you up-and-running with a blog in just a few minutes. In addition to a distraction-free writing experience, you can view monthly trends on your content, get insights into reader traffic and more!
 
-**Prologue**
-
-- [Release Notes](https://github.com/austintoddj/canvas/releases)
-- [Upgrade Guide](https://github.com/austintoddj/canvas/blob/master/.github/UPGRADE.md)
-- [Contributing Guide](https://github.com/austintoddj/canvas/blob/master/.github/CONTRIBUTING.md)
-
-**Getting Started**
-
-- [System Requirements](#system-requirements)
-- [Installation](#installation)
-- [Configuration](#configuration)
-
-**The Basics**
-
-- [Roles & Permissions](#roles--permissions)
-- [Canvas UI](#canvas-ui)
-- [Unsplash](#unsplash-integration)
-- [Email](#e-mail-notifications)
-
-**Digging Deeper**
-
-- [API](#api)
-- [Updates](#updates)
-- [Testing](#testing)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
-- [Credits](#credits)
-
 ## System Requirements
 
 - PHP >= 7.3
 - Laravel >= 6.0
-- One of the [five supported databases](https://laravel.com/docs/9.x/database) by Laravel
+- One of the [five supported databases](https://laravel.com/docs/9.x/database#introduction) by Laravel
 
 ## Installation
 
@@ -199,8 +171,7 @@ that you'd like.
 
 ## E-mail Notifications
 
-**Want a weekly summary?** Canvas allows users to receive a weekly digest of their authored content. Once your 
-application is [configured for sending mail](https://laravel.com/docs/9.x/mail), update `config/canvas.php`:
+**Want a weekly summary?** Canvas allows users to receive a weekly digest of their authored content. Once your application is [configured for sending mail](https://laravel.com/docs/9.x/mail), update `config/canvas.php`:
 
 ```php
 /*
@@ -249,7 +220,7 @@ To return a single post, you'll likely want to find it by a given slug, as well 
 $post = Canvas\Models\Post::with('user', 'tags', 'topic')->firstWhere('slug', $slug);
 ```
 
-> **Important:** In the same method that returns a post, make sure you include the `PostViewed` event, or else a
+> **Important:** In the same method that returns a post, make sure you fire the `PostViewed` event, or else a 
 > view/visit will not be recorded.
 
 ```php
@@ -318,6 +289,10 @@ To keep the assets up-to-date and avoid issues in future updates, you may add th
     }
 }
 ```
+
+## Contributing
+
+Thank you for considering contributing to Canvas! The [contribution guide can be found here](https://github.com/austintoddj/canvas/blob/master/.github/CONTRIBUTING.md).
 
 ## Testing
 
