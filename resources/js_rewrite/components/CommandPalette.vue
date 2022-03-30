@@ -1,6 +1,6 @@
 <template>
-   <TransitionRoot :show="open" as="template" @after-leave="query = ''">
-       <Dialog as="div" class="fixed inset-0 z-10 overflow-y-auto p-4 sm:p-6 md:p-20" @close="open = false">
+   <TransitionRoot :show="show" as="template" @after-leave="query = ''">
+       <Dialog as="div" class="fixed inset-0 z-10 overflow-y-auto p-4 sm:p-6 md:p-20" @close="show = false">
            <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
                <DialogOverlay class="fixed inset-0 bg-gray-500 bg-opacity-25 transition-opacity" />
            </TransitionChild>
@@ -30,6 +30,7 @@ import { computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { SearchIcon } from '@heroicons/vue/solid'
+import { defineProps } from 'vue'
 import {
   Combobox,
   ComboboxInput,
@@ -41,15 +42,17 @@ import {
   TransitionRoot,
 } from '@headlessui/vue'
 
-const open = ref(true);
+const props = defineProps({
+    show: {
+        type: Boolean,
+        default: false
+    }
+})
 const query = ref('');
-
 const router = useRouter()
-
 const store = useStore()
 const trans = computed(() => store.getters["settings/trans"])
 const search = computed(() => store.getters["search/index"])
-
 const filteredSearch = computed(() =>
     query.value === ''
     ? []
