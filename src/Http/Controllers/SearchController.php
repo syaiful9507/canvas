@@ -40,7 +40,7 @@ class SearchController extends Controller
                          ->map(function ($post) {
                              $post['name'] = $post->title;
                              $post['type'] = 'Post';
-                             $post['route'] = 'edit-post';
+                             $post['route'] = 'show-post';
 
                              return $post;
                          })
@@ -69,7 +69,7 @@ class SearchController extends Controller
                        ->get()
                        ->map(function ($tag) {
                            $tag['type'] = 'Tag';
-                           $tag['route'] = 'edit-tag';
+                           $tag['route'] = 'show-tag';
 
                            return $tag;
                        })
@@ -98,7 +98,7 @@ class SearchController extends Controller
                            ->get()
                            ->map(function ($topic) {
                                $topic['type'] = 'Topic';
-                               $topic['route'] = 'edit-topic';
+                               $topic['route'] = 'show-topic';
 
                                return $topic;
                            })
@@ -127,7 +127,7 @@ class SearchController extends Controller
                          ->get()
                          ->map(function ($user) {
                              $user['type'] = 'User';
-                             $user['route'] = 'edit-user';
+                             $user['route'] = 'show-user';
 
                              return $user;
                          })

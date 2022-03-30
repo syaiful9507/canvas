@@ -4903,16 +4903,16 @@
         },
         {
             "name": "orchestra/testbench-core",
-            "version": "v7.2.0",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench-core.git",
-                "reference": "a6f193db075c8d90d39a40cd502bb99113bfb56c"
+                "reference": "7fb2f5f0809051b46188ef1510cc35c851c01340"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/a6f193db075c8d90d39a40cd502bb99113bfb56c",
-                "reference": "a6f193db075c8d90d39a40cd502bb99113bfb56c",
+                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/7fb2f5f0809051b46188ef1510cc35c851c01340",
+                "reference": "7fb2f5f0809051b46188ef1510cc35c851c01340",
                 "shasum": ""
             },
             "require": {
@@ -4920,7 +4920,7 @@
             },
             "require-dev": {
                 "fakerphp/faker": "^1.9.2",
-                "laravel/framework": "^9.5.1",
+                "laravel/framework": "^9.6",
                 "laravel/laravel": "9.x-dev",
                 "mockery/mockery": "^1.4.4",
                 "orchestra/canvas": "^7.0",
@@ -4931,7 +4931,7 @@
             },
             "suggest": {
                 "fakerphp/faker": "Allow using Faker for testing (^1.9.2).",
-                "laravel/framework": "Required for testing (^9.5.1).",
+                "laravel/framework": "Required for testing (^9.6).",
                 "mockery/mockery": "Allow using Mockery for testing (^1.4.4).",
                 "orchestra/testbench-browser-kit": "Allow using legacy Laravel BrowserKit for testing (^7.0).",
                 "orchestra/testbench-dusk": "Allow using Laravel Dusk for testing (^7.0).",
@@ -4991,7 +4991,7 @@
                     "type": "liberapay"
                 }
             ],
-            "time": "2022-03-20T07:06:20+00:00"
+            "time": "2022-03-30T02:26:06+00:00"
         },
         {
             "name": "phar-io/manifest",

@@ -13,14 +13,12 @@
                    </div>
 
                    <ComboboxOptions v-if="filteredSearch.length > 0" static class="max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800">
-                       <ComboboxOption v-for="items in filteredSearch" :key="items.item.id" :value="items.item" as="template" v-slot="{ active }">
+                       <ComboboxOption v-for="item in filteredSearch" :key="item.id" :value="item" as="template" v-slot="{ active }">
                            <li :class="['cursor-pointer select-none px-4 py-2', active && 'bg-indigo-600 text-white']">
-                               {{ items.item.title }}
+                               {{ item.name }}
                            </li>
                        </ComboboxOption>
                    </ComboboxOptions>
-
-                   <p v-if="query !== '' && filteredSearch.length === 0" class="p-4 text-sm text-gray-500">No people found.</p>
                </Combobox>
            </TransitionChild>
        </Dialog>
@@ -30,8 +28,8 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import { SearchIcon } from '@heroicons/vue/solid'
-import Fuse from 'fuse.js';
 import {
   Combobox,
   ComboboxInput,
@@ -43,47 +41,30 @@ import {
   TransitionRoot,
 } from '@headlessui/vue'
 
+const open = ref(true);
+const query = ref('');
+
+const router = useRouter()
+
 const store = useStore()
 const trans = computed(() => store.getters["settings/trans"])
 const search = computed(() => store.getters["search/index"])
 
-// works
-// const posts = [{"id":"015ff504-bc4e-49e6-b5d4-2c26557fcf81","title":"I Ran to Escape My Problems. Then Running Became One.","name":"I Ran to Escape My Problems. Then Running Became One.","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0},{"id":"d118281a-0593-485e-a7e6-248b2fe18572","title":"Being Happy Is Hard Work","name":"Being Happy Is Hard Work","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0},{"id":"401b7e4f-bf3e-44ea-a226-877046320994","title":"The Architect of Tomorow","name":"The Architect of Tomorow","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0},{"id":"afc7362a-f168-4271-be23-3d24e15f36ce","title":"Here\u2019s How Robots Can Help Us Deal With Pollution","name":"Here\u2019s How Robots Can Help Us Deal With Pollution","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0},{"id":"421a03b1-8742-42e0-aa7e-061d240a513e","title":"How Facebook Borrows From the NSA Playbook","name":"How Facebook Borrows From the NSA Playbook","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0},{"id":"6e227148-20f6-4ad8-9d98-bea906674c8c","title":"A New Vision for the Future of Driving","name":"A New Vision for the Future of Driving","type":"Post","route":"edit-post","estimated_read_time_in_minutes":0}];
-// const fuse = new Fuse(posts, options);
-
-// doesn't work
-const fuse = new Fuse(search.value, {  
-    isCaseSensitive: false,
-    includeScore: true,
-    defaultAll: false,
-    shouldSort: true,
-    includeMatches: false,
-    findAllMatches: false,
-    minMatchCharLength: 1,
-    location: 0,
-    threshold: 0.6,
-    distance: 100,
-    useExtendedSearch: false,
-    ignoreLocation: false,
-    ignoreFieldNorm: false,
-    fieldNormWeight: 1,
-    keys: [
-        "name",
-    ]
-  }
-);
-
-const open = ref(true);
-const query = ref('');
-
 const filteredSearch = computed(() =>
     query.value === ''
     ? []
-    : fuse.search(query.value)
+    : search.value.filter((item) => {
+        return item.name.toLowerCase().includes(query.value.toLowerCase())
+    })
 )
 
-function onSelect(person) {
-    window.location = person.url
+function onSelect(item) {
+    router.push({
+        name: item.route,
+        params: {
+            id: item.id
+        }
+    })
 }
 
 onMounted(() => {
