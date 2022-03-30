@@ -38,7 +38,7 @@ class SearchControllerTest extends TestCase
         $this->assertArrayHasKey('type', $response[0]);
         $this->assertSame('Post', $response[0]['type']);
         $this->assertArrayHasKey('route', $response[0]);
-        $this->assertSame('edit-post', $response[0]['route']);
+        $this->assertSame('show-post', $response[0]['route']);
     }
 
     public function testAnEditorCanSearchAllPosts(): void
@@ -62,7 +62,7 @@ class SearchControllerTest extends TestCase
         $this->assertArrayHasKey('type', $response[0]);
         $this->assertSame('Post', $response[0]['type']);
         $this->assertArrayHasKey('route', $response[0]);
-        $this->assertSame('edit-post', $response[0]['route']);
+        $this->assertSame('show-post', $response[0]['route']);
     }
 
     public function testAnAdminCanSearchAllPosts(): void
@@ -86,7 +86,7 @@ class SearchControllerTest extends TestCase
         $this->assertArrayHasKey('type', $response[0]);
         $this->assertSame('Post', $response[0]['type']);
         $this->assertArrayHasKey('route', $response[0]);
-        $this->assertSame('edit-post', $response[0]['route']);
+        $this->assertSame('show-post', $response[0]['route']);
     }
 
     public function testAnAdminCanSearchAllTags(): void
@@ -103,7 +103,7 @@ class SearchControllerTest extends TestCase
         $this->assertArrayHasKey('type', $response[0]);
         $this->assertSame('Tag', $response[0]['type']);
         $this->assertArrayHasKey('route', $response[0]);
-        $this->assertSame('edit-tag', $response[0]['route']);
+        $this->assertSame('show-tag', $response[0]['route']);
     }
 
     public function testAnAdminCanSearchAllTopics(): void
@@ -120,7 +120,7 @@ class SearchControllerTest extends TestCase
         $this->assertArrayHasKey('type', $response[0]);
         $this->assertSame('Topic', $response[0]['type']);
         $this->assertArrayHasKey('route', $response[0]);
-        $this->assertSame('edit-topic', $response[0]['route']);
+        $this->assertSame('show-topic', $response[0]['route']);
     }
 
     public function testAnAdminCanSearchAllUsers(): void
@@ -135,6 +135,6 @@ class SearchControllerTest extends TestCase
         $this->assertArrayHasKey('type', $response[0]);
         $this->assertSame('User', $response[0]['type']);
         $this->assertArrayHasKey('route', $response[0]);
-        $this->assertSame('edit-user', $response[0]['route']);
+        $this->assertSame('show-user', $response[0]['route']);
     }
 }
