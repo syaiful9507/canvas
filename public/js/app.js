@@ -19714,16 +19714,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: {
-    show: {
-      type: Boolean,
-      "default": false
-    }
-  },
   setup: function setup(__props, _ref) {
     var expose = _ref.expose;
-    expose();
-    var props = __props;
+    var isOpen = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
     var query = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
     var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_1__.useRouter)();
     var store = (0,vuex__WEBPACK_IMPORTED_MODULE_2__.useStore)();
@@ -19740,6 +19733,7 @@ __webpack_require__.r(__webpack_exports__);
     });
 
     function onSelect(item) {
+      hide();
       router.push({
         name: item.route,
         params: {
@@ -19748,11 +19742,23 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
 
+    var show = function show() {
+      isOpen.value = true;
+    };
+
+    var hide = function hide() {
+      isOpen.value = false;
+    };
+
+    expose({
+      show: show,
+      hide: hide
+    });
     (0,vue__WEBPACK_IMPORTED_MODULE_0__.onMounted)(function () {
       store.dispatch('search/buildIndex');
     });
     var __returned__ = {
-      props: props,
+      isOpen: isOpen,
       query: query,
       router: router,
       store: store,
@@ -19760,6 +19766,8 @@ __webpack_require__.r(__webpack_exports__);
       search: search,
       filteredSearch: filteredSearch,
       onSelect: onSelect,
+      show: show,
+      hide: hide,
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       onMounted: vue__WEBPACK_IMPORTED_MODULE_0__.onMounted,
@@ -19805,8 +19813,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _request__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/request */ "./resources/js_rewrite/request.js");
 /* harmony import */ var _components_CommandPalette__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/CommandPalette */ "./resources/js_rewrite/components/CommandPalette.vue");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm-bundler.js");
-
 
 
 
@@ -19825,7 +19831,11 @@ __webpack_require__.r(__webpack_exports__);
     var trans = (0,vue__WEBPACK_IMPORTED_MODULE_3__.computed)(function () {
       return store.getters["settings/trans"];
     });
-    var open = (0,vue__WEBPACK_IMPORTED_MODULE_3__.ref)(false);
+    var palette = (0,vue__WEBPACK_IMPORTED_MODULE_3__.ref)(null);
+
+    function openCommandPalette() {
+      palette.value.show();
+    }
 
     function logout() {
       _request__WEBPACK_IMPORTED_MODULE_1__["default"].post('logout').then(function () {
@@ -19837,7 +19847,8 @@ __webpack_require__.r(__webpack_exports__);
       store: store,
       user: user,
       trans: trans,
-      open: open,
+      palette: palette,
+      openCommandPalette: openCommandPalette,
       logout: logout,
       Disclosure: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.Disclosure,
       DisclosureButton: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.DisclosureButton,
@@ -19853,8 +19864,7 @@ __webpack_require__.r(__webpack_exports__);
       request: _request__WEBPACK_IMPORTED_MODULE_1__["default"],
       CommandPalette: _components_CommandPalette__WEBPACK_IMPORTED_MODULE_2__["default"],
       computed: vue__WEBPACK_IMPORTED_MODULE_3__.computed,
-      ref: vue__WEBPACK_IMPORTED_MODULE_3__.ref,
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_9__.useRoute
+      ref: vue__WEBPACK_IMPORTED_MODULE_3__.ref
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -20179,9 +20189,9 @@ var _hoisted_1 = {
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)($setup["TransitionRoot"], {
-    show: $props.show,
+    show: $setup.isOpen,
     as: "template",
-    onAfterLeave: _cache[2] || (_cache[2] = function ($event) {
+    onAfterLeave: _cache[1] || (_cache[1] = function ($event) {
       return $setup.query = '';
     })
   }, {
@@ -20189,9 +20199,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Dialog"], {
         as: "div",
         "class": "fixed inset-0 z-10 overflow-y-auto p-4 sm:p-6 md:p-20",
-        onClose: _cache[1] || (_cache[1] = function ($event) {
-          return $props.show = false;
-        })
+        onClose: $setup.hide
       }, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["TransitionChild"], {
@@ -20347,9 +20355,8 @@ var _hoisted_7 = {
 var _hoisted_8 = {
   "class": "absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
 };
-var _hoisted_9 = ["onClick"];
-var _hoisted_10 = ["src", "alt"];
-var _hoisted_11 = {
+var _hoisted_9 = ["src", "alt"];
+var _hoisted_10 = {
   "class": "px-2 pt-2 pb-3 space-y-1"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -20454,21 +20461,17 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         /* STABLE */
 
       })])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-        onClick: function onClick($event) {
-          return open = !open;
-        },
+        onClick: $setup.openCommandPalette,
         type: "button",
         "class": "bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["SearchIcon"], {
         "class": "h-6 w-6",
         "aria-hidden": "true"
       }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["CommandPalette"], {
-        show: open
-      }, null, 8
-      /* PROPS */
-      , ["show"])], 8
-      /* PROPS */
-      , _hoisted_9), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Profile dropdown "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Menu"], {
+        ref: "palette"
+      }, null, 512
+      /* NEED_PATCH */
+      )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Profile dropdown "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Menu"], {
         as: "div",
         "class": "ml-3 relative"
       }, {
@@ -20483,7 +20486,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                 alt: $setup.user.name
               }, null, 8
               /* PROPS */
-              , _hoisted_10)];
+              , _hoisted_9)];
             }),
             _: 1
             /* STABLE */
@@ -20505,7 +20508,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                     to: {
                       name: 'show-user',
                       params: {
-                        id: 1
+                        id: $setup.user.id
                       }
                     },
                     "class": "block px-4 py-2 text-sm",
@@ -20520,7 +20523,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                     _: 1
                     /* STABLE */
 
-                  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
+                  }, 8
+                  /* PROPS */
+                  , ["to"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
                     to: {
                       name: 'settings'
                     },
@@ -20559,11 +20564,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       })])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Mobile main navigation "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["DisclosurePanel"], {
         "class": "sm:hidden"
       }, {
-        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
+        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref2) {
+          var close = _ref2.close;
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
             to: {
               name: 'posts'
             },
+            onClick: close,
             "class": "block rounded-md py-2 px-3 text-base font-medium",
             "active-class": "bg-gray-100 text-gray-900",
             "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900"
@@ -20573,13 +20580,16 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
               /* TEXT */
               )];
             }),
-            _: 1
-            /* STABLE */
+            _: 2
+            /* DYNAMIC */
 
-          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
+          }, 1032
+          /* PROPS, DYNAMIC_SLOTS */
+          , ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
             to: {
               name: 'users'
             },
+            onClick: close,
             "class": "block rounded-md py-2 px-3 text-base font-medium",
             "active-class": "bg-gray-100 text-gray-900",
             "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900"
@@ -20589,13 +20599,16 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
               /* TEXT */
               )];
             }),
-            _: 1
-            /* STABLE */
+            _: 2
+            /* DYNAMIC */
 
-          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
+          }, 1032
+          /* PROPS, DYNAMIC_SLOTS */
+          , ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
             to: {
               name: 'tags'
             },
+            onClick: close,
             "class": "block rounded-md py-2 px-3 text-base font-medium",
             "active-class": "bg-gray-100 text-gray-900",
             "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900"
@@ -20605,13 +20618,16 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
               /* TEXT */
               )];
             }),
-            _: 1
-            /* STABLE */
+            _: 2
+            /* DYNAMIC */
 
-          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
+          }, 1032
+          /* PROPS, DYNAMIC_SLOTS */
+          , ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
             to: {
               name: 'topics'
             },
+            onClick: close,
             "class": "block rounded-md py-2 px-3 text-base font-medium",
             "active-class": "bg-gray-100 text-gray-900",
             "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900"
@@ -20621,10 +20637,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
               /* TEXT */
               )];
             }),
-            _: 1
-            /* STABLE */
+            _: 2
+            /* DYNAMIC */
 
-          })])];
+          }, 1032
+          /* PROPS, DYNAMIC_SLOTS */
+          , ["onClick"])])];
         }),
         _: 1
         /* STABLE */
