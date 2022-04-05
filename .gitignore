@@ -4,6 +4,7 @@
 /coverage
 /.idea
 /.vscode
+jsconfig.json
 npm-debug.log
 yarn-error.log
 Thumbs.db
