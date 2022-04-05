@@ -1,5 +1,5 @@
 {
-    "include": [
-      "./resources/js_rewrite/**/*"
-    ]
-  }
+  "include": [
+    "./resources/js_rewrite/**/*"
+  ]
+}
