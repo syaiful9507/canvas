@@ -19855,6 +19855,7 @@ __webpack_require__.r(__webpack_exports__);
       DisclosurePanel: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.DisclosurePanel,
       Menu: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.Menu,
       MenuButton: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.MenuButton,
+      MenuItem: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.MenuItem,
       MenuItems: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.MenuItems,
       SearchIcon: _heroicons_vue_outline__WEBPACK_IMPORTED_MODULE_6__["default"],
       MenuIcon: _heroicons_vue_outline__WEBPACK_IMPORTED_MODULE_7__["default"],
@@ -20504,49 +20505,70 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                 "class": "origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
               }, {
                 "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-                  return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
-                    to: {
-                      name: 'show-user',
-                      params: {
-                        id: $setup.user.id
-                      }
-                    },
-                    "class": "block px-4 py-2 text-sm",
-                    "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
-                    "active-class": "bg-gray-100 text-gray-900"
-                  }, {
+                  return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["MenuItem"], null, {
                     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-                      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.your_profile), 1
+                      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
+                        to: {
+                          name: 'show-user',
+                          params: {
+                            id: $setup.user.id
+                          }
+                        },
+                        "class": "block px-4 py-2 text-sm",
+                        "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
+                        "active-class": "bg-gray-100 text-gray-900"
+                      }, {
+                        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+                          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.your_profile), 1
+                          /* TEXT */
+                          )];
+                        }),
+                        _: 1
+                        /* STABLE */
+
+                      }, 8
+                      /* PROPS */
+                      , ["to"])];
+                    }),
+                    _: 1
+                    /* STABLE */
+
+                  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["MenuItem"], null, {
+                    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+                      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
+                        to: {
+                          name: 'settings'
+                        },
+                        "class": "block px-4 py-2 text-sm",
+                        "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
+                        "active-class": "bg-gray-100 text-gray-900"
+                      }, {
+                        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+                          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.settings), 1
+                          /* TEXT */
+                          )];
+                        }),
+                        _: 1
+                        /* STABLE */
+
+                      })];
+                    }),
+                    _: 1
+                    /* STABLE */
+
+                  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["MenuItem"], null, {
+                    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+                      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+                        onClick: $setup.logout,
+                        "class": "block px-4 py-2 text-sm text-gray-900 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
+                      }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.sign_out), 1
                       /* TEXT */
                       )];
                     }),
                     _: 1
                     /* STABLE */
 
-                  }, 8
-                  /* PROPS */
-                  , ["to"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
-                    to: {
-                      name: 'settings'
-                    },
-                    "class": "block px-4 py-2 text-sm",
-                    "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
-                    "active-class": "bg-gray-100 text-gray-900"
-                  }, {
-                    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-                      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.settings), 1
-                      /* TEXT */
-                      )];
-                    }),
-                    _: 1
-                    /* STABLE */
-
-                  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
-                    onClick: $setup.logout,
-                    "class": "block px-4 py-2 text-sm text-gray-900 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
-                  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.sign_out), 1
-                  /* TEXT */
-                  )];
+                  })];
                 }),
                 _: 1
                 /* STABLE */

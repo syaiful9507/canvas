@@ -67,25 +67,31 @@
                         </div>
                         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                             <MenuItems class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                <AppLink
-                                    :to="{ name: 'show-user', params: { id: user.id } }"
-                                    class="block px-4 py-2 text-sm"
-                                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
-                                    active-class="bg-gray-100 text-gray-900">
-                                    {{ trans.your_profile }}
-                                </AppLink>
-                                <AppLink
-                                    :to="{ name: 'settings' }"
-                                    class="block px-4 py-2 text-sm"
-                                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
-                                    active-class="bg-gray-100 text-gray-900">
-                                    {{ trans.settings }}
-                                </AppLink>
-                                <a
-                                    @click="logout"
-                                    class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-50 hover:text-gray-900 cursor-pointer">
-                                    {{ trans.sign_out }}
-                                </a>
+                                <MenuItem>
+                                    <AppLink
+                                        :to="{ name: 'show-user', params: { id: user.id } }"
+                                        class="block px-4 py-2 text-sm"
+                                        inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+                                        active-class="bg-gray-100 text-gray-900">
+                                        {{ trans.your_profile }}
+                                    </AppLink>
+                                </MenuItem>
+                                <MenuItem>
+                                    <AppLink
+                                        :to="{ name: 'settings' }"
+                                        class="block px-4 py-2 text-sm"
+                                        inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+                                        active-class="bg-gray-100 text-gray-900">
+                                        {{ trans.settings }}
+                                    </AppLink>
+                                </MenuItem>
+                                <MenuItem>
+                                    <a
+                                        @click="logout"
+                                        class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-50 hover:text-gray-900 cursor-pointer">
+                                        {{ trans.sign_out }}
+                                    </a>
+                                </MenuItem>
                             </MenuItems>
                         </transition>
                     </Menu>
@@ -134,7 +140,7 @@
 </template>
 
 <script setup>
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItems } from '@headlessui/vue'
+import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { SearchIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import AppLink from "@/components/AppLink";
 import { useStore } from 'vuex';
