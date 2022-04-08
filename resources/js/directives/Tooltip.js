@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jquery'
 
 /**
  * The Tooltip directive provides simple tooltip functionality using the Bootstrap
@@ -28,26 +28,26 @@ import $ from 'jquery';
  * All Bootstrap options are supported.
  */
 const defaultOptions = {
-    animation: true,
-    container: false,
-    delay: 0,
-    html: false,
-    placement: top,
-    selector: false,
-    title: '',
-    trigger: 'hover',
-    offset: 0,
-};
+  animation: true,
+  container: false,
+  delay: 0,
+  html: false,
+  placement: top,
+  selector: false,
+  title: '',
+  trigger: 'hover',
+  offset: 0,
+}
 
 const Tooltip = {
-    bind(el, binding) {
-        // Get the default configuration options
-        const customOptions = binding.value || {};
-        const options = { ...defaultOptions, ...customOptions };
+  bind(el, binding) {
+    // Get the default configuration options
+    const customOptions = binding.value || {}
+    const options = { ...defaultOptions, ...customOptions }
 
-        // Initialize the Bootstrap tooltip
-        $(el).tooltip(options);
-    },
-};
+    // Initialize the Bootstrap tooltip
+    $(el).tooltip(options)
+  },
+}
 
-export default Tooltip;
+export default Tooltip

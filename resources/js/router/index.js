@@ -1,32 +1,32 @@
-import NProgress from 'nprogress';
-import Router from 'vue-router';
-import Vue from 'vue';
-import routes from './routes';
-import settings from '../store/modules/settings';
+import NProgress from 'nprogress'
+import Router from 'vue-router'
+import Vue from 'vue'
+import routes from './routes'
+import settings from '../store/modules/settings'
 
-Vue.use(Router);
+Vue.use(Router)
 
 NProgress.configure({
-    showSpinner: false,
-    easing: 'ease',
-    speed: 300,
-});
+  showSpinner: false,
+  easing: 'ease',
+  speed: 300,
+})
 
-const router = createRouter();
+const router = createRouter()
 
-export default router;
+export default router
 
 function createRouter() {
-    const router = new Router({
-        base: settings.state.path,
-        mode: 'history',
-        routes,
-    });
+  const router = new Router({
+    base: settings.state.path,
+    mode: 'history',
+    routes,
+  })
 
-    router.beforeEach((to, from, next) => {
-        NProgress.start();
-        next();
-    });
+  router.beforeEach((to, from, next) => {
+    NProgress.start()
+    next()
+  })
 
-    return router;
+  return router
 }
