@@ -1,4 +1,4 @@
-name: lint
+name: format
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint:
-    name: Lint
+    name: Format
     runs-on: ubuntu-latest
 
     steps:
@@ -35,5 +35,5 @@ jobs:
       - name: Install Node.js dependencies
         run: yarn install
 
-      - name: Run ESLint
-        run: yarn lint
+      - name: Run Prettier
+        run: yarn format
