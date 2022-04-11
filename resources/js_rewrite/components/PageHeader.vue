@@ -211,7 +211,7 @@ function openCommandPalette() {
 
 function logout() {
   request.post('logout').then(() => {
-    window.location.href = store.state.settings.path
+    window.location.href = store.state.config.path
   })
 }
 </script>
