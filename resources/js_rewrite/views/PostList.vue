@@ -150,7 +150,7 @@
 import { computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
-import request from '@/request'
+import request from '@/utils/request'
 import {
   CheckCircleIcon,
   ChevronRightIcon,

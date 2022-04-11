@@ -196,7 +196,7 @@ import {
 import { SearchIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import AppLink from '@/components/AppLink'
 import { useStore } from 'vuex'
-import request from '@/request'
+import request from '@/utils/request'
 import CommandPalette from '@/components/CommandPalette'
 import { computed, ref } from 'vue'
 

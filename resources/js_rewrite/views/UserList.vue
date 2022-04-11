@@ -44,15 +44,21 @@
                 role="list"
                 class="divide-y divide-gray-200"
               >
-                <li v-for="user in users" :key="user.email">
-                  <a :href="user.href" class="block hover:bg-gray-50">
-                    <div class="flex items-center px-4 py-4 sm:px-6">
+                <li v-for="user in users" :key="user.id">
+                  <AppLink
+                  :to="{
+                      name: 'show-user',
+                      params: { id: user.id },
+                    }"
+                      class="block hover:bg-gray-50 cursor-pointer"
+                    >
+                      <div class="flex items-center px-4 py-4 sm:px-6">
                       <div class="min-w-0 flex-1 flex items-center">
                         <div class="flex-shrink-0">
                           <img
                             class="h-12 w-12 rounded-full"
-                            :src="user.imageUrl"
-                            alt=""
+                            :src="user.avatar || user.default_avatar"
+                            :alt="user.name"
                           />
                         </div>
                         <div
@@ -103,7 +109,7 @@
                         />
                       </div>
                     </div>
-                  </a>
+                    </AppLink>
                 </li>
               </ul>
 
@@ -148,7 +154,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
 import {
@@ -156,13 +162,19 @@ import {
   ChevronRightIcon,
   MailIcon,
   PlusIcon,
+  UsersIcon,
 } from '@heroicons/vue/solid'
+import request from '@/utils/request'
 
 const store = useStore()
 const trans = computed(() => store.getters['config/trans'])
-const users = []
+const page = ref(null)
+const users = ref([])
 
-onMounted(() => {
-  // todo: fetch user list
+watchEffect(async () => {
+  await request.get('api/users').then(({ data }) => {
+    users.value = data.data
+    page.value = data.current_page
+  })
 })
 </script>
