@@ -24,5 +24,5 @@ import { computed } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
-const trans = computed(() => store.getters['settings/trans'])
+const trans = computed(() => store.getters['config/trans'])
 </script>

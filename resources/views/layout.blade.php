@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    @if(\Canvas\Canvas::usingRightToLeftLanguage($jsVars['user']['locale'])) dir="rtl" @endif
+    @if(\Canvas\Canvas::usingRightToLeftLanguage($scripts['user']['locale'])) dir="rtl" @endif
     @class([
         'h-full' => true,
-        'dark' => \Canvas\Canvas::enabledDarkMode($jsVars['user']['dark_mode'])
+        'dark' => \Canvas\Canvas::enabledDarkMode($scripts['user']['dark_mode'])
     ])
 >
 <head>
@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="//fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap">
     <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/canvas') }}">
 
-    @if(\Canvas\Canvas::enabledDarkMode($jsVars['user']['dark_mode']))
+    @if(\Canvas\Canvas::enabledDarkMode($scripts['user']['dark_mode']))
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/sunburst.min.css">
     @else
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/github.min.css">
@@ -40,7 +40,7 @@
 <div id="app"></div>
 
 <script type="text/javascript">
-    window.Canvas = @json($jsVars);
+    window.Canvas = @json($scripts);
 </script>
 
 <script type="text/javascript" src="{{ mix('js/app.js', 'vendor/canvas') }}"></script>

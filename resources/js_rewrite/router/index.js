@@ -83,7 +83,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(store.state.settings.path),
+  history: createWebHistory(store.state.config.path),
   routes,
 })
 

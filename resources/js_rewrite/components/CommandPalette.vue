@@ -93,7 +93,7 @@ const isOpen = ref(false)
 const query = ref('')
 const router = useRouter()
 const store = useStore()
-const trans = computed(() => store.getters['settings/trans'])
+const trans = computed(() => store.getters['config/trans'])
 const search = computed(() => store.getters['search/index'])
 const filteredSearch = computed(() =>
   query.value === ''

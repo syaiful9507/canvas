@@ -201,8 +201,8 @@ import CommandPalette from '@/components/CommandPalette'
 import { computed, ref } from 'vue'
 
 const store = useStore()
-const user = computed(() => store.state.settings.user)
-const trans = computed(() => store.getters['settings/trans'])
+const user = computed(() => store.state.config.user)
+const trans = computed(() => store.getters['config/trans'])
 const palette = ref(null)
 
 function openCommandPalette() {

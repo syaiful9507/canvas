@@ -18,7 +18,7 @@ class ViewController extends Controller
     public function index()
     {
         return view('canvas::layout')->with([
-            'jsVars' => [
+            'scripts' => [
                 'languageCodes' => Canvas::availableLanguageCodes(),
                 'maxUpload' => config('canvas.upload_filesize'),
                 'path' => Canvas::basePath(),
