@@ -36,23 +36,30 @@
                   </div>
                 </li>
               </ol>
+
+              <AppLink
+                :to="{ name: 'create-user' }"
+                class="inline-flex items-center ml-auto mr-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+              >
+                <PlusIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                {{ trans.new_user }}
+              </AppLink>
             </nav>
 
-            <div class="bg-white shadow overflow-hidden sm:rounded-md">
-              <ul
-                v-if="users.length"
-                role="list"
-                class="divide-y divide-gray-200"
-              >
-                <li v-for="user in users" :key="user.id">
+            <div
+              :key="$route.fullPath"
+              class="bg-white shadow overflow-hidden sm:rounded-md"
+            >
+              <ul v-if="results" role="list" class="divide-y divide-gray-200">
+                <li v-for="user in results.data" :key="user.id">
                   <AppLink
-                  :to="{
+                    :to="{
                       name: 'show-user',
                       params: { id: user.id },
                     }"
-                      class="block hover:bg-gray-50 cursor-pointer"
-                    >
-                      <div class="flex items-center px-4 py-4 sm:px-6">
+                    class="block hover:bg-gray-50 cursor-pointer"
+                  >
+                    <div class="flex items-center px-4 py-4 sm:px-6">
                       <div class="min-w-0 flex-1 flex items-center">
                         <div class="flex-shrink-0">
                           <img
@@ -73,32 +80,8 @@
                             <p
                               class="mt-2 flex items-center text-sm text-gray-500"
                             >
-                              <MailIcon
-                                class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-                                aria-hidden="true"
-                              />
                               <span class="truncate">{{ user.email }}</span>
                             </p>
-                          </div>
-                          <div class="hidden md:block">
-                            <div>
-                              <p class="text-sm text-gray-900">
-                                Applied on
-                                {{ ' ' }}
-                                <time :datetime="user.date">{{
-                                  user.dateFull
-                                }}</time>
-                              </p>
-                              <p
-                                class="mt-2 flex items-center text-sm text-gray-500"
-                              >
-                                <CheckCircleIcon
-                                  class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400"
-                                  aria-hidden="true"
-                                />
-                                {{ user.stage }}
-                              </p>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -109,42 +92,57 @@
                         />
                       </div>
                     </div>
-                    </AppLink>
+                  </AppLink>
                 </li>
               </ul>
 
-              <div v-else class="text-center py-8">
-                <svg
-                  class="mx-auto h-12 w-12 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    vector-effect="non-scaling-stroke"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                  />
-                </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">
-                  No projects
-                </h3>
-                <p class="mt-1 text-sm text-gray-500">
-                  Get started by creating a new project.
-                </p>
-                <div class="mt-6">
-                  <button
-                    type="button"
-                    class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    <PlusIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-                    New Project
-                  </button>
+              <nav
+                v-if="results"
+                class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
+                aria-label="Pagination"
+              >
+                <div class="hidden sm:block">
+                  <p class="text-sm text-gray-700">
+                    Showing
+                    {{ ' ' }}
+                    <span class="font-medium">{{ results.from }}</span>
+                    {{ ' ' }}
+                    to
+                    {{ ' ' }}
+                    <span class="font-medium">{{ results.to }}</span>
+                    {{ ' ' }}
+                    of
+                    {{ ' ' }}
+                    <span class="font-medium">{{ results.total }}</span>
+                    {{ ' ' }}
+                    results
+                  </p>
                 </div>
-              </div>
+                <div class="flex-1 flex justify-between sm:justify-end">
+                  <AppLink
+                    v-if="!!results.prev_page_url"
+                    :to="{
+                      name: 'users',
+                      query: { page: results.current_page - 1 },
+                    }"
+                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    @click="fetchUsers(results.current_page - 1)"
+                  >
+                    Previous
+                  </AppLink>
+                  <AppLink
+                    v-if="!!results.next_page_url"
+                    :to="{
+                      name: 'users',
+                      query: { page: results.current_page + 1 },
+                    }"
+                    class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    @click="fetchUsers(results.current_page + 1)"
+                  >
+                    Next
+                  </AppLink>
+                </div>
+              </nav>
             </div>
           </div>
         </main>
@@ -157,23 +155,22 @@
 import { computed, ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
-import {
-  CheckCircleIcon,
-  ChevronRightIcon,
-  MailIcon,
-  PlusIcon,
-} from '@heroicons/vue/solid'
+import { ChevronRightIcon, PlusIcon } from '@heroicons/vue/solid'
 import request from '@/utils/request'
 
 const store = useStore()
 const trans = computed(() => store.getters['config/trans'])
-const page = ref(null)
-const users = ref([])
+const results = ref(null)
 
 watchEffect(async () => {
-  await request.get('api/users').then(({ data }) => {
-    users.value = data.data
-    page.value = data.current_page
-  })
+  await fetchUsers()
 })
+
+function fetchUsers(page) {
+  return request
+    .get('api/users', { params: { page: page } })
+    .then(({ data }) => {
+      results.value = data
+    })
+}
 </script>
