@@ -1,4 +1,4 @@
-name: tests
+name: CI
 
 on:
   push:
@@ -56,3 +56,37 @@ jobs:
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit --verbose
+  
+  lint:
+    name: Node 16 on ubuntu-latest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Set up cache
+        uses: actions/cache@v3
+        with: 
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock')}}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Node.js dependencies
+        run: yarn install
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Check formatting
+        run: yarn format --check
