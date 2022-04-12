@@ -691,6 +691,9 @@ select {
 .float-left {
   float: left;
 }
+.m-auto {
+  margin: auto;
+}
 .my-0 {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -787,17 +790,17 @@ select {
 .ml-4 {
   margin-left: 1rem;
 }
-.mr-1\.5 {
-  margin-right: 0.375rem;
-}
-.mt-6 {
-  margin-top: 1.5rem;
+.mr-4 {
+  margin-right: 1rem;
 }
 .-ml-1 {
   margin-left: -0.25rem;
 }
-.mr-4 {
-  margin-right: 1rem;
+.mt-6 {
+  margin-top: 1.5rem;
+}
+.mr-1\.5 {
+  margin-right: 0.375rem;
 }
 .mb-5 {
   margin-bottom: 1.25rem;
@@ -810,6 +813,9 @@ select {
 }
 .mr-0 {
   margin-right: 0px;
+}
+.-mr-1 {
+  margin-right: -0.25rem;
 }
 .block {
   display: block;
@@ -850,6 +856,9 @@ select {
 .h-4 {
   height: 1rem;
 }
+.h-7 {
+  height: 1.75rem;
+}
 .max-h-72 {
   max-height: 18rem;
 }
@@ -882,6 +891,12 @@ select {
 }
 .w-4 {
   width: 1rem;
+}
+.w-7 {
+  width: 1.75rem;
+}
+.w-56 {
+  width: 14rem;
 }
 .min-w-0 {
   min-width: 0px;
@@ -1025,6 +1040,12 @@ select {
 .border-t {
   border-top-width: 1px;
 }
+.border-b {
+  border-bottom-width: 1px;
+}
+.border-b-2 {
+  border-bottom-width: 2px;
+}
 .border-dashed {
   border-style: dashed;
 }
@@ -1032,12 +1053,12 @@ select {
   --tw-border-opacity: 1;
   border-color: rgb(229 231 235 / var(--tw-border-opacity));
 }
-.border-transparent {
-  border-color: transparent;
-}
 .border-gray-300 {
   --tw-border-opacity: 1;
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
+}
+.border-transparent {
+  border-color: transparent;
 }
 .border-red-300 {
   --tw-border-opacity: 1;
@@ -1269,13 +1290,13 @@ select {
   --tw-text-opacity: 1;
   color: rgb(79 70 229 / var(--tw-text-opacity));
 }
-.text-green-400 {
-  --tw-text-opacity: 1;
-  color: rgb(74 222 128 / var(--tw-text-opacity));
-}
 .text-gray-700 {
   --tw-text-opacity: 1;
   color: rgb(55 65 81 / var(--tw-text-opacity));
+}
+.text-green-400 {
+  --tw-text-opacity: 1;
+  color: rgb(74 222 128 / var(--tw-text-opacity));
 }
 .text-red-900 {
   --tw-text-opacity: 1;
@@ -1483,6 +1504,9 @@ select {
 }
 .focus\:ring-offset-gray-800:focus {
   --tw-ring-offset-color: #1f2937;
+}
+.focus\:ring-offset-gray-100:focus {
+  --tw-ring-offset-color: #f3f4f6;
 }
 @media (min-width: 640px) {
 

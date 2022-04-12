@@ -8,6 +8,7 @@ use Canvas\Http\Requests\StorePostRequest;
 use Canvas\Models\Post;
 use Canvas\Models\Tag;
 use Canvas\Models\Topic;
+use Canvas\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -23,16 +24,22 @@ class PostController extends Controller
      */
     public function index(): JsonResponse
     {
-        $scopeToUser = request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all';
+        $isContributor = request()->user('canvas')->isContributor;
+        $scopeToAuthor = !$isContributor && request()->query('author');
         $wantsDrafts = request()->query('type', 'published') == 'draft';
 
         $posts = Post::query()
                      ->select('id', 'title', 'summary', 'featured_image', 'published_at', 'created_at', 'updated_at')
-                     ->when($scopeToUser, function (Builder $query) {
+                     ->when($isContributor, function (Builder $query) {
                          return $query->where('user_id', request()->user('canvas')->id);
                      }, function (Builder $query) {
                          return $query;
                      })
+                     ->when($scopeToAuthor, function (Builder $query) {
+                        return $query->where('user_id', request()->query('author'));
+                    }, function (Builder $query) {
+                        return $query;
+                    })
                      ->when($wantsDrafts, function (Builder $query) {
                          return $query->draft();
                      }, function (Builder $query) {
@@ -42,14 +49,20 @@ class PostController extends Controller
                      ->withCount('views')
                      ->paginate();
 
+        $users = User::query()
+                    ->select('id', 'name', 'avatar')
+                    ->get()
+                    ->toArray();
+
         return response()->json([
             'posts' => $posts,
-            'drafts_count' => $wantsDrafts ? $posts->total() : Post::query()->when($scopeToUser, function (Builder $query) {
+            'users' => $users,
+            'drafts_count' => $wantsDrafts ? $posts->total() : Post::query()->when($scopeToAuthor, function (Builder $query) {
                 return $query->where('user_id', request()->user('canvas')->id);
             }, function (Builder $query) {
                 return $query;
             })->draft()->count(),
-            'published_count' => ! $wantsDrafts ? $posts->total() : Post::query()->when($scopeToUser, function (Builder $query) {
+            'published_count' => ! $wantsDrafts ? $posts->total() : Post::query()->when($scopeToAuthor, function (Builder $query) {
                 return $query->where('user_id', request()->user('canvas')->id);
             }, function (Builder $query) {
                 return $query;

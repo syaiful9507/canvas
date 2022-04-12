@@ -16,7 +16,7 @@ const actions = {
       context.commit('UPDATE_INDEX', data)
     })
 
-    if (context.rootGetters['settings/isAdmin']) {
+    if (context.rootGetters['config/isAdmin']) {
       request.get('/api/search/tags').then(({ data }) => {
         context.commit('UPDATE_INDEX', data)
       })
