@@ -21115,6 +21115,8 @@ var _hoisted_50 = {
   "class": "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _ctx$$route$query, _ctx$$route$query2;
+
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("main", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("nav", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ol", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
     to: {
       name: 'dashboard'
@@ -21160,12 +21162,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         type: 'published'
       })
     },
-    "class": "rounded-md py-2 px-3 inline-flex items-center text-sm font-medium text-gray-900 hover:bg-gray-50 hover:text-gray-900",
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["rounded-md py-2 px-3 inline-flex items-center text-sm font-medium", ((_ctx$$route$query = _ctx.$route.query) === null || _ctx$$route$query === void 0 ? void 0 : _ctx$$route$query.type) != 'draft' ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900']),
     onClick: _cache[0] || (_cache[0] = function ($event) {
       return $setup.filterByType('published') && $setup.fetchPosts();
-    }),
-    "active-class": "bg-gray-100 text-gray-900",
-    "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+    })
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [_hoisted_15];
@@ -21175,7 +21175,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   }, 8
   /* PROPS */
-  , ["to"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
+  , ["to", "class"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
     to: {
       name: 'posts',
       query: _objectSpread(_objectSpread({}, $setup.query.author && {
@@ -21184,12 +21184,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         type: 'draft'
       })
     },
-    "class": "rounded-md py-2 px-3 inline-flex items-center text-sm font-medium",
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["rounded-md py-2 px-3 inline-flex items-center text-sm font-medium", ((_ctx$$route$query2 = _ctx.$route.query) === null || _ctx$$route$query2 === void 0 ? void 0 : _ctx$$route$query2.type) === 'draft' ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900']),
     onClick: _cache[1] || (_cache[1] = function ($event) {
       return $setup.filterByType('draft') && $setup.fetchPosts();
-    }),
-    "active-class": "bg-gray-100 text-gray-900",
-    "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+    })
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [_hoisted_16];
@@ -21199,7 +21197,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   }, 8
   /* PROPS */
-  , ["to"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Menu"], {
+  , ["to", "class"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Menu"], {
     as: "div",
     "class": "relative inline-block text-left"
   }, {
@@ -21235,6 +21233,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                   as: "div"
                 }, {
                   "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+                    var _ctx$$route$query3;
+
                     return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
                       to: {
                         name: 'posts',
@@ -21244,12 +21244,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                           type: $setup.query.type
                         })
                       },
+                      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([((_ctx$$route$query3 = _ctx.$route.query) === null || _ctx$$route$query3 === void 0 ? void 0 : _ctx$$route$query3.author) === user.id ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900', "block m-auto px-4 py-2 text-sm"]),
                       onClick: function onClick($event) {
                         return $setup.filterByAuthor(user.id) && $setup.fetchPosts();
-                      },
-                      "class": "block m-auto px-4 py-2 text-sm",
-                      "inactive-class": "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
-                      "active-class": "bg-gray-100 text-gray-900"
+                      }
                     }, {
                       "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
                         return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
@@ -21267,7 +21265,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
                     }, 1032
                     /* PROPS, DYNAMIC_SLOTS */
-                    , ["to", "onClick"])];
+                    , ["to", "class", "onClick"])];
                   }),
                   _: 2
                   /* DYNAMIC */
