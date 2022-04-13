@@ -20010,6 +20010,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var trans = (0,vue__WEBPACK_IMPORTED_MODULE_1__.computed)(function () {
       return store.getters['config/trans'];
     });
+    var user = (0,vue__WEBPACK_IMPORTED_MODULE_1__.computed)(function () {
+      return store.state.config.user;
+    });
     var results = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(null);
     var query = (0,vue__WEBPACK_IMPORTED_MODULE_1__.reactive)({
       page: 1,
@@ -20068,6 +20071,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var __returned__ = {
       store: store,
       trans: trans,
+      user: user,
       results: results,
       query: query,
       fetchPosts: fetchPosts,
