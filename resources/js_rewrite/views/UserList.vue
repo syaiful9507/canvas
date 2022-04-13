@@ -27,12 +27,9 @@
                     >
                       <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
                     </svg>
-                    <AppLink
-                      :to="{ name: 'users' }"
-                      class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
-                    >
+                    <p class="ml-4 text-sm font-medium text-gray-500">
                       {{ trans.users }}
-                    </AppLink>
+                    </p>
                   </div>
                 </li>
               </ol>
