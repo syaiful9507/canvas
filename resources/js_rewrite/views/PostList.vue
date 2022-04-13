@@ -61,7 +61,11 @@
                           },
                         }"
                         class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
-                        :class="$route.query?.type != 'draft' ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'"
+                        :class="
+                          $route.query?.type != 'draft'
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
                         @click="filterByType('published') && fetchPosts()"
                       >
                         Published
@@ -75,7 +79,11 @@
                           },
                         }"
                         class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
-                        :class="$route.query?.type === 'draft' ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'"
+                        :class="
+                          $route.query?.type === 'draft'
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
                         @click="filterByType('draft') && fetchPosts()"
                       >
                         Draft
@@ -118,7 +126,11 @@
                                       ...(query.type && { type: query.type }),
                                     },
                                   }"
-                                  :class="$route.query?.author === user.id ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'"
+                                  :class="
+                                    $route.query?.author === user.id
+                                      ? 'bg-gray-100 text-gray-900'
+                                      : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                                  "
                                   class="block m-auto px-4 py-2 text-sm"
                                   @click="
                                     filterByAuthor(user.id) && fetchPosts()

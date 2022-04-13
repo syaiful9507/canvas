@@ -1099,11 +1099,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/content-type@^1.1.3":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@types/content-type/-/content-type-1.1.5.tgz#aa02dca40864749a9e2bf0161a6216da57e3ede5"
-  integrity sha512-dgMN+syt1xb7Hk8LU6AODOfPlvz5z1CbXpPuJE5ZrX9STfBOIXF09pEB8N7a97WT9dbngt3ksDCm6GW6yMrxfQ==
-
 "@types/eslint-scope@^3.7.3":
   version "3.7.3"
   resolved "https://registry.yarnpkg.com/@types/eslint-scope/-/eslint-scope-3.7.3.tgz#125b88504b61e3c8bc6f870882003253005c3224"
@@ -1995,11 +1990,6 @@ charenc@0.0.2:
   resolved "https://registry.yarnpkg.com/charenc/-/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
   integrity sha1-wKHS86cJLgN3S/qD8UwPxXkKhmc=
 
-chart.js@^3.7.1:
-  version "3.7.1"
-  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.7.1.tgz#0516f690c6a8680c6c707e31a4c1807a6f400ada"
-  integrity sha512-8knRegQLFnPQAheZV8MjxIXc5gQEfDFD897BJgv/klO/vtIyFFmgMXrNfgrXpbTr/XbTturxRgxIXx/Y+ASJBA==
-
 chokidar@^3.5.2, chokidar@^3.5.3:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"
@@ -2187,7 +2177,7 @@ content-disposition@0.5.4:
   dependencies:
     safe-buffer "5.2.1"
 
-content-type@^1.0.4, content-type@~1.0.4:
+content-type@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
   integrity sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
@@ -2216,11 +2206,6 @@ core-js-compat@^3.20.2, core-js-compat@^3.21.0:
   dependencies:
     browserslist "^4.19.1"
     semver "7.0.0"
-
-core-js@^2.6.5:
-  version "2.6.12"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
-  integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -2971,36 +2956,6 @@ file-type@^12.0.0:
   version "12.4.2"
   resolved "https://registry.yarnpkg.com/file-type/-/file-type-12.4.2.tgz#a344ea5664a1d01447ee7fb1b635f72feb6169d9"
   integrity sha512-UssQP5ZgIOKelfsaB5CuGAL+Y+q7EmONuiwF3N5HAH0t27rvrttgi6Ra9k/+DVaY9UF6+ybxu5pOXLUdA8N7Vg==
-
-filepond-plugin-file-validate-size@^2.2.4:
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/filepond-plugin-file-validate-size/-/filepond-plugin-file-validate-size-2.2.5.tgz#985c83f0e0a9c09918310a231c5f014fb642c92b"
-  integrity sha512-x+fYZl317R17w3dExKab1oYZa10Wl2HcXKD6dzIgRKyngEHtjBF99geGaiDPk9IfozV8Zjzx69D7urcthF2CYQ==
-
-filepond-plugin-file-validate-type@^1.2.6:
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/filepond-plugin-file-validate-type/-/filepond-plugin-file-validate-type-1.2.6.tgz#5a03e04fb8f70f0df37ff9a285d3d2343cdc55f2"
-  integrity sha512-3JFxpb4o5D4BssP/Drjn2GPpejg/QXzU4e3/Pq8IvIJuokHz95b6+RPYstQ+6ITKREYup0N8F/CO/OQfhVkUgg==
-
-filepond-plugin-image-exif-orientation@^1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/filepond-plugin-image-exif-orientation/-/filepond-plugin-image-exif-orientation-1.0.11.tgz#c46b522e8873e2ad5b9c7e2bbbe71176c9df58b2"
-  integrity sha512-hLBc12Fk6Zkj3L8mSAn+elugHOqT5rLUbgVXQQIQjMe0FsGjtpoxqeVR6jt4IWHGat2L9sFAgU2TGmd1mqosCg==
-
-filepond-plugin-image-preview@^4.6.9:
-  version "4.6.11"
-  resolved "https://registry.yarnpkg.com/filepond-plugin-image-preview/-/filepond-plugin-image-preview-4.6.11.tgz#706a66ac859fa91dd7153958b2325b512fe2f0c6"
-  integrity sha512-0EmQ9HnOb/X0xc5rLcNRhhmdUbp7oiicRwQrcr90ZfVmPJOOZoX3ZGUEsEPj7luMI55huguhcVozdESxtqnuRw==
-
-filepond-plugin-image-validate-size@^1.2.6:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/filepond-plugin-image-validate-size/-/filepond-plugin-image-validate-size-1.2.7.tgz#5f65215e3d330e4676b52b05398256600a39900d"
-  integrity sha512-Sxu2XTbQHf9HRWu+AQg6zJkww0O6hTXq9IX5/SAJLuvohpF23XTzCNg+29KXr4Wulm70/jSSpMcJURn9AU72rA==
-
-filepond@^4.29.0:
-  version "4.30.3"
-  resolved "https://registry.yarnpkg.com/filepond/-/filepond-4.30.3.tgz#63a50da7d1f58e5ca39a13e62d8ffe6a2b4baa5f"
-  integrity sha512-G2b1LEe90Sq2vH0SYDASTB+vVU735NBctzIaFPlZtb14QAgi/AL89WyQ6LhTfqgyrMyuZur2O9yHAmzS2E9ZnA==
 
 fill-range@^7.0.1:
   version "7.0.1"
@@ -5467,14 +5422,6 @@ unpipe@1.0.0, unpipe@~1.0.0:
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
   integrity sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=
 
-unsplash-js@^7.0.10:
-  version "7.0.15"
-  resolved "https://registry.yarnpkg.com/unsplash-js/-/unsplash-js-7.0.15.tgz#9eee0ce552e2c2ee70fd30a767c59b159e004753"
-  integrity sha512-WGqKp9wl2m2tAUPyw2eMZs/KICR+A52tCaRapzVXWxkA4pjHqsaGwiJXTEW7hBy4Pu0QmP6KxTt2jST3tluawA==
-  dependencies:
-    "@types/content-type" "^1.1.3"
-    content-type "^1.0.4"
-
 uri-js@^4.2.2:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/uri-js/-/uri-js-4.4.1.tgz#9b1a52595225859e55f669d928f88c6c57f2a77e"
@@ -5547,11 +5494,6 @@ vue-eslint-parser@^8.0.1:
     lodash "^4.17.21"
     semver "^7.3.5"
 
-vue-filepond@^7.0.0:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/vue-filepond/-/vue-filepond-7.0.3.tgz#326cd309ef5b13538ed3233e4fff332cb2b41f8c"
-  integrity sha512-pYZ5TxGwFiiiVlRdzlJl0AyHE0/rEZiHm/0sYhIleFjV2VdGWTyxSqErN/AQwrwv32AeiNbui46vVB06Dl07ow==
-
 vue-loader@^17.0.0:
   version "17.0.0"
   resolved "https://registry.yarnpkg.com/vue-loader/-/vue-loader-17.0.0.tgz#2eaa80aab125b19f00faa794b5bd867b17f85acb"
@@ -5560,11 +5502,6 @@ vue-loader@^17.0.0:
     chalk "^4.1.0"
     hash-sum "^2.0.0"
     loader-utils "^2.0.0"
-
-vue-multiselect@^2.1.6:
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/vue-multiselect/-/vue-multiselect-2.1.6.tgz#5be5d811a224804a15c43a4edbb7485028a89c7f"
-  integrity sha512-s7jmZPlm9FeueJg1RwJtnE9KNPtME/7C8uRWSfp9/yEN4M8XcS/d+bddoyVwVnvFyRh9msFo0HWeW0vTL8Qv+w==
 
 vue-router@^4.0.6:
   version "4.0.14"
@@ -5588,13 +5525,6 @@ vue-template-compiler@^2.6.12:
   dependencies:
     de-indent "^1.0.2"
     he "^1.1.0"
-
-vue-textarea-autosize@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/vue-textarea-autosize/-/vue-textarea-autosize-1.1.1.tgz#fcf1e1523c4eaebfdfeaaa5f5c5aeb92ca7c80f2"
-  integrity sha512-B33Mg5ZDEfj/whhoPBLg25qqAdGHGM2NjDT99Qi5MXRyeLmXb4C3s6EprAHqy3nU0cooWXFU+IekI5DpoEbnFg==
-  dependencies:
-    core-js "^2.6.5"
 
 vue-timeago@^5.1.3:
   version "5.1.3"
