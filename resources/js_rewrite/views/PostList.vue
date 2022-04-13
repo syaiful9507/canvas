@@ -1,5 +1,5 @@
 <template>
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mx-auto">
       <div class="py-10">
         <main>
@@ -46,14 +46,8 @@
               </AppLink>
             </nav>
 
-            <div
-              :key="$route.fullPath"
-              class="bg-white shadow sm:rounded-md"
-            >
+            <div :key="$route.fullPath" class="bg-white shadow sm:rounded-md">
               <div v-if="results">
-
-
-
                 <nav
                   v-if="results"
                   class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6"
@@ -78,16 +72,34 @@
                     </AppLink>
                     <Menu as="div" class="relative inline-block text-left">
                       <div>
-                        <MenuButton class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                        <MenuButton
+                          class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                        >
                           Author
-                          <ChevronDownIcon class="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
+                          <ChevronDownIcon
+                            class="-mr-1 ml-2 h-5 w-5"
+                            aria-hidden="true"
+                          />
                         </MenuButton>
                       </div>
 
-                      <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
-                        <MenuItems class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <transition
+                        enter-active-class="transition ease-out duration-100"
+                        enter-from-class="transform opacity-0 scale-95"
+                        enter-to-class="transform opacity-100 scale-100"
+                        leave-active-class="transition ease-in duration-75"
+                        leave-from-class="transform opacity-100 scale-100"
+                        leave-to-class="transform opacity-0 scale-95"
+                      >
+                        <MenuItems
+                          class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        >
                           <div class="py-1">
-                            <MenuItem v-for="user in results.users" :key="user.id" as="div">
+                            <MenuItem
+                              v-for="user in results.users"
+                              :key="user.id"
+                              as="div"
+                            >
                               <AppLink
                                 :to="{
                                   name: 'users',
@@ -97,21 +109,20 @@
                                 inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
                                 active-class="bg-gray-100 text-gray-900"
                               >
-                              <div class="flex items-center">
+                                <div class="flex items-center">
                                   <div class="flex-shrink-0">
-                                  <img
-                                    class="h-6 w-6 rounded-full"
-                                    :src="user.avatar || user.default_avatar"
-                                    :alt="user.name"
-                                  />
+                                    <img
+                                      class="h-6 w-6 rounded-full"
+                                      :src="user.avatar || user.default_avatar"
+                                      :alt="user.name"
+                                    />
+                                  </div>
+                                  <div class="ml-3">
+                                    {{ user.name }}
+                                  </div>
                                 </div>
-                                <div class="ml-3">
-                                  {{user.name}}
-                                </div>
-                              </div>
-                                
                               </AppLink>
-                              
+
                               <!-- <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">{{ user.name }}</a> -->
                             </MenuItem>
                           </div>
@@ -121,110 +132,111 @@
                   </div>
                 </nav>
 
-
-                
-              <ul role="list" class="divide-y divide-gray-200">
-                <li v-for="post in results.posts.data" :key="post.id">
-                  <AppLink
-                    :to="{
-                      name: 'show-post',
-                      params: { id: post.id },
-                    }"
-                    class="block hover:bg-gray-50 cursor-pointer"
-                  >
-                    <div class="flex items-center px-4 py-4 sm:px-6">
-                      <div class="min-w-0 flex-1 flex items-center">
-                        <div class="flex-shrink-0">
-                          <img
-                            v-if="post.featured_image"
-                            class="h-12 w-12 rounded-full"
-                            :src="post.featured_image"
-                            :alt="post.title"
-                          />
-                          <div v-else class="h-12 w-12 inline-flex justify-center items-center rounded-full bg-gray-100">
-                            <CameraIcon
-                              class="h-6 w-6 text-gray-400"
-                              aria-hidden="true"
+                <ul role="list" class="divide-y divide-gray-200">
+                  <li v-for="post in results.posts.data" :key="post.id">
+                    <AppLink
+                      :to="{
+                        name: 'show-post',
+                        params: { id: post.id },
+                      }"
+                      class="block hover:bg-gray-50 cursor-pointer"
+                    >
+                      <div class="flex items-center px-4 py-4 sm:px-6">
+                        <div class="min-w-0 flex-1 flex items-center">
+                          <div class="flex-shrink-0">
+                            <img
+                              v-if="post.featured_image"
+                              class="h-12 w-12 rounded-full"
+                              :src="post.featured_image"
+                              :alt="post.title"
                             />
+                            <div
+                              v-else
+                              class="h-12 w-12 inline-flex justify-center items-center rounded-full bg-gray-100"
+                            >
+                              <CameraIcon
+                                class="h-6 w-6 text-gray-400"
+                                aria-hidden="true"
+                              />
+                            </div>
+                          </div>
+                          <div
+                            class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4"
+                          >
+                            <div>
+                              <p
+                                class="text-sm font-medium text-indigo-600 truncate"
+                              >
+                                {{ post.title }}
+                              </p>
+                              <p
+                                class="mt-2 flex items-center text-sm text-gray-500"
+                              >
+                                <span>{{ post.created_at }}</span>
+                              </p>
+                            </div>
                           </div>
                         </div>
-                        <div
-                          class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4"
-                        >
-                          <div>
-                            <p
-                              class="text-sm font-medium text-indigo-600 truncate"
-                            >
-                              {{ post.title }}
-                            </p>
-                            <p
-                              class="mt-2 flex items-center text-sm text-gray-500"
-                            >
-                              <span>{{ post.created_at }}</span>
-                            </p>
-                          </div>
+                        <div>
+                          <ChevronRightIcon
+                            class="h-5 w-5 text-gray-400"
+                            aria-hidden="true"
+                          />
                         </div>
                       </div>
-                      <div>
-                        <ChevronRightIcon
-                          class="h-5 w-5 text-gray-400"
-                          aria-hidden="true"
-                        />
-                      </div>
-                    </div>
-                  </AppLink>
-                </li>
-              </ul>
+                    </AppLink>
+                  </li>
+                </ul>
 
-              <nav
-                v-if="results"
-                class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
-                aria-label="Pagination"
-              >
-                <div class="hidden sm:block">
-                  <p class="text-sm text-gray-700">
-                    Showing
-                    {{ ' ' }}
-                    <span class="font-medium">{{ results.posts.from }}</span>
-                    {{ ' ' }}
-                    to
-                    {{ ' ' }}
-                    <span class="font-medium">{{ results.posts.to }}</span>
-                    {{ ' ' }}
-                    of
-                    {{ ' ' }}
-                    <span class="font-medium">{{ results.posts.total }}</span>
-                    {{ ' ' }}
-                    results
-                  </p>
-                </div>
-                <div class="flex-1 flex justify-between sm:justify-end">
-                  <AppLink
-                    v-if="!!results.posts.prev_page_url"
-                    :to="{
-                      name: 'users',
-                      query: { page: results.posts.current_page - 1 },
-                    }"
-                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                    @click="fetchPosts(results.posts.current_page - 1)"
-                  >
-                    Previous
-                  </AppLink>
-                  <AppLink
-                    v-if="!!results.posts.next_page_url"
-                    :to="{
-                      name: 'users',
-                      query: { page: results.posts.current_page + 1 },
-                    }"
-                    class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                    @click="fetchPosts(results.posts.current_page + 1)"
-                  >
-                    Next
-                  </AppLink>
-                </div>
-              </nav>
+                <nav
+                  v-if="results"
+                  class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
+                  aria-label="Pagination"
+                >
+                  <div class="hidden sm:block">
+                    <p class="text-sm text-gray-700">
+                      Showing
+                      {{ ' ' }}
+                      <span class="font-medium">{{ results.posts.from }}</span>
+                      {{ ' ' }}
+                      to
+                      {{ ' ' }}
+                      <span class="font-medium">{{ results.posts.to }}</span>
+                      {{ ' ' }}
+                      of
+                      {{ ' ' }}
+                      <span class="font-medium">{{ results.posts.total }}</span>
+                      {{ ' ' }}
+                      results
+                    </p>
+                  </div>
+                  <div class="flex-1 flex justify-between sm:justify-end">
+                    <AppLink
+                      v-if="!!results.posts.prev_page_url"
+                      :to="{
+                        name: 'users',
+                        query: { page: results.posts.current_page - 1 },
+                      }"
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      @click="fetchPosts(results.posts.current_page - 1)"
+                    >
+                      Previous
+                    </AppLink>
+                    <AppLink
+                      v-if="!!results.posts.next_page_url"
+                      :to="{
+                        name: 'users',
+                        query: { page: results.posts.current_page + 1 },
+                      }"
+                      class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      @click="fetchPosts(results.posts.current_page + 1)"
+                    >
+                      Next
+                    </AppLink>
+                  </div>
+                </nav>
               </div>
-            
+
               <div v-else class="text-center py-8">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -266,15 +278,15 @@
 
 <script setup>
 import { computed, ref, watchEffect } from 'vue'
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-} from '@headlessui/vue'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
-import { ChevronRightIcon, PlusIcon, CameraIcon, ChevronDownIcon } from '@heroicons/vue/solid'
+import {
+  ChevronRightIcon,
+  PlusIcon,
+  CameraIcon,
+  ChevronDownIcon,
+} from '@heroicons/vue/solid'
 import request from '@/utils/request'
 
 const store = useStore()
