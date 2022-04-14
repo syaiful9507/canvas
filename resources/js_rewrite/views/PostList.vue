@@ -199,7 +199,9 @@
                                 <p
                                   class="mt-2 flex items-center text-sm text-gray-500"
                                 >
-                                  <span>{{ post.created_at }}</span>
+                                  <span>{{
+                                    dateFromNow(post.created_at, locale)
+                                  }}</span>
                                 </p>
                               </div>
                             </div>
@@ -327,10 +329,12 @@ import {
   CameraIcon,
   ChevronDownIcon,
 } from '@heroicons/vue/solid'
+import dateFromNow from '@/utils/dateFromNow'
 import request from '@/utils/request'
 
 const store = useStore()
 const trans = computed(() => store.getters['config/trans'])
+const locale = computed(() => store.getters['config/locale'])
 const results = ref(null)
 const query = reactive({
   page: 1,

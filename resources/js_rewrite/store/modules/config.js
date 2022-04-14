@@ -80,6 +80,10 @@ const getters = {
     return JSON.parse(state.i18n)
   },
 
+  locale(state) {
+    return state.user.locale || state.default_locale
+  },
+
   isContributor(state) {
     return state.user.role === 1
   },
