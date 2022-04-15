@@ -998,16 +998,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "3.0.16",
+            "version": "3.0.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "dea729954c596bdb6cdaecba6f73df9f3e2c4255"
+                "reference": "29eb78cac0be0c22237c5e0f6f98234d97037d79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/dea729954c596bdb6cdaecba6f73df9f3e2c4255",
-                "reference": "dea729954c596bdb6cdaecba6f73df9f3e2c4255",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/29eb78cac0be0c22237c5e0f6f98234d97037d79",
+                "reference": "29eb78cac0be0c22237c5e0f6f98234d97037d79",
                 "shasum": ""
             },
             "require": {
@@ -1068,7 +1068,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/3.0.16"
+                "source": "https://github.com/thephpleague/flysystem/tree/3.0.17"
             },
             "funding": [
                 {
@@ -1084,7 +1084,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-11T13:32:22+00:00"
+            "time": "2022-04-14T14:57:13+00:00"
         },
         {
             "name": "league/mime-type-detection",
@@ -6989,16 +6989,16 @@
         },
         {
             "name": "spatie/laravel-ray",
-            "version": "1.29.5",
+            "version": "1.29.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-ray.git",
-                "reference": "7bb6f1f749e235cea5a963b4c12986baefafd624"
+                "reference": "d9ec9d8550dfab362167c866fbd24d4b0d4d1e02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-ray/zipball/7bb6f1f749e235cea5a963b4c12986baefafd624",
-                "reference": "7bb6f1f749e235cea5a963b4c12986baefafd624",
+                "url": "https://api.github.com/repos/spatie/laravel-ray/zipball/d9ec9d8550dfab362167c866fbd24d4b0d4d1e02",
+                "reference": "d9ec9d8550dfab362167c866fbd24d4b0d4d1e02",
                 "shasum": ""
             },
             "require": {
@@ -7057,7 +7057,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-ray/issues",
-                "source": "https://github.com/spatie/laravel-ray/tree/1.29.5"
+                "source": "https://github.com/spatie/laravel-ray/tree/1.29.6"
             },
             "funding": [
                 {
@@ -7069,7 +7069,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2022-04-05T18:07:59+00:00"
+            "time": "2022-04-15T07:18:37+00:00"
         },
         {
             "name": "spatie/macroable",

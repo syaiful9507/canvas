@@ -74,7 +74,7 @@
 </template>
 
 <script setup>
-import { computed, defineExpose, ref, onMounted } from 'vue'
+import { computed, defineExpose, ref, onMounted, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { SearchIcon } from '@heroicons/vue/solid'
@@ -110,6 +110,20 @@ const show = function () {
 const hide = function () {
   isOpen.value = false
 }
+
+watchEffect(() => {
+  function onKeydown(event) {
+    if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
+      show()
+    }
+  }
+
+  window.addEventListener('keydown', onKeydown)
+
+  return () => {
+    window.removeEventListener('keydown', onKeydown)
+  }
+})
 
 function onSelect(item) {
   hide()
