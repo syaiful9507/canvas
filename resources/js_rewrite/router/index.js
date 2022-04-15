@@ -20,6 +20,11 @@ const routes = [
     path: '/posts',
     name: 'posts',
     component: PostList,
+    props: (route) => ({
+      page: route.query?.page,
+      type: route.query?.type,
+      author: route.query?.author,
+    }),
   },
   {
     path: '/posts/create',

@@ -20075,9 +20075,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: {
+    page: {
+      type: String,
+      "default": ''
+    },
+    type: {
+      type: String,
+      "default": ''
+    },
+    author: {
+      type: String,
+      "default": ''
+    }
+  },
   setup: function setup(__props, _ref) {
     var expose = _ref.expose;
     expose();
+    var props = __props;
     var store = (0,vuex__WEBPACK_IMPORTED_MODULE_5__.useStore)();
     var trans = (0,vue__WEBPACK_IMPORTED_MODULE_1__.computed)(function () {
       return store.getters['config/trans'];
@@ -20087,9 +20102,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     });
     var results = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(null);
     var query = (0,vue__WEBPACK_IMPORTED_MODULE_1__.reactive)({
-      page: 1,
-      type: null,
-      author: null
+      page: props.page || 1,
+      type: props.type || null,
+      author: props.author || null
     });
     (0,vue__WEBPACK_IMPORTED_MODULE_1__.watchEffect)( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
@@ -20141,6 +20156,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
 
     var __returned__ = {
+      props: props,
       store: store,
       trans: trans,
       locale: locale,
@@ -21065,8 +21081,7 @@ var _hoisted_12 = {
 };
 var _hoisted_13 = {
   key: 0,
-  "class": "bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6",
-  "aria-label": "Pagination"
+  "class": "bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6"
 };
 var _hoisted_14 = {
   "class": "flex space-x-4"
@@ -21229,7 +21244,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   })]), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
     key: _ctx.$route.fullPath,
-    "class": "bg-white shadow sm:rounded-md"
+    "class": "bg-white shadow sm:rounded-md overflow-hidden"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [$setup.results ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_12, [$setup.results ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("nav", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
     to: {
       name: 'posts',
@@ -21941,7 +21956,16 @@ var routes = [{
 }, {
   path: '/posts',
   name: 'posts',
-  component: _views_PostList_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+  component: _views_PostList_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
+  props: function props(route) {
+    var _route$query, _route$query2, _route$query3;
+
+    return {
+      page: (_route$query = route.query) === null || _route$query === void 0 ? void 0 : _route$query.page,
+      type: (_route$query2 = route.query) === null || _route$query2 === void 0 ? void 0 : _route$query2.type,
+      author: (_route$query3 = route.query) === null || _route$query3 === void 0 ? void 0 : _route$query3.author
+    };
+  }
 }, {
   path: '/posts/create',
   name: 'create-post',

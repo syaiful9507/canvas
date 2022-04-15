@@ -43,13 +43,15 @@
               </AppLink>
             </nav>
 
-            <div :key="$route.fullPath" class="bg-white shadow sm:rounded-md">
+            <div
+              :key="$route.fullPath"
+              class="bg-white shadow sm:rounded-md overflow-hidden"
+            >
               <div class="bg-white shadow sm:rounded-md">
                 <div v-if="results">
                   <nav
                     v-if="results"
                     class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6"
-                    aria-label="Pagination"
                   >
                     <div class="flex space-x-4">
                       <AppLink
@@ -319,7 +321,7 @@
 </template>
 
 <script setup>
-import { computed, ref, reactive, watchEffect } from 'vue'
+import { computed, ref, reactive, defineProps, watchEffect } from 'vue'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
@@ -332,14 +334,29 @@ import {
 import dateFromNow from '@/utils/dateFromNow'
 import request from '@/utils/request'
 
+const props = defineProps({
+  page: {
+    type: String,
+    default: '',
+  },
+  type: {
+    type: String,
+    default: '',
+  },
+  author: {
+    type: String,
+    default: '',
+  },
+})
+
 const store = useStore()
 const trans = computed(() => store.getters['config/trans'])
 const locale = computed(() => store.getters['config/locale'])
 const results = ref(null)
 const query = reactive({
-  page: 1,
-  type: null,
-  author: null,
+  page: props.page || 1,
+  type: props.type || null,
+  author: props.author || null,
 })
 
 watchEffect(async () => {
