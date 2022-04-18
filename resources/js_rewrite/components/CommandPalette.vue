@@ -63,7 +63,10 @@
                   active && 'bg-indigo-600 text-white',
                 ]"
               >
-                {{ item.name }}
+                {{ item.name
+                }}<span :class="['text-gray-400', active && 'opacity-75']">
+                  ― {{ item.type }}</span
+                >
               </li>
             </ComboboxOption>
           </ComboboxOptions>

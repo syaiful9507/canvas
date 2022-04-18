@@ -284,7 +284,7 @@
                   />
                 </svg>
                 <h3 class="mt-2 text-sm font-medium text-gray-900">
-                  {{ trans.no_published_posts }}
+                  {{ trans.no_posts }}
                 </h3>
                 <p class="mt-1 text-sm text-gray-500">
                   {{ trans.get_started_by_creating_a_new_post }}

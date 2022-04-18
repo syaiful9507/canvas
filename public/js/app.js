@@ -20565,8 +20565,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                             var active = _ref.active;
                             return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", {
                               "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(['cursor-pointer select-none px-4 py-2', active && 'bg-indigo-600 text-white'])
-                            }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.name), 3
+                            }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.name), 1
+                            /* TEXT */
+                            ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+                              "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(['text-gray-400', active && 'opacity-75'])
+                            }, " ― " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.type), 3
                             /* TEXT, CLASS */
+                            )], 2
+                            /* CLASS */
                             )];
                           }),
                           _: 2
@@ -21475,7 +21481,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   }, 8
   /* PROPS */
-  , ["to"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_44, [_hoisted_45, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_46, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.no_published_posts), 1
+  , ["to"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_44, [_hoisted_45, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_46, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.no_posts), 1
   /* TEXT */
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_47, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.get_started_by_creating_a_new_post), 1
   /* TEXT */

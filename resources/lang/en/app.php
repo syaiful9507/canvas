@@ -72,7 +72,7 @@ return [
     'new_topic' => 'New topic',
     'new_user' => 'New user',
     'no_images_found_for' => 'No images found for',
-    'no_published_posts' => 'No published posts',
+    'no_posts' => 'No posts',
     'on' => 'on',
     'or' => 'Or',
     'other' => 'Other',
