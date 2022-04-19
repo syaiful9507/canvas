@@ -28,7 +28,7 @@
 
     <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/highlight.min.js"></script>
 </head>
-<body class="h-full bg-gray-100">
+<body class="h-full">
 
 @if(!\Canvas\Canvas::assetsUpToDate())
     <div class="alert alert-danger border-0 text-center rounded-0 mb-0">

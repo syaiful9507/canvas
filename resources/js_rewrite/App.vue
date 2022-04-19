@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-full">
     <PageHeader></PageHeader>
-    <RouterView></RouterView>
+    <RouterView :key="$route.query"></RouterView>
   </div>
 </template>
 
