@@ -43,7 +43,7 @@
               </AppLink>
             </nav>
 
-            <div :key="$route.fullPath" class="bg-white shadow sm:rounded-md">
+              <div class="bg-white shadow sm:rounded-md">
               <div v-if="results">
                 <nav
                   v-if="results"
@@ -91,7 +91,7 @@
                         <MenuButton
                           class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                         >
-                          Author
+                          {{ selectedAuthor(query.author) }}
                           <ChevronDownIcon
                             class="-mr-1 ml-2 h-5 w-5"
                             aria-hidden="true"
@@ -308,7 +308,7 @@
 </template>
 
 <script setup>
-import { computed, ref, reactive, defineProps, watchEffect } from 'vue'
+import { computed, ref, reactive, defineProps, watch, onMounted, watchEffect } from 'vue'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
@@ -320,6 +320,7 @@ import {
 } from '@heroicons/vue/solid'
 import dateFromNow from '@/utils/dateFromNow'
 import request from '@/utils/request'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   page: {
@@ -348,7 +349,7 @@ const query = reactive({
 
 watchEffect(async () => {
   await fetchPosts()
-})
+},{ deep: true })
 
 function fetchPosts() {
   return request
@@ -380,5 +381,13 @@ function filterByAuthor(id) {
 function filterByType(type) {
   query.page = 1
   query.type = type
+}
+
+function selectedAuthor(id) {
+  if (!id) {
+    return 'Author'
+  }
+
+  return {...results.value.users.find(user => user.id == id)}.name
 }
 </script>
