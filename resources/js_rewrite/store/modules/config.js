@@ -81,7 +81,7 @@ const getters = {
   },
 
   locale(state) {
-    return state.user.locale || state.default_locale
+    return state.user.locale || state.user.default_locale
   },
 
   isContributor(state) {

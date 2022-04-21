@@ -7,6 +7,7 @@ namespace Canvas\Http\Controllers;
 use Canvas\Http\Requests\StoreTagRequest;
 use Canvas\Models\Tag;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
@@ -20,10 +21,16 @@ class TagController extends Controller
      */
     public function index(): JsonResponse
     {
+        $sortAscending = request()->query('sort', 'desc') === 'asc';
+
         return response()->json(
             Tag::query()
                ->select('id', 'name', 'created_at')
-               ->latest()
+                ->when($sortAscending, function (Builder $query) {
+                    return $query->oldest();
+                }, function(Builder $query) {
+                    return $query->latest();
+                })
                ->withCount('posts')
                ->paginate()
         );

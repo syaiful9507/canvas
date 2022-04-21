@@ -21,9 +21,10 @@ const routes = [
     name: 'posts',
     component: PostList,
     props: (route) => ({
-      page: route.query?.page,
-      type: route.query?.type,
       author: route.query?.author,
+      page: route.query?.page,
+      sort: route.query?.sort,
+      type: route.query?.type,
     }),
   },
   {
@@ -40,6 +41,10 @@ const routes = [
     path: '/tags',
     name: 'tags',
     component: TagList,
+    props: (route) => ({
+      page: route.query?.page,
+      sort: route.query?.sort,
+    }),
   },
   {
     path: '/tags/create',
@@ -55,6 +60,10 @@ const routes = [
     path: '/topics',
     name: 'topics',
     component: TopicList,
+    props: (route) => ({
+      page: route.query?.page,
+      sort: route.query?.sort,
+    }),
   },
   {
     path: '/topics/create',
@@ -70,6 +79,10 @@ const routes = [
     path: '/users',
     name: 'users',
     component: UserList,
+    props: (route) => ({
+      page: route.query?.page,
+      sort: route.query?.sort,
+    }),
   },
   {
     path: '/users/create',

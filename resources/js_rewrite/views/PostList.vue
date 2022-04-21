@@ -43,11 +43,10 @@
               </AppLink>
             </nav>
 
-            <div class="bg-white shadow sm:rounded-md">
+            <div class="bg-white shadow rounded-md">
               <div v-if="results">
                 <nav
-                  v-if="results"
-                  class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6 sm:rounded-t-md"
+                  class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6 rounded-t-md"
                 >
                   <div class="flex space-x-4">
                     <AppLink
@@ -55,6 +54,7 @@
                         name: 'posts',
                         query: {
                           ...(query.author && { author: query.author }),
+                          ...(query.sort && { sort: query.sort }),
                           type: 'published',
                         },
                       }"
@@ -64,15 +64,15 @@
                           ? 'bg-gray-100 text-gray-900'
                           : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                       "
-                      @click="filterByType('published') && fetchPosts()"
                     >
-                      Published
+                      {{ results.published_count }} Published
                     </AppLink>
                     <AppLink
                       :to="{
                         name: 'posts',
                         query: {
                           ...(query.author && { author: query.author }),
+                          ...(query.sort && { sort: query.sort }),
                           type: 'draft',
                         },
                       }"
@@ -82,16 +82,18 @@
                           ? 'bg-gray-100 text-gray-900'
                           : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                       "
-                      @click="filterByType('draft') && fetchPosts()"
                     >
-                      Draft
+                      <!-- TODO: Pluralize and localize -->
+                      {{ results.drafts_count }} Draft
                     </AppLink>
+                  </div>
+                  <div class="ml-auto flex space-x-4">
                     <Menu as="div" class="relative inline-block text-left">
                       <div>
                         <MenuButton
                           class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                         >
-                          {{ selectedAuthor(query.author) }}
+                          Author
                           <ChevronDownIcon
                             class="-mr-1 ml-2 h-5 w-5"
                             aria-hidden="true"
@@ -122,6 +124,7 @@
                                   query: {
                                     author: user.id,
                                     ...(query.type && { type: query.type }),
+                                    ...(query.sort && { sort: query.sort }),
                                   },
                                 }"
                                 :class="
@@ -130,7 +133,6 @@
                                     : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                                 "
                                 class="block m-auto px-4 py-2 text-sm"
-                                @click="filterByAuthor(user.id) && fetchPosts()"
                               >
                                 <div class="flex items-center">
                                   <div class="flex-shrink-0">
@@ -144,6 +146,81 @@
                                     {{ user.name }}
                                   </div>
                                 </div>
+                              </AppLink>
+                            </MenuItem>
+                          </div>
+                        </MenuItems>
+                      </transition>
+                    </Menu>
+
+                    <Menu as="div" class="relative inline-block text-left">
+                      <div>
+                        <MenuButton
+                          class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                        >
+                          Sort
+                          <ChevronDownIcon
+                            class="-mr-1 ml-2 h-5 w-5"
+                            aria-hidden="true"
+                          />
+                        </MenuButton>
+                      </div>
+
+                      <transition
+                        enter-active-class="transition ease-out duration-100"
+                        enter-from-class="transform opacity-0 scale-95"
+                        enter-to-class="transform opacity-100 scale-100"
+                        leave-active-class="transition ease-in duration-75"
+                        leave-from-class="transform opacity-100 scale-100"
+                        leave-to-class="transform opacity-0 scale-95"
+                      >
+                        <MenuItems
+                          class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        >
+                          <div class="py-1">
+                            <MenuItem as="div">
+                              <AppLink
+                                :to="{
+                                  name: 'posts',
+                                  query: {
+                                    sort: descending,
+                                    ...(query.type && { type: query.type }),
+                                    ...(query.author && {
+                                      author: query.author,
+                                    }),
+                                  },
+                                }"
+                                :class="
+                                  $route.query?.sort === descending ||
+                                  !$route.query.sort
+                                    ? 'bg-gray-100 text-gray-900'
+                                    : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                                "
+                                class="block m-auto px-4 py-2 text-sm"
+                              >
+                                <div class="flex items-center">Newest</div>
+                              </AppLink>
+                            </MenuItem>
+                            <MenuItem as="div">
+                              <AppLink
+                                :to="{
+                                  name: 'posts',
+                                  query: {
+                                    sort: ascending,
+                                    ...(query.type && { type: query.type }),
+                                    ...(query.author && {
+                                      author: query.author,
+                                    }),
+                                  },
+                                }"
+                                :class="
+                                  $route.query?.sort === ascending
+                                    ? 'bg-gray-100 text-gray-900'
+                                    : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                                "
+                                class="block m-auto px-4 py-2 text-sm"
+                              >
+                                <div class="flex items-center">Oldest</div>
                               </AppLink>
                             </MenuItem>
                           </div>
@@ -212,11 +289,10 @@
                 </ul>
 
                 <nav
-                  v-if="results"
-                  class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 sm:rounded-b-md"
+                  class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 rounded-b-md"
                   aria-label="Pagination"
                 >
-                  <div class="hidden sm:block">
+                  <div class="sm:block">
                     <p class="text-sm text-gray-700">
                       Showing
                       {{ ' ' }}
@@ -233,37 +309,41 @@
                       results
                     </p>
                   </div>
-                  <div class="flex-1 flex justify-between sm:justify-end">
-                    <AppLink
-                      v-if="!!results.posts.prev_page_url"
-                      :to="{
-                        name: 'posts',
-                        query: {
-                          page: results.posts.current_page - 1,
-                          ...(query.author && { author: query.author }),
-                          ...(query.type && { type: query.type }),
-                        },
-                      }"
-                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                      @click="decrementPage() && fetchPosts()"
-                    >
-                      Previous
-                    </AppLink>
-                    <AppLink
-                      v-if="!!results.posts.next_page_url"
-                      :to="{
-                        name: 'posts',
-                        query: {
-                          page: results.posts.current_page + 1,
-                          ...(query.author && { author: query.author }),
-                          ...(query.type && { type: query.type }),
-                        },
-                      }"
-                      class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                      @click="incrementPage() && fetchPosts()"
-                    >
-                      Next
-                    </AppLink>
+                  <div class="ml-auto">
+                    <div class="flex-1 flex justify-between sm:justify-end">
+                      <AppLink
+                        v-if="!!results.posts.prev_page_url"
+                        :to="{
+                          name: 'posts',
+                          query: {
+                            page: results.posts.current_page - 1,
+                            ...(query.author && { author: query.author }),
+                            ...(query.type && { type: query.type }),
+                            ...(query.sort && { sort: query.sort }),
+                          },
+                        }"
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        @click="decrementPage() && fetchPosts()"
+                      >
+                        Previous
+                      </AppLink>
+                      <AppLink
+                        v-if="!!results.posts.next_page_url"
+                        :to="{
+                          name: 'posts',
+                          query: {
+                            page: results.posts.current_page + 1,
+                            ...(query.author && { author: query.author }),
+                            ...(query.type && { type: query.type }),
+                            ...(query.sort && { sort: query.sort }),
+                          },
+                        }"
+                        class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        @click="incrementPage() && fetchPosts()"
+                      >
+                        Next
+                      </AppLink>
+                    </div>
                   </div>
                 </nav>
               </div>
@@ -322,15 +402,19 @@ import dateFromNow from '@/utils/dateFromNow'
 import request from '@/utils/request'
 
 const props = defineProps({
+  author: {
+    type: String,
+    default: '',
+  },
   page: {
     type: String,
     default: '',
   },
-  type: {
+  sort: {
     type: String,
     default: '',
   },
-  author: {
+  type: {
     type: String,
     default: '',
   },
@@ -340,10 +424,13 @@ const store = useStore()
 const trans = computed(() => store.getters['config/trans'])
 const locale = computed(() => store.getters['config/locale'])
 const results = ref(null)
+const ascending = ref('asc')
+const descending = ref('desc')
 const query = reactive({
   page: props.page || 1,
   type: props.type || null,
   author: props.author || null,
+  sort: props.sort || null,
 })
 
 watchEffect(async () => {
@@ -357,6 +444,7 @@ function fetchPosts() {
         ...(query.page > 1 && { page: query.page }),
         ...(query.author && { author: query.author }),
         ...(query.type && { type: query.type }),
+        ...(query.sort && { sort: query.sort }),
       },
     })
     .then(({ data }) => {
@@ -370,21 +458,5 @@ function incrementPage() {
 
 function decrementPage() {
   query.page--
-}
-
-function filterByAuthor(id) {
-  query.page = 1
-  query.author = id
-}
-
-function filterByType(type) {
-  query.page = 1
-  query.type = type
-}
-
-function selectedAuthor(id) {
-  return (
-    { ...results.value.users.find((user) => user.id == id) }?.name || 'Author'
-  )
 }
 </script>
