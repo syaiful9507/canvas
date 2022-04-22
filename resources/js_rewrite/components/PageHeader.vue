@@ -101,7 +101,7 @@
               leave-to-class="transform opacity-0 scale-95"
             >
               <MenuItems
-                class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
               >
                 <div class="px-4 py-3">
                   <p class="text-sm font-medium text-gray-900 truncate">
@@ -111,27 +111,29 @@
                     {{ user.email }}
                   </p>
                 </div>
-                <MenuItem>
-                  <AppLink
-                    :to="{
-                      name: 'show-user',
-                      params: { id: user.id },
-                    }"
-                    class="block px-4 py-2 text-sm"
-                    inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
-                    active-class="bg-gray-100 text-gray-900"
-                  >
-                    {{ trans.your_profile }}
-                  </AppLink>
-                </MenuItem>
-                <MenuItem>
-                  <a
-                    class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
-                    @click="logout"
-                  >
-                    {{ trans.sign_out }}
-                  </a>
-                </MenuItem>
+                <div>
+                  <MenuItem>
+                    <AppLink
+                      :to="{
+                        name: 'show-user',
+                        params: { id: user.id },
+                      }"
+                      class="block px-4 py-2 text-sm"
+                      inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+                      active-class="bg-gray-100 text-gray-900"
+                    >
+                      {{ trans.your_profile }}
+                    </AppLink>
+                  </MenuItem>
+                  <MenuItem>
+                    <a
+                      class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
+                      @click="logout"
+                    >
+                      {{ trans.sign_out }}
+                    </a>
+                  </MenuItem>
+                </div>
               </MenuItems>
             </transition>
           </Menu>

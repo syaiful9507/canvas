@@ -45,7 +45,16 @@
       "plugin:vue/vue3-recommended",
       "prettier"
     ],
-    "rules": {}
+    "rules": {
+      "vue/multi-word-component-names": [
+        "error",
+        {
+          "ignores": [
+            "Dashboard"
+          ]
+        }
+      ]
+    }
   },
   "prettier": {
     "semi": false,

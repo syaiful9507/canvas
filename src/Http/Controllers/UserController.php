@@ -8,6 +8,7 @@ use Canvas\Canvas;
 use Canvas\Http\Requests\StoreUserRequest;
 use Canvas\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Arr;
@@ -23,10 +24,16 @@ class UserController extends Controller
      */
     public function index(): JsonResponse
     {
+        $sortAscending = request()->query('sort', 'desc') === 'asc';
+
         return response()->json(
             User::query()
                 ->select('id', 'name', 'email', 'avatar', 'role')
-                ->latest()
+                ->when($sortAscending, function (Builder $query) {
+                    return $query->oldest();
+                }, function (Builder $query) {
+                    return $query->latest();
+                })
                 ->withCount('posts')
                 ->paginate()
         );

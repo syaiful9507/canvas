@@ -7,6 +7,7 @@ namespace Canvas\Http\Controllers;
 use Canvas\Http\Requests\StoreTopicRequest;
 use Canvas\Models\Topic;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
@@ -20,12 +21,18 @@ class TopicController extends Controller
      */
     public function index(): JsonResponse
     {
+        $sortAscending = request()->query('sort', 'desc') === 'asc';
+
         return response()->json(
             Topic::query()
-                 ->select('id', 'name', 'created_at')
-                 ->latest()
-                 ->withCount('posts')
-                 ->paginate()
+               ->select('id', 'name', 'created_at')
+                ->when($sortAscending, function (Builder $query) {
+                    return $query->oldest();
+                }, function (Builder $query) {
+                    return $query->latest();
+                })
+               ->withCount('posts')
+               ->paginate()
         );
     }
 
