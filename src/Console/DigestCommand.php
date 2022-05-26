@@ -34,13 +34,15 @@ class DigestCommand extends Command
      */
     public function handle()
     {
-        $startDate = today()->subDays(7)->startOfDay();
+        $startDate = today()->subWeek()->startOfDay();
         $endDate = today()->endOfDay();
 
-        $recipients = User::query()->whereIn('id', Post::published()->pluck('user_id')->unique())->get();
+        $recipients = User::query()
+                          ->whereIn('id', Post::query()->published()->pluck('user_id')->unique())
+                          ->get();
 
         foreach ($recipients as $user) {
-            if ($user->digest != true) {
+            if (!$user->digest) {
                 continue;
             }
 

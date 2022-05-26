@@ -18,7 +18,7 @@ class UserCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'canvas:user { role : The role to be assigned }';
+    protected $signature = 'canvas:user { role=contributor : The role to assign the new user(contributor,editor,admin) }';
 
     /**
      * The console command description.
@@ -56,7 +56,7 @@ class UserCommand extends Command
                 break;
 
             default:
-                $this->error('Please enter a valid role. [contributor|editor|admin]');
+                $this->error('Please enter a valid role. (contributor,editor,admin)');
 
                 return;
         }

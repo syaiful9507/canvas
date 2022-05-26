@@ -35,7 +35,7 @@ class UserCommandTest extends TestCase
     {
         $this->artisan('canvas:user ad')
              ->assertExitCode(0)
-             ->expectsOutput('Please enter a valid role. [contributor|editor|admin]');
+             ->expectsOutput('Please enter a valid role. (contributor,editor,admin)');
     }
 
     public function testCanvasUserCommandCanCreateANewContributor(): void
