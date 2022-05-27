@@ -25,7 +25,7 @@ class DigestCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Send the weekly email digest';
+    protected $description = 'Send a weekly email digest to users with published content';
 
     /**
      * Execute the console command.

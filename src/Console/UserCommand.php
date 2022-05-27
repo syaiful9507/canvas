@@ -52,8 +52,7 @@ class UserCommand extends Command
             'What role should the user have?',
             User::roles(),
             User::$contributor_id,
-            $maxAttempts = 3,
-            $allowMultipleSelections = false
+            3
         );
 
         User::query()->create([
