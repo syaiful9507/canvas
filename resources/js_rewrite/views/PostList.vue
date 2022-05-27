@@ -388,7 +388,7 @@
 </template>
 
 <script setup>
-import { computed, ref, reactive, defineProps, watchEffect } from 'vue'
+import { computed, ref, reactive, watchEffect } from 'vue'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'

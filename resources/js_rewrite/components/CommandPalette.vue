@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { computed, defineExpose, ref, onMounted, watchEffect } from 'vue'
+import { computed, ref, onMounted, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { SearchIcon } from '@heroicons/vue/solid'

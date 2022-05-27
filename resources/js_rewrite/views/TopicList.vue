@@ -262,7 +262,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps, reactive, ref, watchEffect } from 'vue'
+import { computed, reactive, ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
 import {
