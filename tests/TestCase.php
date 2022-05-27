@@ -124,15 +124,15 @@ abstract class TestCase extends OrchestraTestCase
     protected function createTestUsers(): void
     {
         $this->contributor = factory(User::class)->create([
-            'role' => User::$contributor,
+            'role' => User::$contributor_id,
         ]);
 
         $this->editor = factory(User::class)->create([
-            'role' => User::$editor,
+            'role' => User::$editor_id,
         ]);
 
         $this->admin = factory(User::class)->create([
-            'role' => User::$admin,
+            'role' => User::$admin_id,
         ]);
     }
 }

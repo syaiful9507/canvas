@@ -22,7 +22,7 @@ class ViewController extends Controller
                 'languageCodes' => Canvas::availableLanguageCodes(),
                 'maxUpload' => config('canvas.upload_filesize'),
                 'path' => Canvas::basePath(),
-                'roles' => User::availableRoles(),
+                'roles' => User::roles(),
                 'timezone' => config('app.timezone'),
                 'translations' => Canvas::availableTranslations(request()->user('canvas')->locale),
                 'unsplash' => config('canvas.unsplash.access_key'),

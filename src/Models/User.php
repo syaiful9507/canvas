@@ -123,7 +123,7 @@ class User extends Authenticatable
      */
     public function getIsContributorAttribute(): bool
     {
-        return is_null($this->role) || $this->role === self::$contributor;
+        return is_null($this->role) || $this->role === self::$contributor_id;
     }
 
     /**
@@ -133,7 +133,7 @@ class User extends Authenticatable
      */
     public function getIsEditorAttribute(): bool
     {
-        return $this->role === self::$editor;
+        return $this->role === self::$editor_id;
     }
 
     /**
@@ -143,7 +143,7 @@ class User extends Authenticatable
      */
     public function getIsAdminAttribute(): bool
     {
-        return $this->role === self::$admin;
+        return $this->role === self::$admin_id;
     }
 
     /**

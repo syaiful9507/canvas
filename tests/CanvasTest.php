@@ -35,10 +35,10 @@ class CanvasTest extends TestCase
         $this->markTestSkipped();
 
         $this->assertSame([
-            User::$contributor => 'Contributor',
-            User::$editor => 'Editor',
-            User::$admin => 'Admin',
-        ], User::availableRoles());
+            User::$contributor_id => 'Contributor',
+            User::$editor_id => 'Editor',
+            User::$admin_id => 'Admin',
+        ], User::roles());
     }
 
     public function testAssetsAreUpToDate(): void
