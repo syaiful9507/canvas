@@ -1,6 +1,10 @@
 <template>
-  <TransitionRoot :show="isOpen" as="template" @after-leave="query = ''" appear>
-    <Dialog as="div" class="fixed inset-0 z-10 overflow-y-auto p-4 sm:p-6 md:p-20" @close="hide">
+  <TransitionRoot :show="isOpen" as="template" appear @after-leave="query = ''">
+    <Dialog
+      as="div"
+      class="fixed inset-0 z-10 overflow-y-auto p-4 sm:p-6 md:p-20"
+      @close="hide"
+    >
       <TransitionChild
         as="template"
         enter="ease-out duration-300"
@@ -90,7 +94,6 @@ import {
   ComboboxOption,
   Dialog,
   DialogPanel,
-  DialogOverlay,
   TransitionChild,
   TransitionRoot,
 } from '@headlessui/vue'

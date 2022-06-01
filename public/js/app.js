@@ -20308,7 +20308,6 @@ __webpack_require__.r(__webpack_exports__);
       ComboboxOption: _headlessui_vue__WEBPACK_IMPORTED_MODULE_4__.ComboboxOption,
       Dialog: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.Dialog,
       DialogPanel: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.DialogPanel,
-      DialogOverlay: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.DialogOverlay,
       TransitionChild: _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.TransitionChild,
       TransitionRoot: _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.TransitionRoot
     };
@@ -21225,10 +21224,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)($setup["TransitionRoot"], {
     show: $setup.isOpen,
     as: "template",
+    appear: "",
     onAfterLeave: _cache[1] || (_cache[1] = function ($event) {
       return $setup.query = '';
-    }),
-    appear: ""
+    })
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Dialog"], {
