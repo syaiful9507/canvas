@@ -40,7 +40,7 @@ class CanvasServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadViewsFrom(dirname(__DIR__).'/resources/views', 'canvas');
-        $this->loadTranslationsFrom(dirname(__DIR__).'/resources/lang', 'canvas');
+        $this->loadTranslationsFrom(dirname(__DIR__).'/lang', 'canvas');
 
         $this->configurePublishing();
         $this->configureRoutes();
@@ -157,7 +157,7 @@ class CanvasServiceProvider extends ServiceProvider
             ], 'canvas-config');
 
             $this->publishes([
-                dirname(__DIR__).'/resources/lang' => resource_path('lang/vendor/canvas'),
+                dirname(__DIR__).'/lang' => resource_path('lang/vendor/canvas'),
             ], 'canvas-lang');
 
             $this->publishes([

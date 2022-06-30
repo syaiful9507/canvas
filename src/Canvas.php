@@ -41,7 +41,7 @@ class Canvas
      */
     public static function availableLanguageCodes(): array
     {
-        $locales = preg_grep('/^([^.])/', scandir(dirname(__DIR__).'/resources/lang'));
+        $locales = preg_grep('/^([^.])/', scandir(dirname(__DIR__).'/lang'));
 
         return collect($locales)->each(function ($code) {
             return $code;
