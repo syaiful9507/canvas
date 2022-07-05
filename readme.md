@@ -17,8 +17,8 @@ Canvas is a fully open source package to extend your existing [Laravel](https://
 
 ## System Requirements
 
-- PHP >= 7.3
-- Laravel >= 6.0
+- PHP >= 8.0
+- Laravel >= 9.0
 - One of the [five supported databases](https://laravel.com/docs/9.x/database#introduction) by Laravel
 
 ## Installation
