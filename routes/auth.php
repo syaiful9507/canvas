@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Canvas\Http\Controllers\Auth\AuthenticatedSessionController;
 use Canvas\Http\Controllers\Auth\NewPasswordController;
 use Canvas\Http\Controllers\Auth\PasswordResetLinkController;

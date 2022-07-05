@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Canvas\Http\Controllers\PostController;
 use Canvas\Http\Controllers\SearchController;
 use Canvas\Http\Controllers\TagController;

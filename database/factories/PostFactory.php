@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /* @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(\Canvas\Models\Post::class, function (Faker\Generator $faker) {
     return [
