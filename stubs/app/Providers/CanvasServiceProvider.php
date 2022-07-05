@@ -27,13 +27,13 @@ class CanvasServiceProvider extends ServiceProvider
         $this->app->booted(function () {
             $schedule = resolve(Schedule::class);
             $schedule->command('canvas:digest')
-                ->weekly()
-                ->mondays()
-                ->timezone(config('app.timezone'))
-                ->at('08:00')
-                ->when(function () {
-                    return config('canvas.mail.enabled');
-                });
+                     ->weekly()
+                     ->mondays()
+                     ->timezone(config('app.timezone'))
+                     ->at('08:00')
+                     ->when(function () {
+                         return config('canvas.mail.enabled');
+                     });
         });
     }
 }

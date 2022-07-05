@@ -147,24 +147,26 @@ class CanvasServiceProvider extends ServiceProvider
      */
     private function configurePublishing(): void
     {
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                dirname(__DIR__).'/public' => public_path('vendor/canvas'),
-            ], 'canvas-assets');
-
-            $this->publishes([
-                dirname(__DIR__).'/config/canvas.php' => config_path('canvas.php'),
-            ], 'canvas-config');
-
-            $this->publishes([
-                dirname(__DIR__).'/lang' => resource_path('lang/vendor/canvas'),
-            ], 'canvas-lang');
-
-            $this->publishes([
-                dirname(__DIR__).'/resources/stubs/CanvasServiceProvider.stub' => app_path(
-                    'Providers/CanvasServiceProvider.php'
-                ),
-            ], 'canvas-provider');
+        if (! $this->app->runningInConsole()) {
+            return;
         }
+
+        $this->publishes([
+            dirname(__DIR__).'/public' => public_path('vendor/canvas'),
+        ], 'canvas-assets');
+
+        $this->publishes([
+            dirname(__DIR__).'/config/canvas.php' => config_path('canvas.php'),
+        ], 'canvas-config');
+
+        $this->publishes([
+            dirname(__DIR__).'/lang' => resource_path('lang/vendor/canvas'),
+        ], 'canvas-lang');
+
+        $this->publishes([
+            dirname(__DIR__).'/stubs/app/Providers/CanvasServiceProvider.php' => app_path(
+                'Providers/CanvasServiceProvider.php'
+            ),
+        ], 'canvas-provider');
     }
 }
