@@ -1,7 +1,7 @@
-import request from '../../mixins/request'
+import request from '@/utils/request'
 
 const initialState = {
-  searchIndex: [],
+  index: [],
 }
 
 const state = { ...initialState }
@@ -12,48 +12,38 @@ const actions = {
       context.commit('RESET_STATE')
     }
 
-    request.methods
-      .request()
-      .get('/api/search/posts')
-      .then(({ data }) => {
+    request.get('/api/search/posts').then(({ data }) => {
+      context.commit('UPDATE_INDEX', data)
+    })
+
+    if (context.rootGetters['config/isAdmin']) {
+      request.get('/api/search/tags').then(({ data }) => {
         context.commit('UPDATE_INDEX', data)
       })
-
-    if (context.rootGetters['settings/isAdmin']) {
-      request.methods
-        .request()
-        .get('/api/search/tags')
-        .then(({ data }) => {
-          context.commit('UPDATE_INDEX', data)
-        })
-      request.methods
-        .request()
-        .get('/api/search/topics')
-        .then(({ data }) => {
-          context.commit('UPDATE_INDEX', data)
-        })
-      request.methods
-        .request()
-        .get('/api/search/users')
-        .then(({ data }) => {
-          context.commit('UPDATE_INDEX', data)
-        })
+      request.get('/api/search/topics').then(({ data }) => {
+        context.commit('UPDATE_INDEX', data)
+      })
+      request.get('/api/search/users').then(({ data }) => {
+        context.commit('UPDATE_INDEX', data)
+      })
     }
   },
 }
 
 const mutations = {
   UPDATE_INDEX(state, data) {
-    state.searchIndex.push(...data)
+    state.index.push(...data)
   },
 
   RESET_STATE(state) {
-    state.searchIndex = []
+    state.index = []
   },
 }
 
 const getters = {
-  //
+  index(state) {
+    return state.index
+  },
 }
 
 export default {

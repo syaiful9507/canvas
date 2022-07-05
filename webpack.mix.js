@@ -29,12 +29,11 @@ mix
     },
   })
   .setPublicPath('public')
-  // .js('resources/js/app.js', 'public/js')
-  .js('resources/js_rewrite/app.js', 'public/js')
+  .js('resources/js/app.js', 'public/js')
   .vue({ version: 3 })
   .postCss('resources/css/app.css', 'public/css', [require('tailwindcss')])
   .alias({
-    '@': 'resources/js_rewrite',
+    '@': 'resources/js',
   })
 
 if (mix.inProduction()) {

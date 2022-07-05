@@ -1,13 +1,10 @@
 <template>
-  <h1>Welcome to Canvas!</h1>
+  <div class="min-h-full">
+    <PageHeader></PageHeader>
+    <RouterView :key="$route.query"></RouterView>
+  </div>
 </template>
 
-<script>
-export default {
-  setup() {
-    return {
-      //
-    }
-  },
-}
+<script setup>
+import PageHeader from '@/components/PageHeader'
 </script>

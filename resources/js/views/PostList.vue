@@ -1,280 +1,462 @@
 <template>
-  <section>
-    <page-header>
-      <template slot="options">
-        <div class="dropdown">
-          <a
-            id="navbarDropdown"
-            class="nav-link pr-1"
-            href="#"
-            role="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="25"
-              class="icon-dots-horizontal"
-            >
-              <path
-                class="fill-light-gray"
-                fill-rule="evenodd"
-                d="M5 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm7 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm7 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"
-              />
-            </svg>
-          </a>
-
-          <div class="dropdown-menu dropdown-menu-right">
-            <router-link :to="{ name: 'create-post' }" class="dropdown-item">
-              {{ trans.new_post }}
-            </router-link>
-          </div>
-        </div>
-      </template>
-    </page-header>
-
-    <main v-if="isReady" class="py-4">
-      <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
-        <div class="d-flex justify-content-between mt-2 mb-4 align-items-end">
-          <h3 class="mt-2">{{ trans.posts }}</h3>
-
-          <select
-            v-model="type"
-            id=""
-            name=""
-            class="ml-auto w-auto custom-select border-0"
-            @change="changeType"
-          >
-            <option value="published">
-              {{ trans.published }} ({{ suffixedNumber(publishedCount) }})
-            </option>
-            <option value="draft">
-              {{ trans.draft }} ({{ suffixedNumber(draftCount) }})
-            </option>
-          </select>
-        </div>
-
-        <div class="mt-5 card shadow-lg">
-          <div class="card-body p-0">
-            <div :key="`${index}-${post.id}`" v-for="(post, index) in posts">
-              <router-link
-                :to="{
-                  name: 'edit-post',
-                  params: { id: post.id },
-                }"
-                class="text-decoration-none"
-              >
-                <div
-                  v-hover="{ class: `hover-bg` }"
-                  class="d-flex p-3 align-items-center"
-                  :class="{
-                    'border-top': index !== 0,
-                    'rounded-top': index === 0,
-                    'rounded-bottom': index === posts.length - 1,
-                  }"
-                >
-                  <div class="pl-2 col-md-8 col-sm-10 col-10 py-1">
-                    <p class="text-truncate lead font-weight-bold mb-0">
-                      {{ post.title }}
-                    </p>
-                    <p
-                      v-if="post.summary"
-                      class="text-truncate text-secondary my-1"
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+      <div class="py-10">
+        <main>
+          <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <nav class="flex pb-5" aria-label="Breadcrumb">
+              <ol role="list" class="flex items-center space-x-4">
+                <li>
+                  <div class="flex items-center">
+                    <AppLink
+                      :to="{ name: 'dashboard' }"
+                      class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
                     >
-                      {{ post.summary }}
-                    </p>
-                    <p class="text-secondary mt-1 mb-0">
-                      <span v-if="isPublished(post.published_at)">
-                        {{ trans.published }}
-                        {{ moment(post.published_at).fromNow() }}
-                      </span>
-
-                      <span
-                        v-if="isDraft(post.published_at)"
-                        class="text-danger"
-                        >{{ trans.draft }}</span
-                      >
-
-                      <span class="d-none d-md-inline">
-                        ― {{ trans.updated }}
-                        {{ moment(post.updated_at).fromNow() }}
-                      </span>
+                      {{ trans.dashboard }}
+                    </AppLink>
+                  </div>
+                </li>
+                <li>
+                  <div class="flex items-center">
+                    <svg
+                      class="flex-shrink-0 h-5 w-5 text-gray-300"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                    >
+                      <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+                    </svg>
+                    <p class="ml-4 text-sm font-medium text-gray-500">
+                      {{ trans.posts }}
                     </p>
                   </div>
-                  <div class="ml-auto d-none d-md-inline pl-3">
-                    <div
-                      id="featuredImage"
-                      v-if="post.featured_image"
-                      class="mr-2 ml-3 shadow-inner"
-                      :style="{
-                        backgroundImage: 'url(' + post.featured_image + ')',
+                </li>
+              </ol>
+
+              <AppLink
+                :to="{ name: 'create-post' }"
+                class="inline-flex items-center ml-auto mr-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+              >
+                <PlusIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                {{ trans.new_post }}
+              </AppLink>
+            </nav>
+
+            <div class="bg-white shadow rounded-md">
+              <div v-if="results">
+                <nav
+                  class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6 rounded-t-md"
+                >
+                  <div class="flex space-x-4">
+                    <AppLink
+                      :to="{
+                        name: 'posts',
+                        query: {
+                          ...(query.author && { author: query.author }),
+                          ...(query.sort && { sort: query.sort }),
+                          type: 'published',
+                        },
                       }"
-                    />
-                    <div v-else class="mx-3 align-middle">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="45"
-                        viewBox="0 0 24 24"
-                        class="icon-camera"
+                      class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
+                      :class="
+                        $route.query?.type != 'draft'
+                          ? 'bg-gray-100 text-gray-900'
+                          : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                      "
+                    >
+                      {{ results.published_count }} Published
+                    </AppLink>
+                    <AppLink
+                      :to="{
+                        name: 'posts',
+                        query: {
+                          ...(query.author && { author: query.author }),
+                          ...(query.sort && { sort: query.sort }),
+                          type: 'draft',
+                        },
+                      }"
+                      class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
+                      :class="
+                        $route.query?.type === 'draft'
+                          ? 'bg-gray-100 text-gray-900'
+                          : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                      "
+                    >
+                      <!-- TODO: Pluralize and localize -->
+                      {{ results.drafts_count }} Draft
+                    </AppLink>
+                  </div>
+                  <div class="ml-auto flex space-x-4">
+                    <Menu as="div" class="relative inline-block text-left">
+                      <div>
+                        <MenuButton
+                          class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                        >
+                          Author
+                          <ChevronDownIcon
+                            class="-mr-1 ml-2 h-5 w-5"
+                            aria-hidden="true"
+                          />
+                        </MenuButton>
+                      </div>
+
+                      <transition
+                        enter-active-class="transition ease-out duration-100"
+                        enter-from-class="transform opacity-0 scale-95"
+                        enter-to-class="transform opacity-100 scale-100"
+                        leave-active-class="transition ease-in duration-75"
+                        leave-from-class="transform opacity-100 scale-100"
+                        leave-to-class="transform opacity-0 scale-95"
                       >
-                        <path
-                          class="fill-light-gray"
-                          d="M6.59 6l2.7-2.7A1 1 0 0 1 10 3h4a1 1 0 0 1 .7.3L17.42 6H20a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8c0-1.1.9-2 2-2h2.59zM19 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-7 8a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"
-                        />
-                        <path
-                          class="fill-light-gray"
-                          d="M12 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
-                        />
-                      </svg>
+                        <MenuItems
+                          class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        >
+                          <div class="py-1">
+                            <MenuItem
+                              v-for="user in results.users"
+                              :key="user.id"
+                              as="div"
+                            >
+                              <AppLink
+                                :to="{
+                                  name: 'posts',
+                                  query: {
+                                    author: user.id,
+                                    ...(query.type && { type: query.type }),
+                                    ...(query.sort && { sort: query.sort }),
+                                  },
+                                }"
+                                :class="
+                                  $route.query?.author === user.id
+                                    ? 'bg-gray-100 text-gray-900'
+                                    : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                                "
+                                class="block m-auto px-4 py-2 text-sm"
+                              >
+                                <div class="flex items-center">
+                                  <div class="flex-shrink-0">
+                                    <img
+                                      class="h-6 w-6 rounded-full"
+                                      :src="user.avatar || user.default_avatar"
+                                      :alt="user.name"
+                                    />
+                                  </div>
+                                  <div class="ml-3">
+                                    {{ user.name }}
+                                  </div>
+                                </div>
+                              </AppLink>
+                            </MenuItem>
+                          </div>
+                        </MenuItems>
+                      </transition>
+                    </Menu>
+
+                    <Menu as="div" class="relative inline-block text-left">
+                      <div>
+                        <MenuButton
+                          class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                        >
+                          Sort
+                          <ChevronDownIcon
+                            class="-mr-1 ml-2 h-5 w-5"
+                            aria-hidden="true"
+                          />
+                        </MenuButton>
+                      </div>
+
+                      <transition
+                        enter-active-class="transition ease-out duration-100"
+                        enter-from-class="transform opacity-0 scale-95"
+                        enter-to-class="transform opacity-100 scale-100"
+                        leave-active-class="transition ease-in duration-75"
+                        leave-from-class="transform opacity-100 scale-100"
+                        leave-to-class="transform opacity-0 scale-95"
+                      >
+                        <MenuItems
+                          class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        >
+                          <div class="py-1">
+                            <MenuItem as="div">
+                              <AppLink
+                                :to="{
+                                  name: 'posts',
+                                  query: {
+                                    sort: descending,
+                                    ...(query.type && { type: query.type }),
+                                    ...(query.author && {
+                                      author: query.author,
+                                    }),
+                                  },
+                                }"
+                                :class="
+                                  $route.query?.sort === descending ||
+                                  !$route.query.sort
+                                    ? 'bg-gray-100 text-gray-900'
+                                    : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                                "
+                                class="block m-auto px-4 py-2 text-sm"
+                              >
+                                <div class="flex items-center">Newest</div>
+                              </AppLink>
+                            </MenuItem>
+                            <MenuItem as="div">
+                              <AppLink
+                                :to="{
+                                  name: 'posts',
+                                  query: {
+                                    sort: ascending,
+                                    ...(query.type && { type: query.type }),
+                                    ...(query.author && {
+                                      author: query.author,
+                                    }),
+                                  },
+                                }"
+                                :class="
+                                  $route.query?.sort === ascending
+                                    ? 'bg-gray-100 text-gray-900'
+                                    : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                                "
+                                class="block m-auto px-4 py-2 text-sm"
+                              >
+                                <div class="flex items-center">Oldest</div>
+                              </AppLink>
+                            </MenuItem>
+                          </div>
+                        </MenuItems>
+                      </transition>
+                    </Menu>
+                  </div>
+                </nav>
+
+                <ul role="list" class="divide-y divide-gray-200">
+                  <li v-for="post in results.posts.data" :key="post.id">
+                    <AppLink
+                      :to="{
+                        name: 'show-post',
+                        params: { id: post.id },
+                      }"
+                      class="block hover:bg-gray-50 cursor-pointer"
+                    >
+                      <div class="flex items-center px-4 py-4 sm:px-6">
+                        <div class="min-w-0 flex-1 flex items-center">
+                          <div class="flex-shrink-0">
+                            <img
+                              v-if="post.featured_image"
+                              class="h-12 w-12 rounded-full"
+                              :src="post.featured_image"
+                              :alt="post.title"
+                            />
+                            <div
+                              v-else
+                              class="h-12 w-12 inline-flex justify-center items-center rounded-full bg-gray-100"
+                            >
+                              <CameraIcon
+                                class="h-6 w-6 text-gray-400"
+                                aria-hidden="true"
+                              />
+                            </div>
+                          </div>
+                          <div
+                            class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4"
+                          >
+                            <div>
+                              <p
+                                class="text-sm font-medium text-indigo-600 truncate"
+                              >
+                                {{ post.title }}
+                              </p>
+                              <p
+                                class="mt-2 flex items-center text-sm text-gray-500"
+                              >
+                                <span>{{
+                                  dateFromNow(post.created_at, locale)
+                                }}</span>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <ChevronRightIcon
+                            class="h-5 w-5 text-gray-400"
+                            aria-hidden="true"
+                          />
+                        </div>
+                      </div>
+                    </AppLink>
+                  </li>
+                </ul>
+
+                <nav
+                  class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 rounded-b-md"
+                  aria-label="Pagination"
+                >
+                  <div class="sm:block">
+                    <p class="text-sm text-gray-700">
+                      Showing
+                      {{ ' ' }}
+                      <span class="font-medium">{{ results.posts.from }}</span>
+                      {{ ' ' }}
+                      to
+                      {{ ' ' }}
+                      <span class="font-medium">{{ results.posts.to }}</span>
+                      {{ ' ' }}
+                      of
+                      {{ ' ' }}
+                      <span class="font-medium">{{ results.posts.total }}</span>
+                      {{ ' ' }}
+                      results
+                    </p>
+                  </div>
+                  <div class="ml-auto">
+                    <div class="flex-1 flex justify-between sm:justify-end">
+                      <AppLink
+                        v-if="!!results.posts.prev_page_url"
+                        :to="{
+                          name: 'posts',
+                          query: {
+                            page: results.posts.current_page - 1,
+                            ...(query.author && { author: query.author }),
+                            ...(query.type && { type: query.type }),
+                            ...(query.sort && { sort: query.sort }),
+                          },
+                        }"
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        @click="decrementPage() && fetchPosts()"
+                      >
+                        Previous
+                      </AppLink>
+                      <AppLink
+                        v-if="!!results.posts.next_page_url"
+                        :to="{
+                          name: 'posts',
+                          query: {
+                            page: results.posts.current_page + 1,
+                            ...(query.author && { author: query.author }),
+                            ...(query.type && { type: query.type }),
+                            ...(query.sort && { sort: query.sort }),
+                          },
+                        }"
+                        class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        @click="incrementPage() && fetchPosts()"
+                      >
+                        Next
+                      </AppLink>
                     </div>
                   </div>
+                </nav>
+              </div>
 
-                  <div class="d-inline d-md-none pl-3 ml-auto">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      viewBox="0 0 24 24"
-                      class="icon-cheveron-right-circle"
-                    >
-                      <circle cx="12" cy="12" r="10" style="fill: none" />
-                      <path
-                        class="fill-light-gray"
-                        d="M10.3 8.7a1 1 0 0 1 1.4-1.4l4 4a1 1 0 0 1 0 1.4l-4 4a1 1 0 0 1-1.4-1.4l3.29-3.3-3.3-3.3z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </router-link>
-            </div>
-
-            <infinite-loading
-              :identifier="infiniteId"
-              spinner="spiral"
-              @infinite="fetchPosts"
-            >
-              <span slot="no-more" />
-              <div slot="no-results" class="text-left">
-                <div class="my-5">
-                  <p class="lead text-center text-muted mt-5">
-                    <span v-if="type === 'published'">{{
-                      trans.you_have_no_published_posts
-                    }}</span>
-                    <span v-else>{{ trans.you_have_no_draft_posts }}</span>
-                  </p>
-                  <p class="lead text-center text-muted mt-1">
-                    {{ trans.write_on_the_go }}
-                  </p>
+              <div v-else class="text-center py-8">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="mx-auto h-12 w-12 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="1"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">
+                  {{ trans.no_posts }}
+                </h3>
+                <p class="mt-1 text-sm text-gray-500">
+                  {{ trans.get_started_by_creating_a_new_post }}
+                </p>
+                <div class="mt-6">
+                  <button
+                    type="button"
+                    class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    <PlusIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                    {{ trans.new_post }}
+                  </button>
                 </div>
               </div>
-            </infinite-loading>
+            </div>
           </div>
-        </div>
+        </main>
       </div>
-    </main>
-  </section>
+    </div>
+  </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import Hover from '../directives/Hover'
-import InfiniteLoading from 'vue-infinite-loading'
-import NProgress from 'nprogress'
-import PageHeader from '../components/PageHeader'
-import isEmpty from 'lodash/isEmpty'
-import status from '../mixins/status'
-import strings from '../mixins/strings'
+<script setup>
+import { computed, ref, reactive, watchEffect } from 'vue'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import { useStore } from 'vuex'
+import AppLink from '@/components/AppLink'
+import {
+  ChevronRightIcon,
+  PlusIcon,
+  CameraIcon,
+  ChevronDownIcon,
+} from '@heroicons/vue/solid'
+import dateFromNow from '@/utils/dateFromNow'
+import request from '@/utils/request'
 
-export default {
-  name: 'post-list',
-
-  components: {
-    InfiniteLoading,
-    PageHeader,
+const props = defineProps({
+  author: {
+    type: String,
+    default: '',
   },
-
-  directives: {
-    Hover,
+  page: {
+    type: String,
+    default: '',
   },
-
-  mixins: [status, strings],
-
-  data() {
-    return {
-      page: 1,
-      posts: [],
-      publishedCount: 0,
-      draftCount: 0,
-      type: 'published',
-      infiniteId: +new Date(),
-      isReady: false,
-    }
+  sort: {
+    type: String,
+    default: '',
   },
-
-  computed: {
-    ...mapGetters({
-      isContributor: 'settings/isContributor',
-      trans: 'settings/trans',
-    }),
+  type: {
+    type: String,
+    default: '',
   },
+})
 
-  created() {
-    this.fetchPosts()
-    this.isReady = true
-    NProgress.done()
-  },
+const store = useStore()
+const trans = computed(() => store.getters['config/trans'])
+const locale = computed(() => store.getters['config/locale'])
+const results = ref(null)
+const ascending = ref('asc')
+const descending = ref('desc')
+const query = reactive({
+  page: props.page || 1,
+  type: props.type || null,
+  author: props.author || null,
+  sort: props.sort || null,
+})
 
-  methods: {
-    fetchPosts($state) {
-      if ($state) {
-        return this.request()
-          .get('/api/posts', {
-            params: {
-              page: this.page,
-              type: this.type,
-              scope: this.isContributor ? 'user' : 'all',
-            },
-          })
-          .then(({ data }) => {
-            this.publishedCount = data.publishedCount
-            this.draftCount = data.draftCount
+watchEffect(async () => {
+  await fetchPosts()
+})
 
-            if (!isEmpty(data) && !isEmpty(data.posts.data)) {
-              this.page += 1
-              this.posts.push(...data.posts.data)
+function fetchPosts() {
+  return request
+    .get('api/posts', {
+      params: {
+        ...(query.page > 1 && { page: query.page }),
+        ...(query.author && { author: query.author }),
+        ...(query.type && { type: query.type }),
+        ...(query.sort && { sort: query.sort }),
+      },
+    })
+    .then(({ data }) => {
+      results.value = data
+    })
+}
 
-              $state.loaded()
-            } else {
-              $state.complete()
-            }
+function incrementPage() {
+  query.page++
+}
 
-            if (isEmpty($state)) {
-              NProgress.inc()
-            }
-          })
-          .catch(() => {
-            NProgress.done()
-          })
-      }
-    },
-
-    changeType() {
-      this.page = 1
-      this.posts = []
-      this.infiniteId += 1
-    },
-  },
+function decrementPage() {
+  query.page--
 }
 </script>
-
-<style scoped>
-#featuredImage {
-  background-size: cover;
-  width: 57px;
-  height: 57px;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-}
-</style>

@@ -1,146 +1,219 @@
 <template>
-  <div class="border-bottom">
-    <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
-      <nav class="navbar d-flex px-0 py-1">
-        <router-link
-          :to="{ name: 'home' }"
-          class="navbar-brand hover font-weight-bolder font-serif mr-3"
+  <Disclosure v-slot="{ open }" as="nav" class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+      <div class="relative flex items-center justify-between h-16">
+        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+          <!-- Mobile menu button -->
+          <DisclosureButton
+            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+          >
+            <MenuIcon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
+            <XIcon v-else class="block h-6 w-6" aria-hidden="true" />
+          </DisclosureButton>
+        </div>
+        <div
+          class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start"
         >
-          Canvas
-        </router-link>
+          <AppLink :to="{ name: 'dashboard' }">
+            <div class="flex-shrink-0 flex items-center">
+              <img
+                class="block lg:hidden h-8 w-auto"
+                src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+                alt="Workflow"
+              />
+              <img
+                class="hidden lg:block h-8 w-auto"
+                src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"
+                alt="Workflow"
+              />
+            </div>
+          </AppLink>
 
-        <slot name="status" />
-
-        <a href="#" class="ml-auto" @click="showSearchModal">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="22"
-            class="icon-search pr-1"
-          >
-            <circle cx="10" cy="10" r="7" style="fill: none" />
-            <path
-              class="fill-light-gray"
-              d="M16.32 14.9l1.1 1.1c.4-.02.83.13 1.14.44l3 3a1.5 1.5 0 0 1-2.12 2.12l-3-3a1.5 1.5 0 0 1-.44-1.14l-1.1-1.1a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"
-            />
-          </svg>
-        </a>
-
-        <slot name="options" />
-
-        <div v-cloak class="dropdown ml-3">
-          <a
-            id="navbarDropdown"
-            href="#"
-            class="nav-link px-0 text-secondary"
-            role="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <img
-              :src="settings.user.avatar || settings.user.default_avatar"
-              :alt="settings.user.name"
-              class="rounded-circle my-0 shadow-inner"
-              style="width: 33px"
-            />
-          </a>
-          <div
-            class="dropdown-menu dropdown-menu-right"
-            aria-labelledby="dropdownMenuButton"
-          >
-            <h6 class="dropdown-header">
-              <strong>{{ settings.user.name }}</strong>
-              <br />
-              {{ settings.user.email }}
-            </h6>
-
-            <div class="dropdown-divider" />
-
-            <router-link
-              :to="{ name: 'edit-user', params: { id: settings.user.id } }"
-              class="dropdown-item"
-            >
-              {{ trans.your_profile }}
-            </router-link>
-            <router-link :to="{ name: 'posts' }" class="dropdown-item">
-              <span>{{ trans.posts }}</span>
-            </router-link>
-            <router-link
-              v-if="isAdmin"
-              :to="{ name: 'users' }"
-              class="dropdown-item"
-            >
-              <span>{{ trans.users }}</span>
-            </router-link>
-            <router-link
-              v-if="isAdmin"
-              :to="{ name: 'tags' }"
-              class="dropdown-item"
-            >
-              <span>{{ trans.tags }}</span>
-            </router-link>
-            <router-link
-              v-if="isAdmin"
-              :to="{ name: 'topics' }"
-              class="dropdown-item"
-            >
-              <span>{{ trans.topics }}</span>
-            </router-link>
-            <router-link :to="{ name: 'stats' }" class="dropdown-item">
-              <span>{{ trans.stats }}</span>
-            </router-link>
-
-            <div class="dropdown-divider" />
-
-            <router-link :to="{ name: 'edit-settings' }" class="dropdown-item">
-              <span>{{ trans.settings }}</span>
-            </router-link>
-            <a href="" class="dropdown-item" @click.prevent="logout">
-              {{ trans.sign_out }}
-            </a>
+          <!-- Desktop main navigation -->
+          <div class="hidden sm:block sm:ml-6">
+            <div class="flex space-x-4">
+              <AppLink
+                :to="{ name: 'posts' }"
+                class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
+                active-class="bg-gray-100 text-gray-900"
+                inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+              >
+                {{ trans.posts }}
+              </AppLink>
+              <AppLink
+                :to="{ name: 'users' }"
+                class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
+                active-class="bg-gray-100 text-gray-900"
+                inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+              >
+                {{ trans.users }}
+              </AppLink>
+              <AppLink
+                :to="{ name: 'tags' }"
+                class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
+                active-class="bg-gray-100 text-gray-900"
+                inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+              >
+                {{ trans.tags }}
+              </AppLink>
+              <AppLink
+                :to="{ name: 'topics' }"
+                class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
+                active-class="bg-gray-100 text-gray-900"
+                inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+              >
+                {{ trans.topics }}
+              </AppLink>
+            </div>
           </div>
         </div>
-      </nav>
+        <div
+          class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
+        >
+          <button
+            type="button"
+            class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            @click="openCommandPalette"
+          >
+            <SearchIcon class="h-6 w-6" aria-hidden="true" />
+            <CommandPalette ref="palette"></CommandPalette>
+          </button>
+
+          <!-- Profile dropdown -->
+          <Menu as="div" class="ml-3 relative">
+            <div>
+              <MenuButton
+                class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+              >
+                <img
+                  class="h-8 w-8 rounded-full"
+                  :src="user.avatar || user.default_avatar"
+                  :alt="user.name"
+                />
+              </MenuButton>
+            </div>
+            <transition
+              enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95"
+              enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75"
+              leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95"
+            >
+              <MenuItems
+                class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+              >
+                <div class="px-4 py-3">
+                  <p class="text-sm font-medium text-gray-900 truncate">
+                    {{ user.name }}
+                  </p>
+                  <p class="text-sm truncate">
+                    {{ user.email }}
+                  </p>
+                </div>
+                <div>
+                  <MenuItem>
+                    <AppLink
+                      :to="{
+                        name: 'show-user',
+                        params: { id: user.id },
+                      }"
+                      class="block px-4 py-2 text-sm"
+                      inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+                      active-class="bg-gray-100 text-gray-900"
+                    >
+                      {{ trans.your_profile }}
+                    </AppLink>
+                  </MenuItem>
+                  <MenuItem>
+                    <a
+                      class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
+                      @click="logout"
+                    >
+                      {{ trans.sign_out }}
+                    </a>
+                  </MenuItem>
+                </div>
+              </MenuItems>
+            </transition>
+          </Menu>
+        </div>
+      </div>
     </div>
 
-    <search-modal ref="searchModal" />
-  </div>
+    <!-- Mobile main navigation -->
+    <DisclosurePanel v-slot="{ close }" class="sm:hidden">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <AppLink
+          :to="{ name: 'posts' }"
+          class="block rounded-md py-2 px-3 text-base font-medium"
+          active-class="bg-gray-100 text-gray-900"
+          inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+          @click="close"
+        >
+          {{ trans.posts }}
+        </AppLink>
+        <AppLink
+          :to="{ name: 'users' }"
+          class="block rounded-md py-2 px-3 text-base font-medium"
+          active-class="bg-gray-100 text-gray-900"
+          inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+          @click="close"
+        >
+          {{ trans.users }}
+        </AppLink>
+        <AppLink
+          :to="{ name: 'tags' }"
+          class="block rounded-md py-2 px-3 text-base font-medium"
+          active-class="bg-gray-100 text-gray-900"
+          inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+          @click="close"
+        >
+          {{ trans.tags }}
+        </AppLink>
+        <AppLink
+          :to="{ name: 'topics' }"
+          class="block rounded-md py-2 px-3 text-base font-medium"
+          active-class="bg-gray-100 text-gray-900"
+          inactive-class="text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+          @click="close"
+        >
+          {{ trans.topics }}
+        </AppLink>
+      </div>
+    </DisclosurePanel>
+  </Disclosure>
 </template>
 
-<script>
-import { mapGetters, mapState } from 'vuex'
-import $ from 'jquery'
-import SearchModal from './modals/SearchModal'
-import { store } from '../store'
+<script setup>
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from '@headlessui/vue'
+import { SearchIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
+import AppLink from '@/components/AppLink'
+import { useStore } from 'vuex'
+import request from '@/utils/request'
+import CommandPalette from '@/components/CommandPalette'
+import { computed, ref } from 'vue'
 
-export default {
-  name: 'page-header',
+const store = useStore()
+const user = computed(() => store.state.config.user)
+const trans = computed(() => store.getters['config/trans'])
+const palette = ref(null)
 
-  components: {
-    SearchModal,
-  },
+function openCommandPalette() {
+  palette.value.show()
+}
 
-  computed: {
-    ...mapState(['settings']),
-    ...mapGetters({
-      isAdmin: 'settings/isAdmin',
-      trans: 'settings/trans',
-    }),
-  },
-
-  methods: {
-    logout() {
-      if (store.state.settings.path === '/') {
-        window.location.href = `/logout`
-      } else {
-        window.location.href = `${store.state.settings.path}/logout`
-      }
-    },
-
-    showSearchModal() {
-      $(this.$refs.searchModal.$el).modal('show')
-    },
-  },
+function logout() {
+  request.post('logout').then(() => {
+    window.location.href = store.state.config.path
+  })
 }
 </script>
