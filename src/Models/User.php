@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use SoftDeletes, HasRole;
+    use HasRole, SoftDeletes;
 
     /**
      * The table associated with the model.
