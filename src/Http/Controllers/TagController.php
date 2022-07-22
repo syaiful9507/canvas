@@ -17,7 +17,7 @@ class TagController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -39,7 +39,7 @@ class TagController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function create(): JsonResponse
     {
@@ -51,9 +51,9 @@ class TagController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Canvas\Http\Requests\StoreTagRequest  $request
+     * @param StoreTagRequest $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(StoreTagRequest $request, $id): JsonResponse
     {
@@ -84,7 +84,7 @@ class TagController extends Controller
      * Display the specified resource.
      *
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show($id): JsonResponse
     {
@@ -97,7 +97,7 @@ class TagController extends Controller
      * Display the specified relationship.
      *
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function posts($id): JsonResponse
     {
@@ -110,7 +110,7 @@ class TagController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @throws Exception
      */

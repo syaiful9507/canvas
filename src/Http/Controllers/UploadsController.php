@@ -14,9 +14,9 @@ class UploadsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return mixed
+     * @return JsonResponse|string
      */
-    public function store()
+    public function store(): JsonResponse|string
     {
         $payload = request()->file();
 
@@ -38,7 +38,7 @@ class UploadsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy(): JsonResponse
     {

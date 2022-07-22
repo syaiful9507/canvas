@@ -38,8 +38,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Canvas\\Tests\\": "tests/",
-      "App\\": "stubs/app/"
+      "Canvas\\Tests\\": "tests/"
     }
   },
   "scripts": {

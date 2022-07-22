@@ -17,7 +17,7 @@ class ResetPassword extends Mailable
      *
      * @var string
      */
-    public $token;
+    public string $token;
 
     /**
      * Create a new message instance.
@@ -35,7 +35,7 @@ class ResetPassword extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->subject('Reset your password')
                     ->markdown('canvas::mail.password', [

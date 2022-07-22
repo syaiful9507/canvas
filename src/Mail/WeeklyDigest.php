@@ -17,7 +17,7 @@ class WeeklyDigest extends Mailable
      *
      * @var array
      */
-    public $data;
+    public array $data;
 
     /**
      * Create a new message instance.
@@ -35,7 +35,7 @@ class WeeklyDigest extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         $subject = sprintf('%s: %s - %s',
             trans('canvas::app.stats_for_your_posts', [], $this->data['locale']),

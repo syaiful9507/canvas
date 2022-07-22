@@ -18,7 +18,7 @@ class SearchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function posts(): JsonResponse
     {
@@ -53,7 +53,7 @@ class SearchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function tags(): JsonResponse
     {
@@ -82,7 +82,7 @@ class SearchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function topics(): JsonResponse
     {
@@ -111,7 +111,7 @@ class SearchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function users(): JsonResponse
     {

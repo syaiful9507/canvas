@@ -16,7 +16,7 @@ class AuthenticateSession
      *
      * @var Auth
      */
-    protected $auth;
+    protected Auth $auth;
 
     /**
      * Create a new middleware instance.
@@ -35,9 +35,9 @@ class AuthenticateSession
      * @param  Closure  $next
      * @return mixed
      *
-     * @throws \Illuminate\Auth\AuthenticationException
+     * @throws AuthenticationException
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         if ($this->auth->guard('canvas')->check()) {
             $this->auth->shouldUse('canvas');

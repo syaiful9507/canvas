@@ -11,14 +11,14 @@ class PostViewed
     /**
      * The post instance.
      *
-     * @var \Canvas\Models\Post
+     * @var Post
      */
-    public $post;
+    public Post $post;
 
     /**
      * Create a new event instance.
      *
-     * @param  \Canvas\Models\Post  $post
+     * @param Post $post
      */
     public function __construct(Post $post)
     {

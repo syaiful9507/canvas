@@ -12,11 +12,11 @@ class VerifyAdmin
     /**
      * Handle the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  Closure  $next
-     * @return mixed|void
+     * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         return $request->user('canvas')->isAdmin ? $next($request) : abort(403);
     }

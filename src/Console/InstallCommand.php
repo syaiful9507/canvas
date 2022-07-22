@@ -36,7 +36,7 @@ class InstallCommand extends Command
         parent::__construct();
 
         if (file_exists(config_path('canvas.php'))) {
-            $this->setHidden(true);
+            $this->setHidden();
         }
     }
 
@@ -45,7 +45,7 @@ class InstallCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $this->callSilent('vendor:publish', ['--tag' => 'canvas-provider']);
         $this->callSilent('vendor:publish', ['--tag' => 'canvas-assets']);
@@ -70,7 +70,7 @@ class InstallCommand extends Command
      * @param  string  $password
      * @return void
      */
-    protected function createDefaultUser(string $email, string $password)
+    protected function createDefaultUser(string $email, string $password): void
     {
         User::query()->create([
             'id' => Uuid::uuid4()->toString(),
@@ -86,7 +86,7 @@ class InstallCommand extends Command
      *
      * @return void
      */
-    protected function installCanvasServiceProvider()
+    protected function installCanvasServiceProvider(): void
     {
         $appConfig = file_get_contents(config_path('app.php'));
 

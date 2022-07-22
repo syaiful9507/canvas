@@ -15,7 +15,7 @@ class CaptureVisit
      * day. The post ID and the IP of the request are both stored in session to
      * be validated against until pruned by the Session middleware class.
      *
-     * @param  \Canvas\Events\PostViewed  $event
+     * @param PostViewed $event
      * @return void
      */
     public function handle(PostViewed $event): void
@@ -39,13 +39,13 @@ class CaptureVisit
     /**
      * Check if a given post and IP are unique to the session.
      *
-     * @param  \Canvas\Models\Post  $post
+     * @param Post $post
      * @param  string  $ip
      * @return bool
      */
     private function visitIsUnique(Post $post, string $ip): bool
     {
-        $visits = session()->get('canvas.visited_posts', []);
+        $visits = session('canvas.visited_posts', []);
 
         if (array_key_exists($post->id, $visits)) {
             $visit = $visits[$post->id];
@@ -59,7 +59,7 @@ class CaptureVisit
     /**
      * Add a given post and IP to the session.
      *
-     * @param  \Canvas\Models\Post  $post
+     * @param Post $post
      * @param  string  $ip
      * @return void
      */

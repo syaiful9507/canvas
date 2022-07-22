@@ -1,8 +1,8 @@
 <?php
 
-namespace {{namespace}}Http\Controllers;
+namespace App\Http\Controllers;
 
-use {{namespace}}Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Canvas\Models\User;
 use Canvas\Events\PostViewed;
 use Canvas\Models\Post;

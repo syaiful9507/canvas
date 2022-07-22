@@ -26,7 +26,7 @@ class Visit extends Model
     /**
      * Get the post relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function post(): BelongsTo
     {

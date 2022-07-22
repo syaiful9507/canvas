@@ -27,7 +27,7 @@ class PublishCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $this->callSilent('vendor:publish', [
             '--tag' => 'canvas-config',

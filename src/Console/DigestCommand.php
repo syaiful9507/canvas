@@ -25,14 +25,14 @@ class DigestCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Send a weekly email digest to users with published content';
+    protected $description = 'Send a weekly digest for content published with Canvas';
 
     /**
      * Execute the console command.
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $startDate = today()->subWeek()->startOfDay();
         $endDate = today()->endOfDay();
