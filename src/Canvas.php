@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Canvas;
 
 use Canvas\Models\Post;
-use Canvas\Models\User;
 use Carbon\CarbonInterval;
 use DateInterval;
 use DatePeriod;
@@ -111,8 +110,6 @@ class Canvas
      */
     public static function parseReferer(?string $url): ?string
     {
-        // TODO: Should this go in the post controller?
-
         if (filter_var($url, FILTER_VALIDATE_URL)) {
             return parse_url($url)['host'];
         }
@@ -135,8 +132,6 @@ class Canvas
         string $default = 'retro',
         string $rating = 'g'
     ): string {
-        // TODO: Default the avatar to initials instead, not Gravatar anymore
-
         $hash = md5(trim(Str::lower($email)));
 
         return "https://secure.gravatar.com/avatar/{$hash}?s={$size}&d={$default}&r={$rating}";
@@ -150,8 +145,6 @@ class Canvas
      */
     public static function enabledDarkMode(?int $enabled): bool
     {
-        // TODO: Can this just be accessed in the controller?
-
         return (bool) $enabled;
     }
 
@@ -180,8 +173,6 @@ class Canvas
      */
     public static function calculateTotalForDays(Collection $data, int $days = 30): Collection
     {
-        // TODO: This should go in the dashboard controller
-
         // Filter the data to only include created_at date strings
         $filtered = new Collection();
 
@@ -219,8 +210,6 @@ class Canvas
      */
     public static function compareMonthOverMonth(Collection $current, Collection $previous): array
     {
-        // TODO: This should go in the dashboard controller
-
         $dataCountThisMonth = $current->count();
         $dataCountLastMonth = $previous->count();
 
@@ -252,8 +241,6 @@ class Canvas
         int $recurrences,
         int $exclusive = 1
     ): array {
-        // TODO: This should go in the dashboard controller
-
         $period = new DatePeriod($start_date, $interval, $recurrences, $exclusive);
         $dates = new Collection();
 
@@ -272,8 +259,6 @@ class Canvas
      */
     public static function calculateReadTime(?string $text): string
     {
-        // TODO: Can this go in the post controller?
-
         // Only count words in our estimation
         $words = str_word_count(strip_tags($text ?? ''));
 
@@ -297,8 +282,6 @@ class Canvas
      */
     public static function calculatePopularReadingTimes(Post $post): array
     {
-        // TODO: Can this go in the post controller?
-
         // Get the views associated with the post
         $data = $post->views;
 
@@ -347,8 +330,6 @@ class Canvas
      */
     public static function calculateTopReferers(Post $post): array
     {
-        // TODO: Can this go in the post controller?
-
         // Get the views associated with the post
         $data = $post->views;
 
