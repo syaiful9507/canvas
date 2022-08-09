@@ -17,9 +17,9 @@ class TagController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $sortAscending = request()->query('sort', 'desc') === 'asc';
 
@@ -39,9 +39,9 @@ class TagController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create(): JsonResponse
+    public function create()
     {
         return response()->json(Tag::query()->make([
             'id' => Uuid::uuid4()->toString(),
@@ -51,11 +51,11 @@ class TagController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  StoreTagRequest  $request
-     * @param $id
-     * @return JsonResponse
+     * @param  \Canvas\Http\Requests\StoreTagRequest  $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreTagRequest $request, $id): JsonResponse
+    public function store(StoreTagRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -83,10 +83,10 @@ class TagController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id): JsonResponse
+    public function show(string $id)
     {
         $tag = Tag::query()->findOrFail($id);
 
@@ -96,10 +96,10 @@ class TagController extends Controller
     /**
      * Display the specified relationship.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function posts($id): JsonResponse
+    public function posts(string $id)
     {
         $tag = Tag::query()->with('posts')->findOrFail($id);
 
@@ -109,12 +109,11 @@ class TagController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param $id
-     * @return JsonResponse
-     *
      * @throws Exception
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id): JsonResponse
+    public function destroy(string $id)
     {
         $tag = Tag::query()->findOrFail($id);
 

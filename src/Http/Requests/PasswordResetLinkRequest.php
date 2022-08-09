@@ -13,7 +13,7 @@ class PasswordResetLinkRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
@@ -23,7 +23,7 @@ class PasswordResetLinkRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(): array
+    public function rules()
     {
         return [
             'email' => 'required|email:filter|exists:canvas_users',

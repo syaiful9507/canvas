@@ -45,7 +45,7 @@ class InstallCommand extends Command
      *
      * @return void
      */
-    public function handle(): void
+    public function handle()
     {
         $this->callSilent('vendor:publish', ['--tag' => 'canvas-provider']);
         $this->callSilent('vendor:publish', ['--tag' => 'canvas-assets']);
@@ -70,7 +70,7 @@ class InstallCommand extends Command
      * @param  string  $password
      * @return void
      */
-    protected function createDefaultUser(string $email, string $password): void
+    protected function createDefaultUser(string $email, string $password)
     {
         User::query()->create([
             'id' => Uuid::uuid4()->toString(),
@@ -86,7 +86,7 @@ class InstallCommand extends Command
      *
      * @return void
      */
-    protected function installCanvasServiceProvider(): void
+    protected function installCanvasServiceProvider()
     {
         $appConfig = file_get_contents(config_path('app.php'));
 

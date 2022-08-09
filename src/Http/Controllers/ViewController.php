@@ -7,16 +7,15 @@ namespace Canvas\Http\Controllers;
 use Canvas\Canvas;
 use Canvas\Models\User;
 use Illuminate\Routing\Controller;
-use Illuminate\View\View;
 
 class ViewController extends Controller
 {
     /**
      * Handle the incoming request.
      *
-     * @return View
+     * @return \Illuminate\View\View
      */
-    public function index(): View
+    public function index()
     {
         return view('canvas::layout')->with([
             'scripts' => [

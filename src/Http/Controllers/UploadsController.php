@@ -14,9 +14,9 @@ class UploadsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return JsonResponse|string
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(): JsonResponse|string
+    public function store()
     {
         $payload = request()->file();
 
@@ -26,21 +26,22 @@ class UploadsController extends Controller
 
         // Only grab the first element because single file uploads
         // are not supported at this time
+        // TODO: What does that comment even mean?
         $file = reset($payload);
 
         $path = $file->storePublicly(Canvas::baseStoragePath(), [
             'disk' => config('canvas.storage_disk'),
         ]);
 
-        return Storage::disk(config('canvas.storage_disk'))->url($path);
+        return response()->json(Storage::disk(config('canvas.storage_disk'))->url($path));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(): JsonResponse
+    public function destroy()
     {
         if (empty(request()->getContent())) {
             return response()->json(null, 400);

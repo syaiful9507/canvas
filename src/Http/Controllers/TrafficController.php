@@ -22,7 +22,7 @@ use Illuminate\Support\Collection;
 
 class TrafficController extends Controller
 {
-    public function views(TrafficLookupRequest $request): JsonResponse
+    public function views(TrafficLookupRequest $request)
     {
         $data = $request->validated();
 
@@ -45,12 +45,12 @@ class TrafficController extends Controller
         ]);
     }
 
-    public function visits(): JsonResponse
+    public function visits()
     {
         // code...
     }
 
-    public function chart(): JsonResponse
+    public function chart()
     {
         $postIds = Post::when(request()->query('scope', 'user') === 'all', function (Builder $query) {
             return $query;
@@ -83,22 +83,22 @@ class TrafficController extends Controller
         ]);
     }
 
-    public function sources(): JsonResponse
+    public function sources()
     {
         // code...
     }
 
-    public function pages(): JsonResponse
+    public function pages()
     {
         // code...
     }
 
-    public function countries(): JsonResponse
+    public function countries()
     {
         // code...
     }
 
-    public function devices(): JsonResponse
+    public function devices()
     {
         // code...
     }
@@ -108,7 +108,7 @@ class TrafficController extends Controller
      *
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $this->getRangeLookups();
 
@@ -173,7 +173,7 @@ class TrafficController extends Controller
      * @param  string  $id
      * @return JsonResponse
      */
-    public function stats(string $id): JsonResponse
+    public function stats(string $id)
     {
         // TODO: Move this to the dashboard view with query params
 

@@ -18,9 +18,9 @@ class SearchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function posts(): JsonResponse
+    public function posts()
     {
         $key = vsprintf('%s-%s-%s', [
             'posts',
@@ -53,9 +53,9 @@ class SearchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function tags(): JsonResponse
+    public function tags()
     {
         $key = vsprintf('%s-%s-%s', [
             'tags',
@@ -82,9 +82,9 @@ class SearchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function topics(): JsonResponse
+    public function topics()
     {
         $key = vsprintf('%s-%s-%s', [
             'topics',
@@ -111,9 +111,9 @@ class SearchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function users(): JsonResponse
+    public function users()
     {
         $key = vsprintf('%s-%s-%s', [
             'users',

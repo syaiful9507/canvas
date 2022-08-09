@@ -89,9 +89,9 @@ class User extends Authenticatable
     /**
      * Get the posts relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function posts(): HasMany
+    public function posts()
     {
         return $this->hasMany(Post::class);
     }
@@ -99,9 +99,9 @@ class User extends Authenticatable
     /**
      * Get the tags relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function tags(): HasMany
+    public function tags()
     {
         return $this->hasMany(Tag::class);
     }
@@ -109,9 +109,9 @@ class User extends Authenticatable
     /**
      * Get the topics relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function topics(): HasMany
+    public function topics()
     {
         return $this->hasMany(Topic::class);
     }
@@ -121,7 +121,7 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function getIsContributorAttribute(): bool
+    public function getIsContributorAttribute()
     {
         return is_null($this->role) || $this->role === self::$contributor_id;
     }
@@ -131,7 +131,7 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function getIsEditorAttribute(): bool
+    public function getIsEditorAttribute()
     {
         return $this->role === self::$editor_id;
     }
@@ -141,7 +141,7 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function getIsAdminAttribute(): bool
+    public function getIsAdminAttribute()
     {
         return $this->role === self::$admin_id;
     }
@@ -151,7 +151,7 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function getDefaultAvatarAttribute(): string
+    public function getDefaultAvatarAttribute()
     {
         return Canvas::gravatar($this->email ?? '');
     }
@@ -161,7 +161,7 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function getDefaultLocaleAttribute(): string
+    public function getDefaultLocaleAttribute()
     {
         return config('app.locale');
     }

@@ -15,7 +15,7 @@ class AuthenticatedSessionRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
@@ -25,7 +25,7 @@ class AuthenticatedSessionRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(): array
+    public function rules()
     {
         $this->redirect = route('canvas.login.view');
 
@@ -38,11 +38,10 @@ class AuthenticatedSessionRequest extends FormRequest
     /**
      * Attempt to authenticate the request's credentials.
      *
+     * @throws \Illuminate\Validation\ValidationException
      * @return void
-     *
-     * @throws ValidationException
      */
-    public function authenticate(): void
+    public function authenticate()
     {
         if (! Auth::guard('canvas')->attempt($this->only('email', 'password'), $this->filled('remember_me'))) {
             throw ValidationException::withMessages([

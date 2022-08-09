@@ -19,9 +19,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $sortAscending = request()->query('sort', 'desc') === 'asc';
 
@@ -41,9 +41,9 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create(): JsonResponse
+    public function create()
     {
         return response()->json(User::query()->make([
             'id' => Uuid::uuid4()->toString(),
@@ -54,11 +54,11 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  StoreUserRequest  $request
-     * @param $id
-     * @return JsonResponse
+     * @param  \Canvas\Http\Requests\StoreUserRequest  $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreUserRequest $request, $id): JsonResponse
+    public function store(StoreUserRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -100,10 +100,10 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id): JsonResponse
+    public function show(string $id)
     {
         $user = User::query()->withCount('posts')->findOrFail($id);
 
@@ -113,10 +113,10 @@ class UserController extends Controller
     /**
      * Display the specified relationship.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function posts($id): JsonResponse
+    public function posts(string $id)
     {
         $user = User::query()->with('posts')->findOrFail($id);
 
@@ -126,10 +126,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id): JsonResponse
+    public function destroy(string $id)
     {
         // Prevent a user from deleting their own account
         if (request()->user('canvas')->id == $id) {

@@ -35,7 +35,7 @@ class ResetPassword extends Mailable
      *
      * @return $this
      */
-    public function build(): static
+    public function build()
     {
         return $this->subject('Reset your password')
                     ->markdown('canvas::mail.password', [

@@ -16,28 +16,28 @@ abstract class TestCase extends OrchestraTestCase
     /**
      * A test user with Contributor access.
      *
-     * @var User
+     * @var \Canvas\Models\User
      */
     protected $contributor;
 
     /**
      * A test user with Editor access.
      *
-     * @var User
+     * @var \Canvas\Models\User
      */
     protected $editor;
 
     /**
      * A test user with Admin access.
      *
-     * @var User
+     * @var \Canvas\Models\User
      */
     protected $admin;
 
     /**
-     * @return void
-     *
      * @throws Exception
+     *
+     * @return void
      */
     protected function setUp(): void
     {
@@ -49,7 +49,8 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param  Application  $app
+     * @param  \Illuminate\Foundation\Application  $app
+     *
      * @return array
      */
     protected function getPackageProviders($app): array
@@ -60,7 +61,8 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param  Application  $app
+     * @param  \Illuminate\Foundation\Application  $app
+     *
      * @return void
      */
     protected function resolveApplicationCore($app): void
@@ -73,7 +75,8 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param  Application  $app
+     * @param \Illuminate\Foundation\Application $app
+     *
      * @return void
      */
     protected function getEnvironmentSetUp($app): void
@@ -102,12 +105,13 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param  Application  $app
-     * @return void
-     *
      * @throws Exception
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     *
+     * @return void
      */
-    protected function setUpDatabase($app): void
+    protected function setUpDatabase($app)
     {
         $this->loadLaravelMigrations();
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
@@ -121,7 +125,7 @@ abstract class TestCase extends OrchestraTestCase
      *
      * @return void
      */
-    protected function createTestUsers(): void
+    protected function createTestUsers()
     {
         $this->contributor = factory(User::class)->create([
             'role' => User::$contributor_id,

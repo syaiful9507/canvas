@@ -28,7 +28,7 @@ class UiCommand extends Command
      *
      * @return void
      */
-    public function handle(): void
+    public function handle()
     {
         // Export Blade views...
         $this->exportViews();
@@ -47,7 +47,7 @@ class UiCommand extends Command
      *
      * @return void
      */
-    protected function exportViews(): void
+    protected function exportViews()
     {
         $directory = resource_path('views/canvas-ui');
 
@@ -70,7 +70,7 @@ class UiCommand extends Command
      *
      * @return void
      */
-    protected function exportRoutes(): void
+    protected function exportRoutes()
     {
         file_put_contents(
             base_path('routes/web.php'),
@@ -84,7 +84,7 @@ class UiCommand extends Command
      *
      * @return void
      */
-    protected function exportController(): void
+    protected function exportController()
     {
         (new Filesystem)->copy(
             dirname(__DIR__, 2).'/stubs/ui/Http/Controllers/CanvasUiController.stub',

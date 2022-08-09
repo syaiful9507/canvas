@@ -20,9 +20,9 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $isContributor = request()->user('canvas')->isContributor;
         $sortAscending = request()->query('sort', 'desc') === 'asc';
@@ -78,9 +78,9 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create(): JsonResponse
+    public function create()
     {
         $uuid = Uuid::uuid4();
 
@@ -97,13 +97,12 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  StorePostRequest  $request
-     * @param $id
-     * @return JsonResponse
-     *
      * @throws Exception
+     * @param  \Canvas\Http\Requests\StorePostRequest  $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StorePostRequest $request, $id): JsonResponse
+    public function store(StorePostRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -171,10 +170,10 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id): JsonResponse
+    public function show(string $id)
     {
         $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
             return $query->where('user_id', request()->user('canvas')->id);
@@ -192,12 +191,11 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param $id
-     * @return JsonResponse
-     *
      * @throws Exception
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id): JsonResponse
+    public function destroy(string $id)
     {
         $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
             return $query->where('user_id', request()->user('canvas')->id);

@@ -27,10 +27,9 @@ class PasswordResetLinkController extends Controller
     /**
      * Handle an incoming password reset link request.
      *
+     * @throws Exception
      * @param  \Canvas\Http\Requests\PasswordResetLinkRequest  $request
      * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws Exception
      */
     public function store(PasswordResetLinkRequest $request)
     {

@@ -58,9 +58,9 @@ class Topic extends Model
     /**
      * Get the posts relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function posts(): BelongsToMany
+    public function posts()
     {
         // TODO: This should be a hasMany() relationship?
 
@@ -70,9 +70,9 @@ class Topic extends Model
     /**
      * Get the user relationship.
      *
-     * @return BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
@@ -82,7 +82,7 @@ class Topic extends Model
      *
      * @return void
      */
-    protected static function boot(): void
+    protected static function boot()
     {
         parent::boot();
 

@@ -26,7 +26,7 @@ class CanvasServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register(): void
+    public function register()
     {
         $this->mergeConfigFrom(dirname(__DIR__).'/config/canvas.php', 'canvas');
     }
@@ -34,11 +34,10 @@ class CanvasServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @return void
-     *
-     * @throws BindingResolutionException
      */
-    public function boot(): void
+    public function boot()
     {
         $this->loadViewsFrom(dirname(__DIR__).'/resources/views', 'canvas');
         $this->loadTranslationsFrom(dirname(__DIR__).'/lang', 'canvas');
@@ -55,11 +54,10 @@ class CanvasServiceProvider extends ServiceProvider
     /**
      * Register the events and listeners.
      *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @return void
-     *
-     * @throws BindingResolutionException
      */
-    private function registerEvents(): void
+    private function registerEvents()
     {
         $mappings = [
             PostViewed::class => [
@@ -82,7 +80,7 @@ class CanvasServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function configureRoutes(): void
+    private function configureRoutes()
     {
         Route::namespace('Canvas\Http\Controllers')
              ->middleware(config('canvas.middleware'))
@@ -99,7 +97,7 @@ class CanvasServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function configureCommands(): void
+    private function configureCommands()
     {
         $this->commands([
             DigestCommand::class,
@@ -116,7 +114,7 @@ class CanvasServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function registerMigrations(): void
+    private function registerMigrations()
     {
         if ($this->app->runningInConsole()) {
             $this->loadMigrationsFrom(dirname(__DIR__).'/database/migrations');
@@ -128,7 +126,7 @@ class CanvasServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function registerAuthDriver(): void
+    private function registerAuthDriver()
     {
         $this->app->config->set('auth.providers.canvas_users', [
             'driver' => 'eloquent',
@@ -146,7 +144,7 @@ class CanvasServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function configurePublishing(): void
+    private function configurePublishing()
     {
         if (! $this->app->runningInConsole()) {
             return;

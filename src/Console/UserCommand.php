@@ -31,7 +31,7 @@ class UserCommand extends Command
      *
      * @return void
      */
-    public function handle(): void
+    public function handle()
     {
         $email = $this->ask('What email should be attached to the user?');
         $password = 'password';

@@ -17,7 +17,7 @@ class ExpireTrafficInSession
      * @param  Closure  $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, Closure $next)
     {
         $viewedPosts = collect(session('canvas.viewed_posts'));
 

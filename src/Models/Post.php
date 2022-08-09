@@ -89,7 +89,7 @@ class Post extends Model
      *
      * @return BelongsToMany
      */
-    public function tags(): BelongsToMany
+    public function tags()
     {
         return $this->belongsToMany(
             Tag::class,
@@ -102,9 +102,9 @@ class Post extends Model
     /**
      * Get the topic relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function topic(): BelongsToMany
+    public function topic()
     {
         return $this->belongsToMany(
             Topic::class,
@@ -117,9 +117,9 @@ class Post extends Model
     /**
      * Get the user relationship.
      *
-     * @return BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
@@ -127,9 +127,9 @@ class Post extends Model
     /**
      * Get the views relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function views(): HasMany
+    public function views()
     {
         return $this->hasMany(View::class);
     }
@@ -137,9 +137,9 @@ class Post extends Model
     /**
      * Get the visits relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function visits(): HasMany
+    public function visits()
     {
         return $this->hasMany(Visit::class);
     }
@@ -149,7 +149,7 @@ class Post extends Model
      *
      * @return int
      */
-    public function getEstimatedReadTimeInMinutesAttribute(): int
+    public function getEstimatedReadTimeInMinutesAttribute()
     {
         return (int) ceil(str_word_count(strip_tags($this->body ?? '')) / 250);
     }
@@ -159,7 +159,7 @@ class Post extends Model
      *
      * @return bool
      */
-    public function getPublishedAttribute(): bool
+    public function getPublishedAttribute()
     {
         return isset($this->published_at) && $this->published_at <= now();
     }
@@ -169,7 +169,7 @@ class Post extends Model
      *
      * @return bool
      */
-    public function getDraftAttribute(): bool
+    public function getDraftAttribute()
     {
         return is_null($this->published_at) || $this->published_at > now();
     }
@@ -177,10 +177,10 @@ class Post extends Model
     /**
      * Scope a query to include published posts.
      *
-     * @param  Builder  $query
-     * @return Builder
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopePublished(Builder $query): Builder
+    public function scopePublished(Builder $query)
     {
         return $query->where('published_at', '<=', now());
     }
@@ -188,10 +188,10 @@ class Post extends Model
     /**
      * Scope a query to include drafted posts.
      *
-     * @param  Builder  $query
-     * @return Builder
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeDraft(Builder $query): Builder
+    public function scopeDraft(Builder $query)
     {
         return $query->whereNull('published_at')->orWhere('published_at', '>', now());
     }

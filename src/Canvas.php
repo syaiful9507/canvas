@@ -22,7 +22,7 @@ class Canvas
      *
      * @return string
      */
-    public static function installedVersion(): string
+    public static function installedVersion()
     {
         if (app()->runningUnitTests()) {
             return '';
@@ -38,7 +38,7 @@ class Canvas
      *
      * @return array
      */
-    public static function availableLanguageCodes(): array
+    public static function availableLanguageCodes()
     {
         $locales = preg_grep('/^([^.])/', scandir(dirname(__DIR__).'/lang'));
 
@@ -51,9 +51,10 @@ class Canvas
      * Return an encoded string of app translations.
      *
      * @param $locale
+     *
      * @return string
      */
-    public static function availableTranslations($locale): string
+    public static function availableTranslations($locale)
     {
         return collect(trans('canvas::app', [], $locale))->toJson();
     }
@@ -63,7 +64,7 @@ class Canvas
      *
      * @return bool
      */
-    public static function assetsUpToDate(): bool
+    public static function assetsUpToDate()
     {
         if (app()->runningUnitTests()) {
             return true;
@@ -87,7 +88,7 @@ class Canvas
      *
      * @return string
      */
-    public static function basePath(): string
+    public static function basePath()
     {
         return sprintf('/%s', config('canvas.path'));
     }
@@ -97,7 +98,7 @@ class Canvas
      *
      * @return string
      */
-    public static function baseStoragePath(): string
+    public static function baseStoragePath()
     {
         return sprintf('%s/images', config('canvas.storage_path'));
     }
@@ -108,7 +109,7 @@ class Canvas
      * @param  string|null  $url
      * @return string|null
      */
-    public static function parseReferer(?string $url): ?string
+    public static function parseReferer(?string $url)
     {
         if (filter_var($url, FILTER_VALIDATE_URL)) {
             return parse_url($url)['host'];
@@ -131,7 +132,7 @@ class Canvas
         int $size = 200,
         string $default = 'retro',
         string $rating = 'g'
-    ): string {
+    ) {
         $hash = md5(trim(Str::lower($email)));
 
         return "https://secure.gravatar.com/avatar/{$hash}?s={$size}&d={$default}&r={$rating}";
@@ -143,7 +144,7 @@ class Canvas
      * @param  int|null  $enabled
      * @return bool
      */
-    public static function enabledDarkMode(?int $enabled): bool
+    public static function enabledDarkMode(?int $enabled)
     {
         return (bool) $enabled;
     }
@@ -154,7 +155,7 @@ class Canvas
      * @param  string|null  $locale
      * @return bool
      */
-    public static function usingRightToLeftLanguage(?string $locale): bool
+    public static function usingRightToLeftLanguage(?string $locale)
     {
         // TODO: Can this just be accessed in the controller?
 
@@ -167,11 +168,11 @@ class Canvas
      *
      * example: [ Y-m-d => total ]
      *
-     * @param  Collection  $data
+     * @param  \Illuminate\Support\Collection  $data
      * @param  int  $days
-     * @return Collection
+     * @return \Illuminate\Support\Collection
      */
-    public static function calculateTotalForDays(Collection $data, int $days = 30): Collection
+    public static function calculateTotalForDays(Collection $data, int $days = 30)
     {
         // Filter the data to only include created_at date strings
         $filtered = new Collection();
@@ -204,11 +205,11 @@ class Canvas
      * Given two collections of monthly data, compare the totals and return the
      * overall directional trend as well as the percentage increase/decrease.
      *
-     * @param  Collection  $current
+     * @param  \Illuminate\Support\Collection  $current
      * @param  Collection  $previous
      * @return array
      */
-    public static function compareMonthOverMonth(Collection $current, Collection $previous): array
+    public static function compareMonthOverMonth(Collection $current, Collection $previous)
     {
         $dataCountThisMonth = $current->count();
         $dataCountLastMonth = $previous->count();
@@ -240,7 +241,7 @@ class Canvas
         DateInterval $interval,
         int $recurrences,
         int $exclusive = 1
-    ): array {
+    ) {
         $period = new DatePeriod($start_date, $interval, $recurrences, $exclusive);
         $dates = new Collection();
 
@@ -257,7 +258,7 @@ class Canvas
      * @param  null|string  $text
      * @return string
      */
-    public static function calculateReadTime(?string $text): string
+    public static function calculateReadTime(?string $text)
     {
         // Only count words in our estimation
         $words = str_word_count(strip_tags($text ?? ''));
@@ -277,10 +278,10 @@ class Canvas
     /**
      * Get the 10 most popular reading times rounded to the nearest 30 minutes.
      *
-     * @param  Post  $post
+     * @param  \Canvas\Models\Post  $post
      * @return array
      */
-    public static function calculatePopularReadingTimes(Post $post): array
+    public static function calculatePopularReadingTimes(Post $post)
     {
         // Get the views associated with the post
         $data = $post->views;
@@ -325,10 +326,10 @@ class Canvas
     /**
      * Get the top referring websites for a post.
      *
-     * @param  Post  $post
+     * @param  \Canvas\Models\Post  $post
      * @return array
      */
-    public static function calculateTopReferers(Post $post): array
+    public static function calculateTopReferers(Post $post)
     {
         // Get the views associated with the post
         $data = $post->views;

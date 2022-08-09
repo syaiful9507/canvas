@@ -27,7 +27,7 @@ class MigrateCommand extends Command
      *
      * @return void
      */
-    public function handle(): void
+    public function handle()
     {
         $this->callSilent('migrate', [
             '--path' => 'vendor/austintoddj/canvas/database/migrations',

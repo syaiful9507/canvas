@@ -31,13 +31,12 @@ class AuthenticateSession
     /**
      * Handle the incoming request.
      *
-     * @param  Request  $request
+     * @throws \Illuminate\Auth\AuthenticationException
+     * @param  \Illuminate\Http\Request  $request
      * @param  Closure  $next
      * @return mixed
-     *
-     * @throws AuthenticationException
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, Closure $next)
     {
         if ($this->auth->guard('canvas')->check()) {
             $this->auth->shouldUse('canvas');

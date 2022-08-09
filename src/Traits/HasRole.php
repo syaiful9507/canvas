@@ -53,7 +53,7 @@ trait HasRole
      *
      * @return array
      */
-    public static function roles(): array
+    public static function roles()
     {
         return [
             static::$contributor_id => static::$contributor_name,
