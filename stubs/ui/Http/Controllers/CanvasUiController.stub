@@ -35,7 +35,8 @@ class CanvasUiController extends Controller
     {
         $post = Post::query()
                     ->with('user', 'tags', 'topic')
-                    ->firstOrFail('slug', $slug);
+                    ->where('slug', $slug)
+                    ->firstOrFail();
 
         event(new PostViewed($post));
 
@@ -60,7 +61,9 @@ class CanvasUiController extends Controller
      */
     public function showTag(Request $request, string $slug)
     {
-        $tag = Tag::query()->firstOrFail('slug', $slug);
+        $tag = Tag::query()
+                  ->where('slug', $slug)
+                  ->firstOrFail();
 
         return view('canvas-ui.show-tag')->with([
             'tag' => $tag,
@@ -86,7 +89,9 @@ class CanvasUiController extends Controller
      */
     public function showTopic(Request $request, string $slug)
     {
-        $topic = Topic::query()->firstOrFail('slug', $slug);
+        $topic = Topic::query()
+                      ->where('slug', $slug)
+                      ->firstOrFail();
 
         return view('canvas-ui.show-topic')->with([
             'topic' => $topic,
@@ -101,7 +106,9 @@ class CanvasUiController extends Controller
      */
     public function showUser(Request $request, string $id)
     {
-        $user = User::query()->firstOrFail('slug', $id);
+        $user = User::query()
+                    ->where('id', $id)
+                    ->firstOrFail();
 
         return view('canvas-ui.show-user')->with([
             'user' => $user,

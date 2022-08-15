@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-    <title>Canvas UI</title>
+    <title>@yield('title')</title>
 </head>
 <body>
     @yield('content')
