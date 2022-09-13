@@ -38,7 +38,7 @@
               @update:model-value="onSelect"
             >
               <div class="relative">
-                <SearchIcon
+                <MagnifyingGlassIcon
                   class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400"
                   aria-hidden="true"
                 />
@@ -86,7 +86,7 @@
 import { computed, ref, onMounted, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { SearchIcon } from '@heroicons/vue/solid'
+import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 import {
   Combobox,
   ComboboxInput,
@@ -122,6 +122,11 @@ const hide = function () {
 
 watchEffect(() => {
   function onKeydown(event) {
+    // TODO: Prevent the "/" from filling the palette on an initial load
+    // if (event.key === '/') {
+    //   show()
+    // }
+
     if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
       show()
     }
