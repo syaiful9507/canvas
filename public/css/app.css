@@ -942,6 +942,9 @@ select {
 .cursor-pointer {
   cursor: pointer;
 }
+.cursor-default {
+  cursor: default;
+}
 .select-none {
   -webkit-user-select: none;
      -moz-user-select: none;

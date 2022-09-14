@@ -90,7 +90,7 @@
                 alt="" />
             </div>
             <div class="ml-3">
-              <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">Tom Cook</p>
+              <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ user.name }}</p>
               <p class="text-xs font-medium text-gray-500 group-hover:text-gray-700">View profile</p>
             </div>
           </div>

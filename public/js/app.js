@@ -20415,10 +20415,7 @@ __webpack_require__.r(__webpack_exports__);
 
     (0,vue__WEBPACK_IMPORTED_MODULE_0__.watchEffect)(function () {
       function onKeydown(event) {
-        // TODO: Prevent the "/" from filling the palette on an initial load
-        // if (event.key === '/') {
-        //   show()
-        // }
+        // TODO: Pressing Escape after a query is typed throws "undefined" in the input instead of clearing it
         if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
           show();
         }
@@ -21291,23 +21288,52 @@ var _hoisted_15 = {
   "class": "mt-5 flex-1 space-y-1 bg-white px-2"
 };
 var _hoisted_16 = ["href"];
-
-var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"flex flex-shrink-0 border-t border-gray-200 p-4\"><a href=\"#\" class=\"group block w-full flex-shrink-0\"><div class=\"flex items-center\"><div><img class=\"inline-block h-9 w-9 rounded-full\" src=\"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80\" alt=\"\"></div><div class=\"ml-3\"><p class=\"text-sm font-medium text-gray-700 group-hover:text-gray-900\">Tom Cook</p><p class=\"text-xs font-medium text-gray-500 group-hover:text-gray-700\">View profile</p></div></div></a></div>", 1);
-
+var _hoisted_17 = {
+  "class": "flex flex-shrink-0 border-t border-gray-200 p-4"
+};
 var _hoisted_18 = {
-  "class": "flex flex-1 flex-col md:pl-64"
+  href: "#",
+  "class": "group block w-full flex-shrink-0"
 };
 var _hoisted_19 = {
+  "class": "flex items-center"
+};
+
+var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+  "class": "inline-block h-9 w-9 rounded-full",
+  src: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+  alt: ""
+})], -1
+/* HOISTED */
+);
+
+var _hoisted_21 = {
+  "class": "ml-3"
+};
+var _hoisted_22 = {
+  "class": "text-sm font-medium text-gray-700 group-hover:text-gray-900"
+};
+
+var _hoisted_23 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
+  "class": "text-xs font-medium text-gray-500 group-hover:text-gray-700"
+}, "View profile", -1
+/* HOISTED */
+);
+
+var _hoisted_24 = {
+  "class": "flex flex-1 flex-col md:pl-64"
+};
+var _hoisted_25 = {
   "class": "sticky top-0 z-10 bg-white pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden"
 };
 
-var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+var _hoisted_26 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
   "class": "sr-only"
 }, "Open sidebar", -1
 /* HOISTED */
 );
 
-var _hoisted_21 = {
+var _hoisted_27 = {
   "class": "flex-1"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -21435,16 +21461,18 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , _hoisted_16);
   }), 64
   /* STABLE_FRAGMENT */
-  ))])]), _hoisted_17])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [_hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_22, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.user.name), 1
+  /* TEXT */
+  ), _hoisted_23])])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "-ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500",
     onClick: _cache[2] || (_cache[2] = function ($event) {
       return $setup.sidebarOpen = true;
     })
-  }, [_hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Bars3Icon"], {
+  }, [_hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Bars3Icon"], {
     "class": "h-6 w-6",
     "aria-hidden": "true"
-  })])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("main", _hoisted_21, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_RouterView, {
+  })])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("main", _hoisted_27, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_RouterView, {
     key: _ctx.$route.query
   }))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["CommandPalette"], {
     ref: "palette"

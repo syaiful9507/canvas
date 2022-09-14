@@ -122,10 +122,7 @@ const hide = function () {
 
 watchEffect(() => {
   function onKeydown(event) {
-    // TODO: Prevent the "/" from filling the palette on an initial load
-    // if (event.key === '/') {
-    //   show()
-    // }
+    // TODO: Pressing Escape after a query is typed throws "undefined" in the input instead of clearing it
 
     if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
       show()
