@@ -397,7 +397,7 @@ import {
   PlusIcon,
   CameraIcon,
   ChevronDownIcon,
-} from '@heroicons/vue/solid'
+} from '@heroicons/vue/24/solid'
 import dateFromNow from '@/utils/dateFromNow'
 import request from '@/utils/request'
 

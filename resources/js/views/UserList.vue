@@ -239,7 +239,7 @@ import {
   ChevronRightIcon,
   PlusIcon,
   ChevronDownIcon,
-} from '@heroicons/vue/solid'
+} from '@heroicons/vue/24/solid'
 import request from '@/utils/request'
 
 const props = defineProps({

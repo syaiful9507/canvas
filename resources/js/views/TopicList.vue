@@ -269,7 +269,7 @@ import {
   ChevronRightIcon,
   PlusIcon,
   ChevronDownIcon,
-} from '@heroicons/vue/solid'
+} from '@heroicons/vue/24/solid'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import request from '@/utils/request'
 import dateFromNow from '@/utils/dateFromNow'
