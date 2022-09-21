@@ -43,7 +43,7 @@
                 <button
                   type="button"
                   class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                  @click="sidebarOpen = false"
+                  @click="closeSidebar"
                 >
                   <span class="sr-only">Close sidebar</span>
                   <XMarkIcon class="h-6 w-6 text-white" aria-hidden="true" />
@@ -55,59 +55,162 @@
                 <img
                   class="h-8 w-auto"
                   src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                  alt="Your Company"
+                  alt="Canvas"
                 />
               </div>
               <nav class="mt-5 space-y-1 px-2">
-                <a
-                  v-for="item in navigation"
-                  :key="item.name"
-                  :href="item.href"
-                  :class="[
-                    item.current
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                    'group flex items-center px-2 py-2 text-base font-medium rounded-md',
-                  ]"
+                <AppLink
+                  :to="{ name: 'dashboard' }"
+                  class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                  active-class="bg-gray-100 text-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  @click="closeSidebar"
                 >
                   <component
-                    :is="item.icon"
+                    :is="HomeIcon"
                     :class="[
-                      item.current
+                      ['dashboard'].includes($route.name)
                         ? 'text-gray-500'
                         : 'text-gray-400 group-hover:text-gray-500',
                       'mr-4 flex-shrink-0 h-6 w-6',
                     ]"
                     aria-hidden="true"
                   />
-                  {{ item.name }}
-                </a>
+                  {{ trans.dashboard }}
+                </AppLink>
+                <AppLink
+                  :to="{ name: 'users' }"
+                  class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                  active-class="bg-gray-100 text-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  @click="closeSidebar"
+                >
+                  <component
+                    :is="UsersIcon"
+                    :class="[
+                      ['users', 'create-user', 'show-user'].includes(
+                        $route.name
+                      )
+                        ? 'text-gray-500'
+                        : 'text-gray-400 group-hover:text-gray-500',
+                      'mr-4 flex-shrink-0 h-6 w-6',
+                    ]"
+                    aria-hidden="true"
+                  />
+                  {{ trans.users }}
+                </AppLink>
+                <AppLink
+                  :to="{ name: 'posts' }"
+                  class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                  active-class="bg-gray-100 text-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  @click="closeSidebar"
+                >
+                  <component
+                    :is="BookmarkSquareIcon"
+                    :class="[
+                      ['posts', 'create-post', 'show-post'].includes(
+                        $route.name
+                      )
+                        ? 'text-gray-500'
+                        : 'text-gray-400 group-hover:text-gray-500',
+                      'mr-4 flex-shrink-0 h-6 w-6',
+                    ]"
+                    aria-hidden="true"
+                  />
+                  {{ trans.posts }}
+                </AppLink>
+                <AppLink
+                  :to="{ name: 'tags' }"
+                  class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                  active-class="bg-gray-100 text-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  @click="closeSidebar"
+                >
+                  <component
+                    :is="TagIcon"
+                    :class="[
+                      ['tags', 'create-tag', 'show-tag'].includes($route.name)
+                        ? 'text-gray-500'
+                        : 'text-gray-400 group-hover:text-gray-500',
+                      'mr-4 flex-shrink-0 h-6 w-6',
+                    ]"
+                    aria-hidden="true"
+                  />
+                  {{ trans.tags }}
+                </AppLink>
+                <AppLink
+                  :to="{ name: 'topics' }"
+                  class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                  active-class="bg-gray-100 text-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  @click="closeSidebar"
+                >
+                  <component
+                    :is="HashtagIcon"
+                    :class="[
+                      ['topics', 'create-topic', 'show-topic'].includes(
+                        $route.name
+                      )
+                        ? 'text-gray-500'
+                        : 'text-gray-400 group-hover:text-gray-500',
+                      'mr-4 flex-shrink-0 h-6 w-6',
+                    ]"
+                    aria-hidden="true"
+                  />
+                  {{ trans.topics }}
+                </AppLink>
+                <AppLink
+                  :to="{ name: 'settings' }"
+                  class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                  active-class="bg-gray-100 text-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  @click="closeSidebar"
+                >
+                  <component
+                    :is="CogIcon"
+                    :class="[
+                      ['settings'].includes($route.name)
+                        ? 'text-gray-500'
+                        : 'text-gray-400 group-hover:text-gray-500',
+                      'mr-4 flex-shrink-0 h-6 w-6',
+                    ]"
+                    aria-hidden="true"
+                  />
+                  {{ trans.settings }}
+                </AppLink>
               </nav>
             </div>
             <div class="flex flex-shrink-0 border-t border-gray-200 p-4">
-              <a href="#" class="group block flex-shrink-0">
+              <AppLink
+                :to="{
+                  name: 'show-user',
+                  params: { id: user.id },
+                }"
+                class="group block flex-shrink-0"
+              >
                 <div class="flex items-center">
                   <div>
                     <img
-                      class="inline-block h-10 w-10 rounded-full"
+                      class="inline-block h-9 w-9 rounded-full"
                       :src="user.avatar || user.default_avatar"
                       :alt="user.name"
                     />
                   </div>
                   <div class="ml-3">
                     <p
-                      class="text-base font-medium text-gray-700 group-hover:text-gray-900"
+                      class="text-sm font-medium text-gray-700 group-hover:text-gray-900"
                     >
                       {{ user.name }}
                     </p>
                     <p
-                      class="text-sm font-medium text-gray-500 group-hover:text-gray-700"
+                      class="text-xs font-medium text-gray-500 group-hover:text-gray-700"
                     >
                       View profile
                     </p>
                   </div>
                 </div>
-              </a>
+              </AppLink>
             </div>
           </DialogPanel>
         </TransitionChild>
@@ -127,37 +230,128 @@
           <img
             class="h-8 w-auto"
             src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            alt="Your Company"
+            alt="Canvas"
           />
         </div>
         <nav class="mt-5 flex-1 space-y-1 bg-white px-2">
-          <a
-            v-for="item in navigation"
-            :key="item.name"
-            :href="item.href"
-            :class="[
-              item.current
-                ? 'bg-gray-100 text-gray-900'
-                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-              'group flex items-center px-2 py-2 text-sm font-medium rounded-md',
-            ]"
+          <AppLink
+            :to="{ name: 'dashboard' }"
+            class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+            active-class="bg-gray-100 text-gray-900"
+            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
           >
             <component
-              :is="item.icon"
+              :is="HomeIcon"
               :class="[
-                item.current
+                ['dashboard'].includes($route.name)
                   ? 'text-gray-500'
                   : 'text-gray-400 group-hover:text-gray-500',
                 'mr-3 flex-shrink-0 h-6 w-6',
               ]"
               aria-hidden="true"
             />
-            {{ item.name }}
-          </a>
+            {{ trans.dashboard }}
+          </AppLink>
+          <AppLink
+            :to="{ name: 'users' }"
+            class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+            active-class="bg-gray-100 text-gray-900"
+            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          >
+            <component
+              :is="UsersIcon"
+              :class="[
+                ['users', 'create-user', 'show-user'].includes($route.name)
+                  ? 'text-gray-500'
+                  : 'text-gray-400 group-hover:text-gray-500',
+                'mr-3 flex-shrink-0 h-6 w-6',
+              ]"
+              aria-hidden="true"
+            />
+            {{ trans.users }}
+          </AppLink>
+          <AppLink
+            :to="{ name: 'posts' }"
+            class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+            active-class="bg-gray-100 text-gray-900"
+            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          >
+            <component
+              :is="BookmarkSquareIcon"
+              :class="[
+                ['posts', 'create-post', 'show-post'].includes($route.name)
+                  ? 'text-gray-500'
+                  : 'text-gray-400 group-hover:text-gray-500',
+                'mr-3 flex-shrink-0 h-6 w-6',
+              ]"
+              aria-hidden="true"
+            />
+            {{ trans.posts }}
+          </AppLink>
+          <AppLink
+            :to="{ name: 'tags' }"
+            class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+            active-class="bg-gray-100 text-gray-900"
+            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          >
+            <component
+              :is="TagIcon"
+              :class="[
+                ['tags', 'create-tag', 'show-tag'].includes($route.name)
+                  ? 'text-gray-500'
+                  : 'text-gray-400 group-hover:text-gray-500',
+                'mr-3 flex-shrink-0 h-6 w-6',
+              ]"
+              aria-hidden="true"
+            />
+            {{ trans.tags }}
+          </AppLink>
+          <AppLink
+            :to="{ name: 'topics' }"
+            class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+            active-class="bg-gray-100 text-gray-900"
+            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          >
+            <component
+              :is="HashtagIcon"
+              :class="[
+                ['topics', 'create-topic', 'show-topic'].includes($route.name)
+                  ? 'text-gray-500'
+                  : 'text-gray-400 group-hover:text-gray-500',
+                'mr-3 flex-shrink-0 h-6 w-6',
+              ]"
+              aria-hidden="true"
+            />
+            {{ trans.topics }}
+          </AppLink>
+          <AppLink
+            :to="{ name: 'settings' }"
+            class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+            active-class="bg-gray-100 text-gray-900"
+            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          >
+            <component
+              :is="CogIcon"
+              :class="[
+                ['settings'].includes($route.name)
+                  ? 'text-gray-500'
+                  : 'text-gray-400 group-hover:text-gray-500',
+                'mr-3 flex-shrink-0 h-6 w-6',
+              ]"
+              aria-hidden="true"
+            />
+            {{ trans.settings }}
+          </AppLink>
         </nav>
       </div>
       <div class="flex flex-shrink-0 border-t border-gray-200 p-4">
-        <a href="#" class="group block w-full flex-shrink-0">
+        <AppLink
+          :to="{
+            name: 'show-user',
+            params: { id: user.id },
+          }"
+          class="group block w-full flex-shrink-0"
+        >
           <div class="flex items-center">
             <div>
               <img
@@ -179,7 +373,7 @@
               </p>
             </div>
           </div>
-        </a>
+        </AppLink>
       </div>
     </div>
   </div>
@@ -188,7 +382,7 @@
       <button
         type="button"
         class="-ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-        @click="sidebarOpen = true"
+        @click="openSidebar"
       >
         <span class="sr-only">Open sidebar</span>
         <Bars3Icon class="h-6 w-6" aria-hidden="true" />
@@ -221,6 +415,7 @@ import {
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import { useStore } from 'vuex'
+import AppLink from '@/components/AppLink'
 import CommandPalette from '@/components/CommandPalette'
 
 const store = useStore()
@@ -228,22 +423,12 @@ const user = computed(() => store.state.config.user)
 const trans = computed(() => store.getters['config/trans'])
 const palette = ref(null)
 const sidebarOpen = ref(false)
-const navigation = [
-  { name: trans.value.dashboard, href: '#', icon: HomeIcon, current: true },
-  { name: trans.value.users, href: '#', icon: UsersIcon, current: false },
-  {
-    name: trans.value.posts,
-    href: '#',
-    icon: BookmarkSquareIcon,
-    current: false,
-  },
-  { name: trans.value.tags, href: '#', icon: TagIcon, current: false },
-  { name: trans.value.topics, href: '#', icon: HashtagIcon, current: false },
-  { name: trans.value.settings, href: '#', icon: CogIcon, current: false },
-]
 
-// TODO: Should there be a visible button?
-// function openCommandPalette() {
-//   palette.value.show()
-// }
+function openSidebar() {
+  sidebarOpen.value = true
+}
+
+function closeSidebar() {
+  sidebarOpen.value = false
+}
 </script>

@@ -9,6 +9,7 @@ import TopicList from '@/views/TopicList.vue'
 import ShowTopic from '@/views/ShowTopic.vue'
 import UserList from '@/views/UserList.vue'
 import ShowUser from '@/views/ShowUser.vue'
+import Settings from '@/views/Settings.vue'
 
 const routes = [
   {
@@ -93,6 +94,11 @@ const routes = [
     path: '/users/:id',
     name: 'show-user',
     component: ShowUser,
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: Settings,
   },
   {
     path: '/:catchAll(.*)',

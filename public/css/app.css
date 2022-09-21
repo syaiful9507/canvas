@@ -688,9 +688,6 @@ select {
 .pointer-events-none {
   pointer-events: none;
 }
-.visible {
-  visibility: visible;
-}
 .static {
   position: static;
 }
@@ -873,11 +870,11 @@ select {
 .w-auto {
   width: auto;
 }
-.w-14 {
-  width: 3.5rem;
-}
 .w-9 {
   width: 2.25rem;
+}
+.w-14 {
+  width: 3.5rem;
 }
 .w-12 {
   width: 3rem;

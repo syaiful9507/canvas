@@ -57,6 +57,7 @@ Route::middleware([AuthenticateSession::class])->group(function () {
         });
 
         // User routes...
+        // TODO: Does there need to be middleware around all of these?
         Route::prefix('users')->group(function () {
             Route::get('/', [UserController::class, 'index'])->middleware([VerifyAdmin::class])->name('canvas.users.index');
             Route::get('create', [UserController::class, 'create'])->middleware([VerifyAdmin::class])->name('canvas.users.create');
