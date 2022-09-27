@@ -11,15 +11,23 @@
           <ol role="list" class="flex items-center space-x-4">
             <li>
               <div class="flex items-center">
-                <AppLink :to="{ name: 'dashboard' }" class="text-sm font-medium text-gray-500 hover:text-gray-700">
+                <AppLink
+                  :to="{ name: 'dashboard' }"
+                  class="text-sm font-medium text-gray-500 hover:text-gray-700"
+                >
                   {{ trans.dashboard }}
                 </AppLink>
               </div>
             </li>
             <li>
               <div class="flex items-center">
-                <svg class="flex-shrink-0 h-5 w-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                  viewBox="0 0 20 20" aria-hidden="true">
+                <svg
+                  class="flex-shrink-0 h-5 w-5 text-gray-300"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                >
                   <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
                 </svg>
                 <p class="ml-4 text-sm font-medium text-gray-500">
@@ -28,148 +36,192 @@
               </div>
             </li>
           </ol>
-        
-          <AppLink :to="{ name: 'create-user' }"
-            class="inline-flex items-center ml-auto mr-4 text-sm font-medium text-gray-500 hover:text-gray-700">
+
+          <AppLink
+            :to="{ name: 'create-user' }"
+            class="inline-flex items-center ml-auto mr-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+          >
             <PlusIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
             {{ trans.new_user }}
           </AppLink>
         </nav>
 
-        <div class="bg-white shadow rounded-md">
-          <div v-if="results">
-            <nav class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6 rounded-t-md">
-              <div class="flex space-x-4">
-                <span class="py-2 px-3 inline-flex items-center text-sm font-medium text-gray-900">
-                  <!-- TODO: Pluralize and localize -->
-                  {{ results.total }} Users
-                </span>
+        <div
+          v-if="results?.data?.length"
+          class="rounded-md shadow-md border border-dark"
+        >
+          <nav
+            class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6 rounded-t-md"
+          >
+            <div class="flex space-x-4">
+              <span
+                class="py-2 px-3 inline-flex items-center text-sm font-medium text-gray-900"
+              >
+                <!-- TODO: Pluralize and localize -->
+                {{ results.total }} Users
+              </span>
+            </div>
+
+            <Menu as="div" class="relative inline-block text-left">
+              <div>
+                <MenuButton
+                  class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                >
+                  Sort
+                  <ChevronDownIcon
+                    class="-mr-1 ml-2 h-5 w-5"
+                    aria-hidden="true"
+                  />
+                </MenuButton>
               </div>
-        
-              <Menu as="div" class="relative inline-block text-left">
-                <div>
-                  <MenuButton
-                    class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                    Sort
-                    <ChevronDownIcon class="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
-                  </MenuButton>
-                </div>
-        
-                <transition enter-active-class="transition ease-out duration-100"
-                  enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
-                  leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
-                  leave-to-class="transform opacity-0 scale-95">
-                  <MenuItems
-                    class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div class="py-1">
-                      <MenuItem as="div">
-                      <AppLink :to="{
-                                        name: 'users',
-                                        query: { sort: descending },
-                                      }" :class="
-                                        $route.query?.sort === descending ||
-                                        !$route.query.sort
-                                          ? 'bg-gray-100 text-gray-900'
-                                          : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
-                                      " class="block m-auto px-4 py-2 text-sm">
+
+              <transition
+                enter-active-class="transition ease-out duration-100"
+                enter-from-class="transform opacity-0 scale-95"
+                enter-to-class="transform opacity-100 scale-100"
+                leave-active-class="transition ease-in duration-75"
+                leave-from-class="transform opacity-100 scale-100"
+                leave-to-class="transform opacity-0 scale-95"
+              >
+                <MenuItems
+                  class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                >
+                  <div class="py-1">
+                    <MenuItem as="div">
+                      <AppLink
+                        :to="{
+                          name: 'users',
+                          query: { sort: descending },
+                        }"
+                        :class="
+                          $route.query?.sort === descending ||
+                          !$route.query.sort
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
+                        class="block m-auto px-4 py-2 text-sm"
+                      >
                         <div class="flex items-center">Newest</div>
                       </AppLink>
-                      </MenuItem>
-                      <MenuItem as="div">
-                      <AppLink :to="{
-                                        name: 'users',
-                                        query: { sort: ascending },
-                                      }" :class="
-                                        $route.query?.sort === ascending
-                                          ? 'bg-gray-100 text-gray-900'
-                                          : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
-                                      " class="block m-auto px-4 py-2 text-sm">
+                    </MenuItem>
+                    <MenuItem as="div">
+                      <AppLink
+                        :to="{
+                          name: 'users',
+                          query: { sort: ascending },
+                        }"
+                        :class="
+                          $route.query?.sort === ascending
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
+                        class="block m-auto px-4 py-2 text-sm"
+                      >
                         <div class="flex items-center">Oldest</div>
                       </AppLink>
-                      </MenuItem>
+                    </MenuItem>
+                  </div>
+                </MenuItems>
+              </transition>
+            </Menu>
+          </nav>
+          <ul role="list" class="divide-y divide-gray-200">
+            <li v-for="user in results.data" :key="user.id">
+              <AppLink
+                :to="{
+                  name: 'show-user',
+                  params: { id: user.id },
+                }"
+                class="block hover:bg-gray-50 cursor-pointer"
+              >
+                <div class="flex items-center px-4 py-4 sm:px-6">
+                  <div class="min-w-0 flex-1 flex items-center">
+                    <div class="flex-shrink-0">
+                      <img
+                        class="h-12 w-12 rounded-full"
+                        :src="user.avatar || user.default_avatar"
+                        :alt="user.name"
+                      />
                     </div>
-                  </MenuItems>
-                </transition>
-              </Menu>
-            </nav>
-            <ul role="list" class="divide-y divide-gray-200">
-              <li v-for="user in results.data" :key="user.id">
-                <AppLink :to="{
-                                name: 'show-user',
-                                params: { id: user.id },
-                              }" class="block hover:bg-gray-50 cursor-pointer">
-                  <div class="flex items-center px-4 py-4 sm:px-6">
-                    <div class="min-w-0 flex-1 flex items-center">
-                      <div class="flex-shrink-0">
-                        <img class="h-12 w-12 rounded-full" :src="user.avatar || user.default_avatar" :alt="user.name" />
+                    <div
+                      class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4"
+                    >
+                      <div>
+                        <p class="text-sm font-medium text-indigo-600 truncate">
+                          {{ user.name }}
+                        </p>
+                        <p class="mt-2 flex items-center text-sm text-gray-500">
+                          <span class="truncate">{{ user.email }}</span>
+                        </p>
                       </div>
-                      <div class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
-                        <div>
-                          <p class="text-sm font-medium text-indigo-600 truncate">
-                            {{ user.name }}
-                          </p>
-                          <p class="mt-2 flex items-center text-sm text-gray-500">
-                            <span class="truncate">{{ user.email }}</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <ChevronRightIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                     </div>
                   </div>
-                </AppLink>
-              </li>
-            </ul>
-        
-            <nav class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 rounded-b-md"
-              aria-label="Pagination">
-              <div class="sm:block">
-                <p class="text-sm text-gray-700">
-                  Showing
-                  {{ ' ' }}
-                  <span class="font-medium">{{ results.from }}</span>
-                  {{ ' ' }}
-                  to
-                  {{ ' ' }}
-                  <span class="font-medium">{{ results.to }}</span>
-                  {{ ' ' }}
-                  of
-                  {{ ' ' }}
-                  <span class="font-medium">{{ results.total }}</span>
-                  {{ ' ' }}
-                  results
-                </p>
-              </div>
-        
-              <div class="ml-auto">
-                <div class="flex-1 flex justify-between sm:justify-end">
-                  <AppLink v-if="!!results.prev_page_url" :to="{
-                                  name: 'users',
-                                  query: {
-                                    page: results.current_page - 1,
-                                    ...(query.sort && { sort: query.sort }),
-                                  },
-                                }"
-                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                    @click="decrementPage() && fetchUsers()">
-                    Previous
-                  </AppLink>
-                  <AppLink v-if="!!results.next_page_url" :to="{
-                                  name: 'users',
-                                  query: {
-                                    page: results.current_page + 1,
-                                    ...(query.sort && { sort: query.sort }),
-                                  },
-                                }"
-                    class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                    @click="incrementPage() && fetchUsers()">
-                    Next
-                  </AppLink>
+                  <div>
+                    <ChevronRightIcon
+                      class="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </div>
                 </div>
+              </AppLink>
+            </li>
+          </ul>
+
+          <nav
+            class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 rounded-b-md"
+            aria-label="Pagination"
+          >
+            <div class="sm:block">
+              <p class="text-sm text-gray-700">
+                Showing
+                {{ ' ' }}
+                <span class="font-medium">{{ results.from }}</span>
+                {{ ' ' }}
+                to
+                {{ ' ' }}
+                <span class="font-medium">{{ results.to }}</span>
+                {{ ' ' }}
+                of
+                {{ ' ' }}
+                <span class="font-medium">{{ results.total }}</span>
+                {{ ' ' }}
+                results
+              </p>
+            </div>
+
+            <div class="ml-auto">
+              <div class="flex-1 flex justify-between sm:justify-end">
+                <AppLink
+                  v-if="!!results.prev_page_url"
+                  :to="{
+                    name: 'users',
+                    query: {
+                      page: results.current_page - 1,
+                      ...(query.sort && { sort: query.sort }),
+                    },
+                  }"
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  @click="decrementPage() && fetchUsers()"
+                >
+                  Previous
+                </AppLink>
+                <AppLink
+                  v-if="!!results.next_page_url"
+                  :to="{
+                    name: 'users',
+                    query: {
+                      page: results.current_page + 1,
+                      ...(query.sort && { sort: query.sort }),
+                    },
+                  }"
+                  class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  @click="incrementPage() && fetchUsers()"
+                >
+                  Next
+                </AppLink>
               </div>
-            </nav>
-          </div>
+            </div>
+          </nav>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 const initialState = {
+  assetsUpToDate: window.Canvas.assetsUpToDate,
   i18n: window.Canvas.translations,
   languageCodes: window.Canvas.languageCodes,
   maxUpload: window.Canvas.maxUpload,

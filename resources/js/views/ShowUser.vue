@@ -21,5 +21,4 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 const user = computed(() => store.state.config.user)
-const trans = computed(() => store.getters['config/trans'])
 </script>

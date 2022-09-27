@@ -19,6 +19,7 @@ class ViewController extends Controller
     {
         return view('canvas::layout')->with([
             'scripts' => [
+                'assetsUpToDate' => Canvas::assetsUpToDate(),
                 'languageCodes' => Canvas::availableLanguageCodes(),
                 'maxUpload' => config('canvas.upload_filesize'),
                 'path' => Canvas::basePath(),
