@@ -1,4 +1,5 @@
 <template>
+  <!-- Mobile Sidebar -->
   <TransitionRoot as="template" :show="sidebarOpen">
     <Dialog
       as="div"
@@ -236,10 +237,10 @@
       </div>
     </Dialog>
   </TransitionRoot>
+  <!-- End Mobile Sidebar -->
 
-  <!-- Static sidebar for desktop -->
+  <!-- Desktop Sidebar -->
   <div class="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-    <!-- Sidebar component, swap this element with another sidebar if you like -->
     <div
       class="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-gray-100"
     >
@@ -409,6 +410,8 @@
       </div>
     </div>
   </div>
+  <!-- End Desktop Sidebar -->
+
   <div class="flex flex-1 flex-col md:pl-64">
     <div class="sticky top-0 z-10 bg-white pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden">
       <button
@@ -421,6 +424,7 @@
       </button>
     </div>
     <main class="flex-1">
+      <!-- Outdated Assets Alert -->
       <div v-if="!config.assetsUpToDate" class="bg-blue-50 p-4">
         <div class="flex">
           <div class="flex-shrink-0">
@@ -446,6 +450,8 @@
           </div>
         </div>
       </div>
+      <!-- End Outdated Assets Alert -->
+
       <RouterView :key="$route.query"></RouterView>
     </main>
   </div>
