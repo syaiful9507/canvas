@@ -35,8 +35,8 @@ class SearchControllerTest extends TestCase
         $this->assertArrayHasKey('id', $response[0]);
         $this->assertArrayHasKey('title', $response[0]);
         $this->assertArrayHasKey('name', $response[0]);
-        $this->assertArrayHasKey('type', $response[0]);
-        $this->assertSame('Post', $response[0]['type']);
+        $this->assertArrayHasKey('category', $response[0]);
+        $this->assertSame('Posts', $response[0]['category']);
         $this->assertArrayHasKey('route', $response[0]);
         $this->assertSame('show-post', $response[0]['route']);
     }
@@ -59,8 +59,8 @@ class SearchControllerTest extends TestCase
         $this->assertArrayHasKey('id', $response[0]);
         $this->assertArrayHasKey('title', $response[0]);
         $this->assertArrayHasKey('name', $response[0]);
-        $this->assertArrayHasKey('type', $response[0]);
-        $this->assertSame('Post', $response[0]['type']);
+        $this->assertArrayHasKey('category', $response[0]);
+        $this->assertSame('Posts', $response[0]['category']);
         $this->assertArrayHasKey('route', $response[0]);
         $this->assertSame('show-post', $response[0]['route']);
     }
@@ -83,8 +83,8 @@ class SearchControllerTest extends TestCase
         $this->assertArrayHasKey('id', $response[0]);
         $this->assertArrayHasKey('title', $response[0]);
         $this->assertArrayHasKey('name', $response[0]);
-        $this->assertArrayHasKey('type', $response[0]);
-        $this->assertSame('Post', $response[0]['type']);
+        $this->assertArrayHasKey('category', $response[0]);
+        $this->assertSame('Posts', $response[0]['category']);
         $this->assertArrayHasKey('route', $response[0]);
         $this->assertSame('show-post', $response[0]['route']);
     }
@@ -100,8 +100,8 @@ class SearchControllerTest extends TestCase
 
         $this->assertArrayHasKey('id', $response[0]);
         $this->assertArrayHasKey('name', $response[0]);
-        $this->assertArrayHasKey('type', $response[0]);
-        $this->assertSame('Tag', $response[0]['type']);
+        $this->assertArrayHasKey('category', $response[0]);
+        $this->assertSame('Tags', $response[0]['category']);
         $this->assertArrayHasKey('route', $response[0]);
         $this->assertSame('show-tag', $response[0]['route']);
     }
@@ -117,8 +117,8 @@ class SearchControllerTest extends TestCase
 
         $this->assertArrayHasKey('id', $response[0]);
         $this->assertArrayHasKey('name', $response[0]);
-        $this->assertArrayHasKey('type', $response[0]);
-        $this->assertSame('Topic', $response[0]['type']);
+        $this->assertArrayHasKey('category', $response[0]);
+        $this->assertSame('Topics', $response[0]['category']);
         $this->assertArrayHasKey('route', $response[0]);
         $this->assertSame('show-topic', $response[0]['route']);
     }
@@ -132,8 +132,8 @@ class SearchControllerTest extends TestCase
 
         $this->assertArrayHasKey('id', $response[0]);
         $this->assertArrayHasKey('name', $response[0]);
-        $this->assertArrayHasKey('type', $response[0]);
-        $this->assertSame('User', $response[0]['type']);
+        $this->assertArrayHasKey('category', $response[0]);
+        $this->assertSame('Users', $response[0]['category']);
         $this->assertArrayHasKey('route', $response[0]);
         $this->assertSame('show-user', $response[0]['route']);
     }

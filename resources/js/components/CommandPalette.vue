@@ -50,30 +50,65 @@
               </div>
 
               <ComboboxOptions
-                v-if="filteredSearch.length > 0"
+                v-if="filteredItems.length > 0"
                 static
-                class="max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800"
+                class="max-h-80 scroll-pt-11 scroll-pb-2 space-y-2 overflow-y-auto pb-2"
               >
-                <ComboboxOption
-                  v-for="item in filteredSearch"
-                  :key="item.id"
-                  v-slot="{ active }"
-                  :value="item"
-                  as="template"
+                <li
+                  v-for="[category, items] in Object.entries(groups)"
+                  :key="category"
                 >
-                  <li
-                    :class="[
-                      'cursor-pointer select-none px-4 py-2',
-                      active && 'bg-indigo-600 text-white',
-                    ]"
+                  <h2
+                    class="bg-gray-100 py-2.5 px-4 text-xs font-semibold text-gray-900"
                   >
-                    {{ item.name
-                    }}<span :class="['text-gray-400', active && 'opacity-75']">
-                      ― {{ item.type }}</span
+                    {{ category }}
+                  </h2>
+                  <ul class="mt-2 text-sm text-gray-800">
+                    <ComboboxOption
+                      v-for="item in items"
+                      :key="item.id"
+                      v-slot="{ active }"
+                      :value="item"
+                      as="template"
                     >
-                  </li>
-                </ComboboxOption>
+                      <AppLink
+                        :to="{
+                          name: item.route,
+                          params: { id: item.id },
+                        }"
+                      >
+                        <li
+                          :class="[
+                            'cursor-pointer select-none px-4 py-2',
+                            active && 'bg-indigo-600 text-white',
+                          ]"
+                        >
+                          {{ item.name }}
+                        </li>
+                      </AppLink>
+                    </ComboboxOption>
+                  </ul>
+                </li>
               </ComboboxOptions>
+              <div
+                v-if="query !== '' && filteredItems.length === 0"
+                class="py-14 px-6 text-center text-sm sm:px-14"
+              >
+                <ExclamationTriangleIcon
+                  class="mx-auto h-6 w-6 text-gray-400"
+                  aria-hidden="true"
+                />
+                <p class="mt-4 font-semibold text-gray-900">No results found</p>
+                <p class="mt-2 text-gray-500">
+                  We couldn’t find anything with that term. Please try again.
+                </p>
+              </div>
+
+              <div
+                class="flex flex-wrap items-right bg-gray-50 py-2.5 px-4 text-xs text-gray-700"
+              >
+                Open with Ctrl/⌘ + K
+              </div>
             </Combobox>
           </DialogPanel>
         </TransitionChild>
@@ -87,6 +122,8 @@ import { computed, ref, onMounted, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
+import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
+import AppLink from '@/components/AppLink'
 import {
   Combobox,
   ComboboxInput,
@@ -104,12 +141,22 @@ const router = useRouter()
 const store = useStore()
 const trans = computed(() => store.getters['config/trans'])
 const search = computed(() => store.getters['search/index'])
-const filteredSearch = computed(() =>
+
+const filteredItems = computed(() =>
   query.value === ''
     ? []
     : search.value.filter((item) => {
         return item.name.toLowerCase().includes(query.value.toLowerCase())
       })
+)
+
+const groups = computed(() =>
+  filteredItems.value.reduce((groups, item) => {
+    return {
+      ...groups,
+      [item.category]: [...(groups[item.category] || []), item],
+    }
+  }, {})
 )
 
 const show = function () {

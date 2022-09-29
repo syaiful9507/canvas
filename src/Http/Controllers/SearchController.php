@@ -38,7 +38,7 @@ class SearchController extends Controller
                          ->get()
                          ->map(function ($post) {
                              $post['name'] = $post->title;
-                             $post['type'] = 'Post';
+                             $post['category'] = 'Posts';
                              $post['route'] = 'show-post';
 
                              return $post;
@@ -67,7 +67,7 @@ class SearchController extends Controller
                        ->latest()
                        ->get()
                        ->map(function ($tag) {
-                           $tag['type'] = 'Tag';
+                           $tag['category'] = 'Tags';
                            $tag['route'] = 'show-tag';
 
                            return $tag;
@@ -96,7 +96,7 @@ class SearchController extends Controller
                            ->latest()
                            ->get()
                            ->map(function ($topic) {
-                               $topic['type'] = 'Topic';
+                               $topic['category'] = 'Topics';
                                $topic['route'] = 'show-topic';
 
                                return $topic;
@@ -125,7 +125,7 @@ class SearchController extends Controller
                          ->latest()
                          ->get()
                          ->map(function ($user) {
-                             $user['type'] = 'User';
+                             $user['category'] = 'Users';
                              $user['route'] = 'show-user';
 
                              return $user;

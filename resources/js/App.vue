@@ -185,7 +185,7 @@
                 </AppLink>
 
                 <a
-                  href=""
+                  href="#"
                   class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   @click="logout"
                 >
@@ -248,7 +248,7 @@
         <div class="flex flex-shrink-0 items-center px-4">
           <img
             class="h-8 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=pink&shade=500"
+            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
             alt="Your Company"
           />
         </div>
@@ -369,7 +369,7 @@
             </AppLink>
 
             <a
-              href=""
+              href="#"
               class="group flex items-center rounded-md px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               @click="logout"
             >

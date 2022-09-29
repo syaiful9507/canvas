@@ -731,6 +731,12 @@ select {
 .mt-3 {
   margin-top: 0.75rem;
 }
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.mt-4 {
+  margin-top: 1rem;
+}
 .ml-4 {
   margin-left: 1rem;
 }
@@ -748,9 +754,6 @@ select {
 }
 .ml-2 {
   margin-left: 0.5rem;
-}
-.mt-2 {
-  margin-top: 0.5rem;
 }
 .mt-1 {
   margin-top: 0.25rem;
@@ -806,8 +809,8 @@ select {
 .h-4 {
   height: 1rem;
 }
-.max-h-72 {
-  max-height: 18rem;
+.max-h-80 {
+  max-height: 20rem;
 }
 .min-h-0 {
   min-height: 0px;
@@ -898,8 +901,10 @@ select {
      -moz-user-select: none;
           user-select: none;
 }
-.scroll-py-2 {
-  scroll-padding-top: 0.5rem;
+.scroll-pt-11 {
+  scroll-padding-top: 2.75rem;
+}
+.scroll-pb-2 {
   scroll-padding-bottom: 0.5rem;
 }
 .appearance-none {
@@ -909,6 +914,9 @@ select {
 }
 .flex-col {
   flex-direction: column;
+}
+.flex-wrap {
+  flex-wrap: wrap;
 }
 .items-center {
   align-items: center;
@@ -923,6 +931,11 @@ select {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 .space-x-4 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
@@ -1084,6 +1097,18 @@ select {
   padding-top: 3rem;
   padding-bottom: 3rem;
 }
+.py-2\.5 {
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+}
+.py-14 {
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+}
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
 .py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
@@ -1144,6 +1169,9 @@ select {
 }
 .pr-4 {
   padding-right: 1rem;
+}
+.pb-2 {
+  padding-bottom: 0.5rem;
 }
 .pb-5 {
   padding-bottom: 1.25rem;
@@ -1271,9 +1299,6 @@ select {
 }
 .opacity-100 {
   opacity: 1;
-}
-.opacity-75 {
-  opacity: 0.75;
 }
 .shadow-2xl {
   --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
@@ -1469,6 +1494,11 @@ select {
   .sm\:px-6 {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+  }
+
+  .sm\:px-14 {
+    padding-left: 3.5rem;
+    padding-right: 3.5rem;
   }
 
   .sm\:px-10 {
