@@ -20411,8 +20411,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     (0,vue__WEBPACK_IMPORTED_MODULE_0__.watchEffect)(function () {
       function onKeydown(event) {
-        // TODO: Pressing Escape after a query is typed throws "undefined" in the input instead of clearing it
-        // Related issue: https://github.com/tailwindlabs/headlessui/issues/1861
         if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
           show();
         }

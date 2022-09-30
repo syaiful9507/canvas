@@ -171,9 +171,6 @@ const hide = function () {
 
 watchEffect(() => {
   function onKeydown(event) {
-    // TODO: Pressing Escape after a query is typed throws "undefined" in the input instead of clearing it
-    // Related issue: https://github.com/tailwindlabs/headlessui/issues/1861
-
     if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
       show()
     }
