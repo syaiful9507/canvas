@@ -53,6 +53,6 @@ class PasswordResetLinkController extends Controller
 
         return redirect()
             ->route('canvas.forgot-password.view')
-            ->with('status', trans('passwords.sent', [], app()->getLocale()));
+            ->with('status', trans('canvas::app.we_have_emailed_your_password_reset_link', [], app()->getLocale()));
     }
 }

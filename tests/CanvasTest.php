@@ -30,17 +30,6 @@ class CanvasTest extends TestCase
         $this->assertIsString(Canvas::availableTranslations(config('app.locale')));
     }
 
-    public function testAvailableRoles(): void
-    {
-        $this->markTestSkipped();
-
-        $this->assertSame([
-            User::$contributor_id => 'Contributor',
-            User::$editor_id => 'Editor',
-            User::$admin_id => 'Admin',
-        ], User::roles());
-    }
-
     public function testAssetsAreUpToDate(): void
     {
         $this->assertTrue(Canvas::assetsUpToDate());

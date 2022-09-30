@@ -56,7 +56,7 @@ class NewPasswordController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->route('canvas.forgot-password.view')
-                ->with('invalidResetToken', trans('passwords.token', [], app()->getLocale()));
+                ->with('invalidResetToken', trans('canvas::app.this_password_reset_token_is_invalid', [], app()->getLocale()));
         }
 
         Cache::forget("password.reset.{$id}");

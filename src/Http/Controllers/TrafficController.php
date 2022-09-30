@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
-use Canvas\Http\Requests\TrafficLookupRequest;
 use Canvas\Models\Post;
 use Canvas\Models\View;
 use Canvas\Models\Visit;
@@ -22,7 +21,7 @@ use Illuminate\Support\Collection;
 
 class TrafficController extends Controller
 {
-    public function views(TrafficLookupRequest $request)
+    public function views()
     {
         $data = $request->validated();
 

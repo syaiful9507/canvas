@@ -43,4 +43,25 @@ class StorePostRequest extends FormRequest
             'meta' => 'nullable|array',
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'slug.required' => trans('canvas::app.slug_is_required'),
+            'slug.alpha_dash' => trans('canvas::app.slug_must_only_contain'),
+            'slug.unique' => trans('canvas::app.slug_has_already_been_taken'),
+            'title.required' => trans('canvas::app.title_is_required'),
+            'summary.string' => trans('canvas::app.summary_must_be_a_string'),
+            'body.string' => trans('canvas::app.body_must_be_a_string'),
+            'published_at.date' => trans('canvas::app.published_at_is_not_a_valid_date'),
+            'featured_image.string' => trans('canvas::app.featured_image_must_be_a_string'),
+            'featured_image_caption.string' => trans('canvas::app.featured_image_caption_must_be_a_string'),
+            'meta.array' => trans('canvas::app.meta_must_be_an_array'),
+        ];
+    }
 }

@@ -38,7 +38,7 @@ class SearchController extends Controller
                          ->get()
                          ->map(function ($post) {
                              $post['name'] = $post->title;
-                             $post['category'] = 'Posts';
+                             $post['category'] = trans('canvas::app.posts');
                              $post['route'] = 'show-post';
 
                              return $post;
@@ -67,7 +67,7 @@ class SearchController extends Controller
                        ->latest()
                        ->get()
                        ->map(function ($tag) {
-                           $tag['category'] = 'Tags';
+                           $tag['category'] = trans('canvas::app.tags');
                            $tag['route'] = 'show-tag';
 
                            return $tag;
@@ -96,7 +96,7 @@ class SearchController extends Controller
                            ->latest()
                            ->get()
                            ->map(function ($topic) {
-                               $topic['category'] = 'Topics';
+                               $topic['category'] = trans('canvas::app.topics');
                                $topic['route'] = 'show-topic';
 
                                return $topic;
@@ -125,7 +125,7 @@ class SearchController extends Controller
                          ->latest()
                          ->get()
                          ->map(function ($user) {
-                             $user['category'] = 'Users';
+                             $user['category'] = trans('canvas::app.users');
                              $user['route'] = 'show-user';
 
                              return $user;

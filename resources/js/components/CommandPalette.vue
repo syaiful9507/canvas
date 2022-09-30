@@ -98,16 +98,16 @@
                   class="mx-auto h-6 w-6 text-gray-400"
                   aria-hidden="true"
                 />
-                <p class="mt-4 font-semibold text-gray-900">No results found</p>
+                <p class="mt-4 font-semibold text-gray-900">{{ trans.no_results_found }}</p>
                 <p class="mt-2 text-gray-500">
-                  We couldn’t find anything with that term. Please try again.
+                  {{ trans.we_could_not_find_anything }}
                 </p>
               </div>
 
               <div
                 class="flex flex-wrap items-right bg-gray-50 py-2.5 px-4 text-xs text-gray-700"
               >
-                Open with Ctrl/⌘ + K
+                {{ trans.open_with_control_k }}
               </div>
             </Combobox>
           </DialogPanel>

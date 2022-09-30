@@ -125,4 +125,15 @@ class UserTest extends TestCase
 
         $this->assertSame($user->defaultLocale, config('app.locale'));
     }
+
+    public function testAvailableRoles(): void
+    {
+        $this->assertCount(3, User::roles());
+
+        $this->assertSame([
+            User::$contributor_id => 'Contributor',
+            User::$editor_id => 'Editor',
+            User::$admin_id => 'Admin',
+        ], User::roles());
+    }
 }

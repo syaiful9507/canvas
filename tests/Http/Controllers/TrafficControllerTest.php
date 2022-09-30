@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  *
  * @covers \Canvas\Http\Controllers\TrafficController
  */
-class DashboardControllerTest extends TestCase
+class TrafficControllerTest extends TestCase
 {
     use RefreshDatabase;
 

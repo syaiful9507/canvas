@@ -22,6 +22,6 @@
 {{ trans('canvas::app.see_all_stats', [], $data['locale']) }}
 @endcomponent
 
-Thanks,<br>
+{{ trans('canvas::app.thanks') }},<br>
 {{ config('app.name') }}
 @endcomponent

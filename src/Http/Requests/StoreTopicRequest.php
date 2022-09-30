@@ -37,4 +37,19 @@ class StoreTopicRequest extends FormRequest
             ],
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'name.required' => trans('canvas::app.name_is_required'),
+            'slug.required' => trans('canvas::app.slug_is_required'),
+            'slug.alpha_dash' => trans('canvas::app.slug_must_only_contain'),
+            'slug.unique' => trans('canvas::app.slug_has_already_been_taken'),
+        ];
+    }
 }

@@ -31,4 +31,20 @@ class NewPasswordRequest extends FormRequest
             'password' => 'required|confirmed|min:8',
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'token.required' => (trans('canvas::app.token_is_required')),
+            'email.required' => trans('canvas::app.email_is_required'),
+            'password.required' => trans('canvas::app.password_is_required'),
+            'password.confirmed' => trans('canvas::app.password_confirmation_does_not_match'),
+            'password.min' => trans('canvas::app.password_must_be_at_least_min_characters'),
+        ];
+    }
 }

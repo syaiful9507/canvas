@@ -31,7 +31,7 @@ class AuthenticatedSessionRequest extends FormRequest
 
         return [
             'email' => 'required|email:filter|exists:canvas_users',
-            'password' => 'required|string',
+            'password' => 'required',
         ];
     }
 
@@ -46,8 +46,23 @@ class AuthenticatedSessionRequest extends FormRequest
     {
         if (! Auth::guard('canvas')->attempt($this->only('email', 'password'), $this->filled('remember_me'))) {
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => trans('canvas::app.these_credentials_do_not_match'),
             ]);
         }
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'email.required' => trans('canvas::app.email_is_required'),
+            'email.email' => trans('canvas::app.email_must_be_valid'),
+            'email.exists' => trans('canvas::app.email_is_invalid'),
+            'password.required' => trans('canvas::app.password_is_required'),
+        ];
     }
 }
