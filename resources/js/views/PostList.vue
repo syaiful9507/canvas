@@ -40,7 +40,7 @@
           <AppLink
             v-if="results?.posts?.data?.length > 0"
             :to="{ name: 'create-post' }"
-            class="inline-flex items-center ml-auto mr-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+            class="inline-flex items-center ml-auto px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <PlusIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
             {{ trans.new_post }}
@@ -293,19 +293,13 @@
           >
             <div class="sm:block">
               <p class="text-sm text-gray-700">
-                Showing
-                {{ ' ' }}
-                <span class="font-medium">{{ results.posts.from }}</span>
-                {{ ' ' }}
-                to
-                {{ ' ' }}
-                <span class="font-medium">{{ results.posts.to }}</span>
-                {{ ' ' }}
-                of
-                {{ ' ' }}
-                <span class="font-medium">{{ results.posts.total }}</span>
-                {{ ' ' }}
-                results
+                {{ trans.showing }} {{ ' '
+                }}<span class="font-medium">{{ results.posts.from }}</span
+                >{{ ' ' }} {{ trans.to }} {{ ' '
+                }}<span class="font-medium">{{ results.posts.to }}</span
+                >{{ ' ' }} {{ trans.of }} {{ ' '
+                }}<span class="font-medium">{{ results.posts.total }}</span
+                >{{ ' ' }} {{ trans.results }}
               </p>
             </div>
             <div class="ml-auto">
@@ -324,7 +318,7 @@
                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   @click="decrementPage() && fetchPosts()"
                 >
-                  Previous
+                  {{ trans.previous }}
                 </AppLink>
                 <AppLink
                   v-if="!!results.posts.next_page_url"
@@ -340,7 +334,7 @@
                   class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   @click="incrementPage() && fetchPosts()"
                 >
-                  Next
+                  {{ trans.next }}
                 </AppLink>
               </div>
             </div>
