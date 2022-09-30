@@ -428,7 +428,6 @@ const query = reactive({
   author: props.author || null,
   sort: props.sort || null,
 })
-const postsAreLoaded = ref(false)
 
 watchEffect(async () => {
   await fetchPosts()

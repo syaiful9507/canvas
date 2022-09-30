@@ -20603,7 +20603,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       author: props.author || null,
       sort: props.sort || null
     });
-    var postsAreLoaded = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
     (0,vue__WEBPACK_IMPORTED_MODULE_0__.watchEffect)( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
@@ -20654,7 +20653,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       ascending: ascending,
       descending: descending,
       query: query,
-      postsAreLoaded: postsAreLoaded,
       fetchPosts: fetchPosts,
       incrementPage: incrementPage,
       decrementPage: decrementPage,

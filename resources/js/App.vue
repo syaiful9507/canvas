@@ -223,7 +223,7 @@
                     <p
                       class="text-xs font-medium text-gray-500 group-hover:text-gray-700"
                     >
-                        {{ trans.view_profile }}
+                      {{ trans.view_profile }}
                     </p>
                   </div>
                 </div>
@@ -402,7 +402,7 @@
               <p
                 class="text-xs font-medium text-gray-500 group-hover:text-gray-700"
               >
-                  {{ trans.view_profile }}
+                {{ trans.view_profile }}
               </p>
             </div>
           </div>
