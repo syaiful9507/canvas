@@ -1,7 +1,15 @@
 <?php
 
 return [
+    'oldest' => 'Oldest',
+    'newest' => 'Newest',
+    'sort' => 'Sort',
+    'back' => 'Back',
+    'draft' => 'Draft',
+    'published' => 'Published',
+    'clear_current_search_filters_and_sorts' => 'Clear current search query, filters, and sorts.',
     'dashboard' => 'Dashboard',
+    'author' => 'Author',
     'search_canvas' => 'Search Canvas',
     'no_results_found' => 'No results found',
     'we_could_not_find_anything' => 'We couldn\'t find anything with that term. Please try again.',
@@ -124,7 +132,6 @@ return [
 //    'deleted_users_are_gone_forever' => 'Are you sure you want to delete this user? This action cannot be undone.',
 //    'details' => 'Details',
 //    'done' => 'Done',
-//    'draft' => 'Draft',
 //    'drafts' => 'Drafts',
 //    'drop_files_or_click_to_upload' => 'Drop files or click here to upload',
 //    'edit_post' => 'Edit post',
@@ -165,7 +172,6 @@ return [
 //    'post' => 'Post',
 //    'publish' => 'Publish',
 //    'publish_now' => 'Publish now',
-//    'published' => 'Published',
 //    'published_on' => 'Published on',
 //    'published_posts' => 'Published Posts',
 //    'publishing' => 'Publishing',

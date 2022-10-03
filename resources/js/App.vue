@@ -148,7 +148,7 @@
                   @click="closeSidebar"
                 >
                   <component
-                    :is="HashtagIcon"
+                    :is="RectangleStackIcon"
                     :class="[
                       ['topics', 'create-topic', 'show-topic'].includes(
                         $route.name
@@ -333,7 +333,7 @@
               inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             >
               <component
-                :is="HashtagIcon"
+                :is="RectangleStackIcon"
                 :class="[
                   ['topics', 'create-topic', 'show-topic'].includes($route.name)
                     ? 'text-gray-500'
@@ -474,7 +474,7 @@ import {
   CogIcon,
   BookmarkSquareIcon,
   HomeIcon,
-  HashtagIcon,
+  RectangleStackIcon,
   InformationCircleIcon,
   UserGroupIcon,
   XMarkIcon,

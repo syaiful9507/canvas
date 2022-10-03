@@ -38,6 +38,7 @@
           </ol>
 
           <AppLink
+            v-if="hasTagsToDisplay"
             :to="{ name: 'create-tag' }"
             class="inline-flex items-center ml-auto mr-4 text-sm font-medium text-gray-500 hover:text-gray-700"
           >
@@ -46,7 +47,7 @@
           </AppLink>
         </nav>
 
-        <div v-if="results?.data?.length > 0">
+        <div v-if="hasTagsToDisplay">
           <nav
             class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6 rounded-t-md"
           >
@@ -287,6 +288,10 @@ const descending = ref('desc')
 const query = reactive({
   page: props.page || 1,
   sort: props.sort || null,
+})
+
+const hasTagsToDisplay = computed(() => {
+  return results.value?.data?.length > 0
 })
 
 watchEffect(async () => {
