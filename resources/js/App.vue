@@ -443,7 +443,7 @@
                 target="_blank"
                 class="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
               >
-                Details
+                  {{ trans.details }}
                 <span aria-hidden="true"> &rarr;</span>
               </a>
             </p>

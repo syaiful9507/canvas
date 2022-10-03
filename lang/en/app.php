@@ -6,6 +6,7 @@ return [
     'sort' => 'Sort',
     'back' => 'Back',
     'draft' => 'Draft',
+    'details' => 'Details',
     'published' => 'Published',
     'clear_current_search_filters_and_sorts' => 'Clear current search query, filters, and sorts.',
     'dashboard' => 'Dashboard',
