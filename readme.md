@@ -119,9 +119,9 @@ Canvas uses the storage disk for media uploads. You may configure the different 
 
 Canvas comes with 3 pre-defined roles out-of-the-box:
 
-- **Contributor** (A user who can write and manage their own posts but cannot publish them)
-- **Editor** (A user who can publish and manage posts including the posts of other users)
-- **Admin** (A user who can do everything and see everything)
+- **Contributor** (Can create and edit their own posts, but cannot publish. An Editor needs to approve and publish for them.)
+- **Editor** (Can edit and publish any posts on the site.)
+- **Admin** (Trusted staff user who should be able to manage all content and users, as well as site settings and options.)
 
 When you install a fresh version of Canvas, you'll have a default admin user set up automatically. From there, you can perform any basic CRUD actions on users, as well as assign their various roles.
 

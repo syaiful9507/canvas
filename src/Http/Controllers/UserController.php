@@ -131,7 +131,7 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         // Prevent a user from deleting their own account
-        if (request()->user('canvas')->id == $id) {
+        if (request()->user('canvas')->id === $id) {
             return response()->json(null, 403);
         }
 

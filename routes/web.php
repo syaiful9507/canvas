@@ -12,6 +12,7 @@ use Canvas\Http\Controllers\UserController;
 use Canvas\Http\Controllers\ViewController;
 use Canvas\Http\Middleware\AuthenticateSession;
 use Canvas\Http\Middleware\VerifyAdmin;
+use Canvas\Http\Middleware\VerifyPermission;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([AuthenticateSession::class])->group(function () {
@@ -57,13 +58,14 @@ Route::middleware([AuthenticateSession::class])->group(function () {
         });
 
         // User routes...
-        // TODO: Does there need to be middleware around all of these?
         Route::prefix('users')->group(function () {
             Route::get('/', [UserController::class, 'index'])->middleware([VerifyAdmin::class])->name('canvas.users.index');
             Route::get('create', [UserController::class, 'create'])->middleware([VerifyAdmin::class])->name('canvas.users.create');
-            Route::get('{id}', [UserController::class, 'show'])->name('canvas.users.show');
-            Route::get('{id}/posts', [UserController::class, 'posts'])->name('canvas.users.posts');
-            Route::post('{id}', [UserController::class, 'store'])->name('canvas.users.store');
+            Route::middleware([VerifyPermission::class])->group(function () {
+                Route::get('{id}', [UserController::class, 'show'])->name('canvas.users.show');
+                Route::get('{id}/posts', [UserController::class, 'posts'])->name('canvas.users.posts');
+                Route::post('{id}', [UserController::class, 'store'])->name('canvas.users.store');
+            });
             Route::delete('{id}', [UserController::class, 'destroy'])->middleware([VerifyAdmin::class])->name('canvas.users.destroy');
         });
 
