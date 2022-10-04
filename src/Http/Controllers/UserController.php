@@ -23,10 +23,16 @@ class UserController extends Controller
     public function index()
     {
         $sortAscending = request()->query('sort', 'desc') === 'asc';
+        $filterByRole = request()->query('role');
 
         return response()->json(
             User::query()
                 ->select('id', 'name', 'email', 'avatar', 'role')
+                ->when($filterByRole, function (Builder $query) {
+                    return $query->where('role', request()->query('role'));
+                }, function (Builder $query) {
+                    return $query;
+                })
                 ->when($sortAscending, function (Builder $query) {
                     return $query->oldest();
                 }, function (Builder $query) {

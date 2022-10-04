@@ -81,6 +81,7 @@ const routes = [
     name: 'users',
     component: UserList,
     props: (route) => ({
+      role: route.query?.role,
       page: route.query?.page,
       sort: route.query?.sort,
     }),

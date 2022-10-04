@@ -183,10 +183,8 @@
                   />
                   {{ trans.settings }}
                 </AppLink>
-
                 <a
-                  href="#"
-                  class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
                   @click="logout"
                 >
                   <component
@@ -369,8 +367,7 @@
             </AppLink>
 
             <a
-              href="#"
-              class="group flex items-center rounded-md px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              class="group flex items-center rounded-md px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
               @click="logout"
             >
               <component
@@ -384,7 +381,13 @@
         </nav>
       </div>
       <div class="flex flex-shrink-0 border-t border-gray-200 p-4">
-        <a href="#" class="group block w-full flex-shrink-0">
+        <AppLink
+          :to="{
+            name: 'show-user',
+            params: { id: user.id },
+          }"
+          class="group block w-full flex-shrink-0"
+        >
           <div class="flex items-center">
             <div>
               <img
@@ -406,7 +409,7 @@
               </p>
             </div>
           </div>
-        </a>
+        </AppLink>
       </div>
     </div>
   </div>
@@ -443,7 +446,7 @@
                 target="_blank"
                 class="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
               >
-                  {{ trans.details }}
+                {{ trans.details }}
                 <span aria-hidden="true"> &rarr;</span>
               </a>
             </p>

@@ -492,9 +492,9 @@ const filteredItems = computed(() => {
 
 const sortLabel = computed(() => {
   switch (query.sort) {
-    case 'desc':
+    case descending.value:
       return trans.value.newest
-    case 'asc':
+    case ascending.value:
       return trans.value.oldest
     default:
       return trans.value.sort

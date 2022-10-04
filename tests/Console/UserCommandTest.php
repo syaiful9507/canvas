@@ -43,7 +43,7 @@ class UserCommandTest extends TestCase
     {
         $this->artisan('canvas:user')
              ->expectsQuestion('What email should be attached to the user?', 'contributor@example.com')
-             ->expectsChoice('What role should the user have?', User::$contributor_name, User::roles())
+             ->expectsChoice('What role should the user have?', trans('canvas::app.contributor'), User::roles())
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
 
@@ -57,7 +57,7 @@ class UserCommandTest extends TestCase
     {
         $this->artisan('canvas:user')
              ->expectsQuestion('What email should be attached to the user?', 'editor@example.com')
-            ->expectsChoice('What role should the user have?', User::$editor_name, User::roles())
+            ->expectsChoice('What role should the user have?', trans('canvas::app.editor'), User::roles())
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
 
@@ -71,7 +71,7 @@ class UserCommandTest extends TestCase
     {
         $this->artisan('canvas:user')
              ->expectsQuestion('What email should be attached to the user?', 'admin@example.com')
-            ->expectsChoice('What role should the user have?', User::$admin_name, User::roles())
+            ->expectsChoice('What role should the user have?', trans('canvas::app.admin'), User::roles())
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
 

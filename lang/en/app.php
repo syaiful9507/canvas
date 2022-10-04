@@ -103,6 +103,11 @@ return [
     'no_posts' => 'No posts',
     'no_tags' => 'No tags',
     'no_topics' => 'No topics',
+    'contributor' => 'Contributor',
+    'editor' => 'Editor',
+    'admin' => 'Admin',
+    'role' => 'Role',
+    'everyone' => 'Everyone'
 ];
 
 //return [
@@ -111,7 +116,7 @@ return [
 //    'add_a_caption' => 'Add a caption for your image',
 //    'add_a_new_tag' => 'Add a new tag',
 //    'add_a_new_topic' => 'Add this as a new topic',
-//    'admin' => 'Admin',
+
 //    'all_stats' => 'All stats',
 //    'average_reading_time' => 'Average Reading Time',
 //    'cancel' => 'Cancel',
@@ -121,7 +126,6 @@ return [
 //    'caption' => 'Caption',
 //    'choose_a_username' => 'Choose a username...',
 //    'click_to_see_insights' => 'Click on a post below to see more detailed insights.',
-//    'contributor' => 'Contributor',
 //    'convert_to_draft' => 'Convert to draft',
 //    'created' => 'Created',
 //    'dark_mode' => 'Dark mode',
@@ -140,7 +144,6 @@ return [
 //    'edit_tag' => 'Edit tag',
 //    'edit_topic' => 'Edit topic',
 //    'edit_user' => 'Edit user',
-//    'editor' => 'Editor',
 //    'embed_content' => 'Embed Content',
 //    'featured_image' => 'Featured image',
 //    'featured_image_caption' => 'Featured Image Caption',

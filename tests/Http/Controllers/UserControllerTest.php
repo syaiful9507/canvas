@@ -20,17 +20,64 @@ class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testListAllUsers(): void
+    public function testAllUsersAreFetchedByDefault(): void
     {
         $response = $this->actingAs($this->admin, 'canvas')
-                         ->getJson('canvas/api/users')
-                         ->assertSuccessful();
+            ->getJson('canvas/api/users')
+            ->assertJsonFragment([
+                'id' => $this->admin->id,
+                'id' => $this->editor->id,
+                'id' => $this->contributor->id,
+            ])
+            ->assertSuccessful();
 
         $this->assertInstanceOf(User::class, $response->getOriginalContent()->first());
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response->getOriginalContent());
 
         $this->assertCount(3, $response->getOriginalContent());
+    }
+
+    public function testAdminsCanBeFetchedWithAGivenQueryParameter(): void
+    {
+        $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index', ['role' => User::$admin_id]))
+            ->assertSuccessful()
+            ->assertJsonFragment([
+                'id' => $this->admin->id,
+            ])
+            ->assertJsonMissing([
+                'id' => $this->contributor->id,
+                'id' => $this->editor->id,
+            ]);
+    }
+
+    public function testEditorsCanBeFetchedWithAGivenQueryParameter(): void
+    {
+        $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index', ['role' => User::$editor_id]))
+            ->assertSuccessful()
+            ->assertJsonFragment([
+                'id' => $this->editor->id,
+            ])
+            ->assertJsonMissing([
+                'id' => $this->admin->id,
+                'id' => $this->contributor->id,
+            ]);
+    }
+
+    public function testContributorsCanBeFetchedWithAGivenQueryParameter(): void
+    {
+        $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index', ['role' => User::$contributor_id]))
+            ->assertSuccessful()
+            ->assertJsonFragment([
+                'id' => $this->contributor->id,
+            ])
+            ->assertJsonMissing([
+                'id' => $this->admin->id,
+                'id' => $this->editor->id,
+            ]);
     }
 
     public function testCreateDataForUser(): void
