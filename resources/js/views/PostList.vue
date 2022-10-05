@@ -83,7 +83,7 @@
               }"
               class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
               :class="
-                $route.query?.type !== 'draft'
+                route.query?.type !== 'draft'
                   ? 'bg-gray-100 text-gray-900'
                   : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
               "
@@ -101,7 +101,7 @@
               }"
               class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
               :class="
-                $route.query?.type === 'draft'
+                route.query?.type === 'draft'
                   ? 'bg-gray-100 text-gray-900'
                   : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
               "
@@ -150,7 +150,7 @@
                           },
                         }"
                         :class="
-                          $route.query?.author === user.id
+                          route.query?.author === user.id
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -213,8 +213,7 @@
                           },
                         }"
                         :class="
-                          $route.query?.sort === descending ||
-                          !$route.query.sort
+                          route.query?.sort === descending || !route.query.sort
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -236,7 +235,7 @@
                           },
                         }"
                         :class="
-                          $route.query?.sort === ascending
+                          route.query?.sort === ascending
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -444,6 +443,7 @@ import {
 } from '@heroicons/vue/24/solid'
 import dateFromNow from '@/utils/dateFromNow'
 import request from '@/utils/request'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   author: {
@@ -463,7 +463,7 @@ const props = defineProps({
     default: '',
   },
 })
-
+const route = useRoute()
 const store = useStore()
 const trans = computed(() => store.getters['config/trans'])
 const locale = computed(() => store.getters['config/locale'])

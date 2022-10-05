@@ -103,7 +103,7 @@
                           name: 'topics',
                         }"
                         :class="
-                          !$route.query?.usage
+                          !route.query?.usage
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -124,7 +124,7 @@
                           },
                         }"
                         :class="
-                          $route.query?.usage === popular
+                          route.query?.usage === popular
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -145,7 +145,7 @@
                           },
                         }"
                         :class="
-                          $route.query?.usage === unpopular
+                          route.query?.usage === unpopular
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -196,8 +196,7 @@
                           },
                         }"
                         :class="
-                          $route.query?.sort === descending ||
-                          !$route.query.sort
+                          route.query?.sort === descending || !route.query.sort
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -216,7 +215,7 @@
                           },
                         }"
                         :class="
-                          $route.query?.sort === ascending
+                          route.query?.sort === ascending
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -380,6 +379,7 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import request from '@/utils/request'
 import dateFromNow from '@/utils/dateFromNow'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   page: {
@@ -395,7 +395,7 @@ const props = defineProps({
     default: '',
   },
 })
-
+const route = useRoute()
 const store = useStore()
 const trans = computed(() => store.getters['config/trans'])
 const locale = computed(() => store.getters['config/locale'])

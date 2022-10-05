@@ -72,7 +72,7 @@
                   <component
                     :is="HomeIcon"
                     :class="[
-                      ['dashboard'].includes($route.name)
+                      ['dashboard'].includes(route.name)
                         ? 'text-gray-500'
                         : 'text-gray-400 group-hover:text-gray-500',
                       'mr-4 flex-shrink-0 h-6 w-6',
@@ -91,9 +91,7 @@
                   <component
                     :is="UserGroupIcon"
                     :class="[
-                      ['users', 'create-user', 'show-user'].includes(
-                        $route.name
-                      )
+                      ['users', 'create-user', 'show-user'].includes(route.name)
                         ? 'text-gray-500'
                         : 'text-gray-400 group-hover:text-gray-500',
                       'mr-4 flex-shrink-0 h-6 w-6',
@@ -112,9 +110,7 @@
                   <component
                     :is="BookmarkSquareIcon"
                     :class="[
-                      ['posts', 'create-post', 'show-post'].includes(
-                        $route.name
-                      )
+                      ['posts', 'create-post', 'show-post'].includes(route.name)
                         ? 'text-gray-500'
                         : 'text-gray-400 group-hover:text-gray-500',
                       'mr-4 flex-shrink-0 h-6 w-6',
@@ -133,7 +129,7 @@
                   <component
                     :is="TagIcon"
                     :class="[
-                      ['tags', 'create-tag', 'show-tag'].includes($route.name)
+                      ['tags', 'create-tag', 'show-tag'].includes(route.name)
                         ? 'text-gray-500'
                         : 'text-gray-400 group-hover:text-gray-500',
                       'mr-4 flex-shrink-0 h-6 w-6',
@@ -153,7 +149,7 @@
                     :is="RectangleStackIcon"
                     :class="[
                       ['topics', 'create-topic', 'show-topic'].includes(
-                        $route.name
+                        route.name
                       )
                         ? 'text-gray-500'
                         : 'text-gray-400 group-hover:text-gray-500',
@@ -176,7 +172,7 @@
                   <component
                     :is="CogIcon"
                     :class="[
-                      ['settings'].includes($route.name)
+                      ['settings'].includes(route.name)
                         ? 'text-gray-500'
                         : 'text-gray-400 group-hover:text-gray-500',
                       'mr-4 flex-shrink-0 h-6 w-6',
@@ -265,7 +261,7 @@
               <component
                 :is="HomeIcon"
                 :class="[
-                  ['dashboard'].includes($route.name)
+                  ['dashboard'].includes(route.name)
                     ? 'text-gray-500'
                     : 'text-gray-400 group-hover:text-gray-500',
                   'mr-3 flex-shrink-0 h-6 w-6',
@@ -283,7 +279,7 @@
               <component
                 :is="UserGroupIcon"
                 :class="[
-                  ['users', 'create-user', 'show-user'].includes($route.name)
+                  ['users', 'create-user', 'show-user'].includes(route.name)
                     ? 'text-gray-500'
                     : 'text-gray-400 group-hover:text-gray-500',
                   'mr-3 flex-shrink-0 h-6 w-6',
@@ -301,7 +297,7 @@
               <component
                 :is="BookmarkSquareIcon"
                 :class="[
-                  ['posts', 'create-post', 'show-post'].includes($route.name)
+                  ['posts', 'create-post', 'show-post'].includes(route.name)
                     ? 'text-gray-500'
                     : 'text-gray-400 group-hover:text-gray-500',
                   'mr-3 flex-shrink-0 h-6 w-6',
@@ -319,7 +315,7 @@
               <component
                 :is="TagIcon"
                 :class="[
-                  ['tags', 'create-tag', 'show-tag'].includes($route.name)
+                  ['tags', 'create-tag', 'show-tag'].includes(route.name)
                     ? 'text-gray-500'
                     : 'text-gray-400 group-hover:text-gray-500',
                   'mr-3 flex-shrink-0 h-6 w-6',
@@ -337,7 +333,7 @@
               <component
                 :is="RectangleStackIcon"
                 :class="[
-                  ['topics', 'create-topic', 'show-topic'].includes($route.name)
+                  ['topics', 'create-topic', 'show-topic'].includes(route.name)
                     ? 'text-gray-500'
                     : 'text-gray-400 group-hover:text-gray-500',
                   'mr-3 flex-shrink-0 h-6 w-6',
@@ -360,7 +356,7 @@
               <component
                 :is="CogIcon"
                 :class="[
-                  ['settings'].includes($route.name)
+                  ['settings'].includes(route.name)
                     ? 'text-gray-500'
                     : 'text-gray-400 group-hover:text-gray-500',
                   'mr-3 flex-shrink-0 h-6 w-6',
@@ -459,7 +455,7 @@
       </div>
       <!-- End Outdated Assets Alert -->
 
-      <RouterView :key="$route.query"></RouterView>
+      <RouterView :key="route.query"></RouterView>
     </main>
   </div>
 
@@ -490,7 +486,9 @@ import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
 import CommandPalette from '@/components/CommandPalette'
 import request from '@/utils/request'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const store = useStore()
 const user = computed(() => store.state.config.user)
 const config = computed(() => store.state.config)

@@ -97,7 +97,7 @@
                     <AppLink
                       :to="{ name: 'users' }"
                       :class="
-                        !$route.query?.role
+                        !route.query?.role
                           ? 'bg-gray-100 text-gray-900'
                           : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                       "
@@ -120,7 +120,7 @@
                           },
                         }"
                         :class="
-                          $route.query?.role === id
+                          route.query?.role === id
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -169,8 +169,7 @@
                           },
                         }"
                         :class="
-                          $route.query?.sort === descending ||
-                          !$route.query.sort
+                          route.query?.sort === descending || !route.query.sort
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -189,7 +188,7 @@
                           },
                         }"
                         :class="
-                          $route.query?.sort === ascending
+                          route.query?.sort === ascending
                             ? 'bg-gray-100 text-gray-900'
                             : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
                         "
@@ -345,6 +344,7 @@ import {
   ChevronDownIcon,
 } from '@heroicons/vue/24/solid'
 import request from '@/utils/request'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   role: {
@@ -360,7 +360,7 @@ const props = defineProps({
     default: '',
   },
 })
-
+const route = useRoute()
 const store = useStore()
 const config = computed(() => store.state.config)
 const trans = computed(() => store.getters['config/trans'])
@@ -389,7 +389,7 @@ const sortLabel = computed(() => {
 })
 
 const roleLabel = computed(() => {
-  if (query.role !== null) {
+  if (query.role != null) {
     return config.value.roles[query.role]
   } else {
     return trans.value.role
