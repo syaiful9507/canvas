@@ -279,10 +279,7 @@ const props = defineProps({
   },
 })
 
-
-
 // TODO: Add sorting by All, Most Popular, Least Popular based on number of posts
-
 
 const store = useStore()
 const trans = computed(() => store.getters['config/trans'])

@@ -20971,7 +20971,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   setup: function setup(__props, _ref) {
     var expose = _ref.expose;
     expose();
-    var props = __props;
+    var props = __props; // TODO: Add sorting by All, Most Popular, Least Popular based on number of posts
+
     var store = (0,vuex__WEBPACK_IMPORTED_MODULE_4__.useStore)();
     var trans = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
       return store.getters['config/trans'];
