@@ -1,7 +1,7 @@
 <template>
   <div class="py-6">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-      <div>
+      <div class="pb-4">
         <div>
           <nav class="sm:hidden" :aria-label="trans.back">
             <AppLink
@@ -67,9 +67,9 @@
         </div>
       </div>
 
-      <div class="py-4">
+      <div class="border rounded-md shadow-sm">
         <nav
-          class="bg-white py-3 flex items-center justify-between border-b border-gray-200 rounded-t-md"
+          class="bg-white py-3 px-3 flex items-center justify-between border-b border-gray-200 rounded-t-md"
         >
           <div class="ml-auto flex space-x-4">
             <Menu as="div" class="relative inline-block text-left">
@@ -276,7 +276,7 @@
           </ul>
 
           <nav
-            class="bg-white py-3 flex items-center justify-between border-t border-gray-200 rounded-b-md"
+            class="bg-white py-3 px-3 flex items-center justify-between border-t border-gray-200 rounded-b-md"
             :aria-label="trans.pagination"
           >
             <div class="sm:block">

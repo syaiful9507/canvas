@@ -53,11 +53,13 @@
             </TransitionChild>
             <div class="h-0 flex-1 overflow-y-auto pt-5 pb-4">
               <div class="flex flex-shrink-0 items-center px-4">
-                <img
-                  class="h-8 w-auto"
-                  src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                  alt="Canvas"
-                />
+                <AppLink :to="{ name: 'dashboard' }">
+                  <img
+                    class="h-8 w-auto"
+                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                    alt="Canvas"
+                  />
+                </AppLink>
               </div>
               <nav class="mt-5 space-y-1 px-2">
                 <AppLink
@@ -244,11 +246,13 @@
     >
       <div class="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
         <div class="flex flex-shrink-0 items-center px-4">
-          <img
-            class="h-8 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            alt="Your Company"
-          />
+          <AppLink :to="{ name: 'dashboard' }">
+            <img
+              class="h-8 w-auto"
+              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+              alt="Your Company"
+            />
+          </AppLink>
         </div>
         <nav class="mt-5 flex-1" aria-label="Sidebar">
           <div class="space-y-1 px-2">
