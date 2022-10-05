@@ -3,7 +3,7 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
       <div>
         <div>
-          <nav class="sm:hidden" aria-label="Back">
+          <nav class="sm:hidden" :aria-label="trans.back">
             <AppLink
               :to="{ name: 'dashboard' }"
               class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
@@ -15,7 +15,7 @@
               {{ trans.back }}
             </AppLink>
           </nav>
-          <nav class="hidden sm:flex" aria-label="Breadcrumb">
+          <nav class="hidden sm:flex" :aria-label="trans.breadcrumb">
             <ol role="list" class="flex items-center space-x-4">
               <li>
                 <div class="flex">
@@ -309,7 +309,7 @@
 
           <nav
             class="bg-white py-3 flex items-center justify-between border-t border-gray-200 rounded-b-md"
-            aria-label="Pagination"
+            :aria-label="trans.pagination"
           >
             <div class="sm:block">
               <p class="text-sm text-gray-700">

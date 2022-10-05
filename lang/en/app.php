@@ -108,6 +108,13 @@ return [
     'admin' => 'Admin',
     'role' => 'Role',
     'everyone' => 'Everyone',
+    'pagination' => 'Pagination',
+    'sidebar' => 'Sidebar',
+    'breadcrumb' => 'Breadcrumb',
+    'most_popular' => 'Most popular',
+    'least_popular' => 'Least popular',
+    'everything' => 'Everything',
+    'usage' => 'Usage'
 ];
 
 //return [

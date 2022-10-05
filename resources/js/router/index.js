@@ -45,6 +45,7 @@ const routes = [
     props: (route) => ({
       page: route.query?.page,
       sort: route.query?.sort,
+      usage: route.query?.usage,
     }),
   },
   {
@@ -64,6 +65,7 @@ const routes = [
     props: (route) => ({
       page: route.query?.page,
       sort: route.query?.sort,
+      usage: route.query?.usage,
     }),
   },
   {

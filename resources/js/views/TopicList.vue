@@ -1,71 +1,83 @@
 <template>
   <div class="py-6">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-      <h1 class="text-2xl font-semibold text-gray-900">
-        {{ trans.topics }}
-      </h1>
-    </div>
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
+      <div>
+        <div>
+          <nav class="sm:hidden" :aria-label="trans.back">
+            <AppLink
+              :to="{ name: 'dashboard' }"
+              class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
+            >
+              <ChevronLeftIcon
+                class="-ml-1 mr-1 h-5 w-5 flex-shrink-0 text-gray-400"
+                aria-hidden="true"
+              />
+              {{ trans.back }}
+            </AppLink>
+          </nav>
+          <nav class="hidden sm:flex" :aria-label="trans.breadcrumb">
+            <ol role="list" class="flex items-center space-x-4">
+              <li>
+                <div class="flex">
+                  <AppLink
+                    :to="{ name: 'dashboard' }"
+                    class="text-sm font-medium text-gray-500 hover:text-gray-700"
+                  >
+                    {{ trans.dashboard }}
+                  </AppLink>
+                </div>
+              </li>
+              <li>
+                <div class="flex items-center">
+                  <ChevronRightIcon
+                    class="h-5 w-5 flex-shrink-0 text-gray-400"
+                    aria-hidden="true"
+                  />
+                  <p
+                    aria-current="page"
+                    class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                  >
+                    {{ trans.topics }}
+                  </p>
+                </div>
+              </li>
+            </ol>
+          </nav>
+        </div>
+        <div class="mt-2 md:flex md:items-center md:justify-between">
+          <div class="min-w-0 flex-1">
+            <h2
+              class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight"
+            >
+              {{ trans.topics }}
+            </h2>
+          </div>
+          <div
+            v-if="filteredItems?.length > 0"
+            class="mt-4 flex flex-shrink-0 md:mt-0 md:ml-4"
+          >
+            <AppLink
+              :to="{ name: 'create-topic' }"
+              class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              <PlusIcon class="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+              {{ trans.new_topic }}
+            </AppLink>
+          </div>
+        </div>
+      </div>
+
       <div class="py-4">
-        <nav class="flex pb-5" aria-label="Breadcrumb">
-          <ol role="list" class="flex items-center space-x-4">
-            <li>
-              <div class="flex items-center">
-                <AppLink
-                  :to="{ name: 'dashboard' }"
-                  class="text-sm font-medium text-gray-500 hover:text-gray-700"
-                >
-                  {{ trans.dashboard }}
-                </AppLink>
-              </div>
-            </li>
-            <li>
-              <div class="flex items-center">
-                <svg
-                  class="flex-shrink-0 h-5 w-5 text-gray-300"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  aria-hidden="true"
-                >
-                  <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
-                </svg>
-                <p class="ml-4 text-sm font-medium text-gray-500">
-                  {{ trans.topics }}
-                </p>
-              </div>
-            </li>
-          </ol>
-
-          <AppLink
-            v-if="hasTopicsToDisplay"
-            :to="{ name: 'create-topic' }"
-            class="inline-flex items-center ml-auto mr-4 text-sm font-medium text-gray-500 hover:text-gray-700"
-          >
-            <PlusIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-            {{ trans.new_topic }}
-          </AppLink>
-        </nav>
-
-        <div v-if="hasTopicsToDisplay">
-          <nav
-            class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 sm:px-6 rounded-t-md"
-          >
-            <div class="flex space-x-4">
-              <span
-                class="py-2 px-3 inline-flex items-center text-sm font-medium text-gray-900"
-              >
-                <!-- TODO: Pluralize and localize -->
-                {{ results.total }} Topics
-              </span>
-            </div>
-
+        <nav
+          class="bg-white py-3 flex items-center justify-between border-b border-gray-200 rounded-t-md"
+        >
+          <div class="ml-auto flex space-x-4">
             <Menu as="div" class="relative inline-block text-left">
               <div>
                 <MenuButton
                   class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                 >
-                  Sort
+                  {{ usageLabel }}
                   <ChevronDownIcon
                     class="-mr-1 ml-2 h-5 w-5"
                     aria-hidden="true"
@@ -89,7 +101,99 @@
                       <AppLink
                         :to="{
                           name: 'topics',
-                          query: { sort: descending },
+                        }"
+                        :class="
+                          !$route.query?.usage
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
+                        class="block m-auto px-4 py-2 text-sm"
+                      >
+                        <div class="flex items-center">
+                          {{ trans.everything }}
+                        </div>
+                      </AppLink>
+                    </MenuItem>
+                    <MenuItem as="div">
+                      <AppLink
+                        :to="{
+                          name: 'topics',
+                          query: {
+                            usage: popular,
+                            ...(query.sort && { sort: query.sort }),
+                          },
+                        }"
+                        :class="
+                          $route.query?.usage === popular
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
+                        class="block m-auto px-4 py-2 text-sm"
+                      >
+                        <div class="flex items-center">
+                          {{ trans.most_popular }}
+                        </div>
+                      </AppLink>
+                    </MenuItem>
+                    <MenuItem as="div">
+                      <AppLink
+                        :to="{
+                          name: 'topics',
+                          query: {
+                            usage: unpopular,
+                            ...(query.sort && { sort: query.sort }),
+                          },
+                        }"
+                        :class="
+                          $route.query?.usage === unpopular
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
+                        class="block m-auto px-4 py-2 text-sm"
+                      >
+                        <div class="flex items-center">
+                          {{ trans.least_popular }}
+                        </div>
+                      </AppLink>
+                    </MenuItem>
+                  </div>
+                </MenuItems>
+              </transition>
+            </Menu>
+
+            <Menu as="div" class="relative inline-block text-left">
+              <div>
+                <MenuButton
+                  class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                >
+                  {{ sortLabel }}
+                  <ChevronDownIcon
+                    class="-mr-1 ml-2 h-5 w-5"
+                    aria-hidden="true"
+                  />
+                </MenuButton>
+              </div>
+
+              <transition
+                enter-active-class="transition ease-out duration-100"
+                enter-from-class="transform opacity-0 scale-95"
+                enter-to-class="transform opacity-100 scale-100"
+                leave-active-class="transition ease-in duration-75"
+                leave-from-class="transform opacity-100 scale-100"
+                leave-to-class="transform opacity-0 scale-95"
+              >
+                <MenuItems
+                  class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                >
+                  <div class="py-1">
+                    <MenuItem as="div">
+                      <AppLink
+                        :to="{
+                          name: 'topics',
+                          query: {
+                            sort: descending,
+                            ...(query.usage && { usage: query.usage }),
+                          },
                         }"
                         :class="
                           $route.query?.sort === descending ||
@@ -99,14 +203,17 @@
                         "
                         class="block m-auto px-4 py-2 text-sm"
                       >
-                        <div class="flex items-center">Newest</div>
+                        <div class="flex items-center">{{ trans.newest }}</div>
                       </AppLink>
                     </MenuItem>
                     <MenuItem as="div">
                       <AppLink
                         :to="{
                           name: 'topics',
-                          query: { sort: ascending },
+                          query: {
+                            sort: ascending,
+                            ...(query.usage && { usage: query.usage }),
+                          },
                         }"
                         :class="
                           $route.query?.sort === ascending
@@ -115,16 +222,19 @@
                         "
                         class="block m-auto px-4 py-2 text-sm"
                       >
-                        <div class="flex items-center">Oldest</div>
+                        <div class="flex items-center">{{ trans.oldest }}</div>
                       </AppLink>
                     </MenuItem>
                   </div>
                 </MenuItems>
               </transition>
             </Menu>
-          </nav>
+          </div>
+        </nav>
+
+        <div v-if="filteredItems?.length">
           <ul role="list" class="divide-y divide-gray-200">
-            <li v-for="topic in results.data" :key="topic.id">
+            <li v-for="topic in filteredItems" :key="topic.id">
               <AppLink
                 :to="{
                   name: 'show-topic',
@@ -132,7 +242,7 @@
                 }"
                 class="block hover:bg-gray-50 cursor-pointer"
               >
-                <div class="flex items-center px-4 py-4 sm:px-6">
+                <div class="flex items-center py-4 px-3">
                   <div class="min-w-0 flex-1 flex items-center">
                     <div
                       class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4"
@@ -166,24 +276,18 @@
           </ul>
 
           <nav
-            class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 rounded-b-md"
-            aria-label="Pagination"
+            class="bg-white py-3 flex items-center justify-between border-t border-gray-200 rounded-b-md"
+            :aria-label="trans.pagination"
           >
             <div class="sm:block">
               <p class="text-sm text-gray-700">
-                Showing
-                {{ ' ' }}
-                <span class="font-medium">{{ results.from }}</span>
-                {{ ' ' }}
-                to
-                {{ ' ' }}
-                <span class="font-medium">{{ results.to }}</span>
-                {{ ' ' }}
-                of
-                {{ ' ' }}
-                <span class="font-medium">{{ results.total }}</span>
-                {{ ' ' }}
-                results
+                {{ trans.showing }} {{ ' '
+                }}<span class="font-medium">{{ results.from }}</span
+                >{{ ' ' }} {{ trans.to }} {{ ' '
+                }}<span class="font-medium">{{ results.to }}</span
+                >{{ ' ' }} {{ trans.of }} {{ ' '
+                }}<span class="font-medium">{{ results.total }}</span
+                >{{ ' ' }} {{ trans.results }}
               </p>
             </div>
             <div class="ml-auto">
@@ -194,13 +298,15 @@
                     name: 'topics',
                     query: {
                       page: results.current_page - 1,
+                      page: results.current_page - 1,
+                      ...(query.usage && { usage: query.usage }),
                       ...(query.sort && { sort: query.sort }),
                     },
                   }"
                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   @click="decrementPage() && fetchTopics()"
                 >
-                  Previous
+                  {{ trans.previous }}
                 </AppLink>
                 <AppLink
                   v-if="!!results.next_page_url"
@@ -208,48 +314,52 @@
                     name: 'topics',
                     query: {
                       page: results.current_page + 1,
+                      ...(query.usage && { usage: query.usage }),
                       ...(query.sort && { sort: query.sort }),
                     },
                   }"
                   class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   @click="incrementPage() && fetchTopics()"
                 >
-                  Next
+                  {{ trans.next }}
                 </AppLink>
               </div>
             </div>
           </nav>
         </div>
 
-        <div v-else class="py-24 text-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="mx-auto h-12 w-12 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="1"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          <h3 class="mt-2 text-sm font-medium text-gray-900">
-            {{ trans.no_topics }}
-          </h3>
-          <p class="mt-1 text-sm text-gray-500">
-            {{ trans.get_started_by_creating_a_new_topic }}
-          </p>
-          <div class="mt-6">
-            <button
-              type="button"
-              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        <div v-if="filteredItems?.length === 0">
+          <div class="py-24 text-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1"
+              stroke="currentColor"
+              class="mx-auto h-12 w-12 text-gray-400"
             >
-              <PlusIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-              {{ trans.new_topic }}
-            </button>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 6.878V6a2.25 2.25 0 012.25-2.25h7.5A2.25 2.25 0 0118 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 004.5 9v.878m13.5-3A2.25 2.25 0 0119.5 9v.878m0 0a2.246 2.246 0 00-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0121 12v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6c0-.98.626-1.813 1.5-2.122"
+              />
+            </svg>
+
+            <h3 class="mt-2 text-sm font-medium text-gray-900">
+              {{ trans.no_topics }}
+            </h3>
+            <p class="mt-1 text-sm text-gray-500">
+              {{ trans.get_started_by_creating_a_new_topic }}
+            </p>
+            <div class="mt-6">
+              <AppLink
+                :to="{ name: 'create-topic' }"
+                class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <PlusIcon class="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+                {{ trans.new_topic }}
+              </AppLink>
+            </div>
           </div>
         </div>
       </div>
@@ -263,6 +373,7 @@ import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
 import {
   ChevronRightIcon,
+  ChevronLeftIcon,
   PlusIcon,
   ChevronDownIcon,
 } from '@heroicons/vue/24/solid'
@@ -279,6 +390,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  usage: {
+    type: String,
+    default: '',
+  },
 })
 
 const store = useStore()
@@ -287,13 +402,38 @@ const locale = computed(() => store.getters['config/locale'])
 const results = ref(null)
 const ascending = ref('asc')
 const descending = ref('desc')
+const popular = ref('popular')
+const unpopular = ref('unpopular')
 const query = reactive({
   page: props.page || 1,
   sort: props.sort || null,
+  usage: props.usage || null,
 })
 
-const hasTopicsToDisplay = computed(() => {
-  return results.value?.data?.length > 0
+const filteredItems = computed(() => {
+  return results?.value?.data || []
+})
+
+const sortLabel = computed(() => {
+  switch (query.sort) {
+    case descending.value:
+      return trans.value.newest
+    case ascending.value:
+      return trans.value.oldest
+    default:
+      return trans.value.sort
+  }
+})
+
+const usageLabel = computed(() => {
+  switch (query.usage) {
+    case popular.value:
+      return trans.value.most_popular
+    case unpopular.value:
+      return trans.value.least_popular
+    default:
+      return trans.value.usage
+  }
 })
 
 watchEffect(async () => {
@@ -306,6 +446,7 @@ function fetchTopics() {
       params: {
         ...(query.page > 1 && { page: query.page }),
         ...(query.sort && { sort: query.sort }),
+        ...(query.usage && { usage: query.usage }),
       },
     })
     .then(({ data }) => {
