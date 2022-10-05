@@ -35,6 +35,74 @@ class TopicControllerTest extends TestCase
         $this->assertCount(2, $response->getOriginalContent());
     }
 
+    public function testTopicsCanBeSortedByCreationDateWithAGivenQueryParameter(): void
+    {
+        $newTopic = factory(Topic::class)->create([
+            'created_at' => now()->subHour()
+        ]);
+
+        $oldTopic = factory(Topic::class)->create([
+            'created_at' => now()->subDay()
+        ]);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.topics.index', ['sort' => 'desc']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $newTopic->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.topics.index', ['sort' => 'asc']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $oldTopic->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.topics.index'))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $newTopic->id);
+    }
+
+    public function testTopicsCanBeFilteredByUsageWithAGivenQueryParameter(): void
+    {
+        $posts = factory(Post::class, 10)->create();
+
+        $lessPopularTopic = factory(Topic::class)->create([
+            'created_at' => now()->subHour()
+        ]);
+
+        $popularTopic = factory(Topic::class)->create([
+            'created_at' => now()->subDay()
+        ]);
+
+        $unpopularTopic = factory(Topic::class)->create([
+            'created_at' => now()->subMonth()
+        ]);
+
+        $popularTopic->posts()->sync($posts->take(10)->pluck('id'));
+        $lessPopularTopic->posts()->sync($posts->take(5)->pluck('id'));
+        $unpopularTopic->posts()->sync($posts->take(0)->pluck('id'));
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.topics.index', ['usage' => 'popular']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $popularTopic->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.topics.index', ['usage' => 'unpopular']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $unpopularTopic->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.topics.index'))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $lessPopularTopic->id);
+    }
+
     public function testCreateDataForTopic(): void
     {
         $response = $this->actingAs($this->admin, 'canvas')

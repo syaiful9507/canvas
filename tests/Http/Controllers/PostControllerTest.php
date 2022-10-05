@@ -276,6 +276,35 @@ class PostControllerTest extends TestCase
              ]);
     }
 
+    public function testPostsCanBeSortedByCreationDateWithAGivenQueryParameter(): void
+    {
+        $newPost = factory(Post::class)->create([
+            'created_at' => now()->subHour()
+        ]);
+
+        $oldPost = factory(Post::class)->create([
+            'created_at' => now()->subDay()
+        ]);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.posts.index', ['sort' => 'desc']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()['posts']->first()->id, $newPost->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.posts.index', ['sort' => 'asc']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()['posts']->first()->id, $oldPost->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.posts.index'))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()['posts']->first()->id, $newPost->id);
+    }
+
     public function testNewPostData(): void
     {
         $this->actingAs($this->admin, 'canvas')

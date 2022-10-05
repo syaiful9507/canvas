@@ -38,6 +38,37 @@ class UserControllerTest extends TestCase
         $this->assertCount(3, $response->getOriginalContent());
     }
 
+    public function testUsersCanBeSortedByCreationDateWithAGivenQueryParameter(): void
+    {
+        $newUser = factory(User::class)->create([
+            // The 3 users (Admin, Editor, Contributor) take precedence in the database for
+            // some reason, so adding a second here ensures this user is new ¯\_(ツ)_/¯
+            'created_at' => now()->addSecond()
+        ]);
+
+        $oldUser = factory(User::class)->create([
+            'created_at' => now()->subDay()
+        ]);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index', ['sort' => 'desc']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $newUser->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index', ['sort' => 'asc']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $oldUser->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index'))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $newUser->id);
+    }
+
     public function testAdminsCanBeFetchedWithAGivenQueryParameter(): void
     {
         $this->actingAs($this->admin, 'canvas')

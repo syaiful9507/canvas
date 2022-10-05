@@ -35,6 +35,74 @@ class TagControllerTest extends TestCase
         $this->assertCount(2, $response->getOriginalContent());
     }
 
+    public function testTagsCanBeSortedByCreationDateWithAGivenQueryParameter(): void
+    {
+        $newTag = factory(Tag::class)->create([
+            'created_at' => now()->subHour()
+        ]);
+
+        $oldTag = factory(Tag::class)->create([
+            'created_at' => now()->subDay()
+        ]);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.tags.index', ['sort' => 'desc']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $newTag->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.tags.index', ['sort' => 'asc']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $oldTag->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.tags.index'))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $newTag->id);
+    }
+
+    public function testTagsCanBeFilteredByUsageWithAGivenQueryParameter(): void
+    {
+        $posts = factory(Post::class, 10)->create();
+
+        $lessPopularTag = factory(Tag::class)->create([
+            'created_at' => now()->subHour()
+        ]);
+
+        $popularTag = factory(Tag::class)->create([
+            'created_at' => now()->subDay()
+        ]);
+
+        $unpopularTag = factory(Tag::class)->create([
+            'created_at' => now()->subMonth()
+        ]);
+
+        $popularTag->posts()->sync($posts->take(10)->pluck('id'));
+        $lessPopularTag->posts()->sync($posts->take(5)->pluck('id'));
+        $unpopularTag->posts()->sync($posts->take(0)->pluck('id'));
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.tags.index', ['usage' => 'popular']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $popularTag->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.tags.index', ['usage' => 'unpopular']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $unpopularTag->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.tags.index'))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $lessPopularTag->id);
+    }
+
     public function testCreateDataForTag(): void
     {
         $response = $this->actingAs($this->admin, 'canvas')
