@@ -1,278 +1,307 @@
 <template>
-  <div class="py-6">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-      <div class="pb-4">
-        <div>
-          <nav class="sm:hidden" :aria-label="trans.back">
-            <AppLink
-              :to="{ name: 'dashboard' }"
-              class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
-            >
-              <ChevronLeftIcon
-                class="-ml-1 mr-1 h-5 w-5 flex-shrink-0 text-gray-400"
+  <div class="mx-auto max-w-7xl py-6">
+    <div class="py-8 px-4 md:px-8">
+      <nav :aria-label="trans.breadcrumb">
+        <ol role="list" class="flex items-center space-x-4">
+          <li>
+            <div class="flex">
+              <AppLink
+                :to="{ name: 'dashboard' }"
+                class="text-sm font-medium text-gray-500 hover:text-gray-700"
+              >
+                {{ trans.dashboard }}
+              </AppLink>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <ChevronRightIcon
+                class="h-5 w-5 flex-shrink-0 text-gray-400"
                 aria-hidden="true"
               />
-              {{ trans.back }}
-            </AppLink>
-          </nav>
-          <nav class="hidden sm:flex" :aria-label="trans.breadcrumb">
-            <ol role="list" class="flex items-center space-x-4">
-              <li>
-                <div class="flex">
-                  <AppLink
-                    :to="{ name: 'dashboard' }"
-                    class="text-sm font-medium text-gray-500 hover:text-gray-700"
-                  >
-                    {{ trans.dashboard }}
-                  </AppLink>
-                </div>
-              </li>
-              <li>
-                <div class="flex items-center">
-                  <ChevronRightIcon
-                    class="h-5 w-5 flex-shrink-0 text-gray-400"
-                    aria-hidden="true"
-                  />
-                  <p
-                    aria-current="page"
-                    class="ml-4 text-sm font-medium text-gray-500"
-                  >
-                    {{ trans.posts }}
-                  </p>
-                </div>
-              </li>
-            </ol>
-          </nav>
-        </div>
-        <div class="mt-2 md:flex md:items-center md:justify-between">
-          <div class="min-w-0 flex-1">
-            <h2
-              class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight"
-            >
-              {{ trans.posts }}
-            </h2>
-          </div>
-          <div
-            v-if="filteredItems?.length > 0 || isSearching"
-            class="mt-4 flex flex-shrink-0 md:mt-0 md:ml-4"
+              <p
+                aria-current="page"
+                class="ml-4 text-sm font-medium text-gray-500"
+              >
+                {{ trans.posts }}
+              </p>
+            </div>
+          </li>
+        </ol>
+      </nav>
+      <div class="mt-2 md:flex md:items-center md:justify-between">
+        <div class="min-w-0 flex-1">
+          <h2
+            class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight"
           >
-            <AppLink
-              :to="{ name: 'create-post' }"
-              class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              <PlusIcon class="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
-              {{ trans.new_post }}
-            </AppLink>
-          </div>
+            {{ trans.posts }}
+          </h2>
+        </div>
+        <div
+          v-if="filteredItems?.length > 0 || isSearching"
+          class="mt-2 flex flex-shrink-0 md:mt-0 md:ml-4"
+        >
+          <AppLink
+            :to="{ name: 'create-post' }"
+            class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            <PlusIcon class="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+            {{ trans.new_post }}
+          </AppLink>
         </div>
       </div>
+    </div>
 
-      <div class="border rounded-md shadow-sm">
-        <nav
-          class="bg-white py-3 px-3 flex items-center justify-between border-b border-gray-200 rounded-t-md"
-        >
-          <div class="flex space-x-4">
-            <AppLink
-              :to="{
-                name: 'posts',
-                query: {
-                  ...(query.author && { author: query.author }),
-                  ...(query.sort && { sort: query.sort }),
-                  type: 'published',
-                },
-              }"
-              class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
-              :class="
-                route.query?.type !== 'draft'
-                  ? 'bg-gray-100 text-gray-900'
-                  : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
-              "
-            >
-              {{ trans.published }}
-            </AppLink>
-            <AppLink
-              :to="{
-                name: 'posts',
-                query: {
-                  ...(query.author && { author: query.author }),
-                  ...(query.sort && { sort: query.sort }),
-                  type: 'draft',
-                },
-              }"
-              class="rounded-md py-2 px-3 inline-flex items-center text-sm font-medium"
-              :class="
-                route.query?.type === 'draft'
-                  ? 'bg-gray-100 text-gray-900'
-                  : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
-              "
-            >
-              {{ trans.draft }}
-            </AppLink>
-          </div>
-          <div class="ml-auto flex space-x-4">
-            <Menu as="div" class="relative inline-block text-left">
-              <div>
-                <MenuButton
-                  class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
-                >
-                  {{ authorLabel }}
-                  <ChevronDownIcon
-                    class="-mr-1 ml-2 h-5 w-5"
-                    aria-hidden="true"
-                  />
-                </MenuButton>
-              </div>
+    <main>
+      <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="px-4 sm:px-0 border-b border-gray-200">
+          <div class="flex justify-between py-4 space-x-4">
+            <div class="ml-auto">
+              <Menu as="div" class="relative inline-block text-left">
+                <div>
+                  <MenuButton
+                    class="inline-flex px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700"
+                  >
+                    {{ statusLabel }}
+                    <ChevronDownIcon
+                      class="-mr-1 ml-2 h-5 w-5"
+                      aria-hidden="true"
+                    />
+                  </MenuButton>
+                </div>
 
-              <transition
-                enter-active-class="transition ease-out duration-100"
-                enter-from-class="transform opacity-0 scale-95"
-                enter-to-class="transform opacity-100 scale-100"
-                leave-active-class="transition ease-in duration-75"
-                leave-from-class="transform opacity-100 scale-100"
-                leave-to-class="transform opacity-0 scale-95"
-              >
-                <MenuItems
-                  class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                <transition
+                  enter-active-class="transition ease-out duration-100"
+                  enter-from-class="transform opacity-0 scale-95"
+                  enter-to-class="transform opacity-100 scale-100"
+                  leave-active-class="transition ease-in duration-75"
+                  leave-from-class="transform opacity-100 scale-100"
+                  leave-to-class="transform opacity-0 scale-95"
                 >
-                  <div class="py-1">
-                    <MenuItem
-                      v-for="user in results.users"
-                      :key="user.id"
-                      as="div"
-                    >
-                      <AppLink
-                        :to="{
-                          name: 'posts',
-                          query: {
-                            author: user.id,
-                            ...(query.type && { type: query.type }),
-                            ...(query.sort && { sort: query.sort }),
-                          },
-                        }"
-                        :class="
-                          route.query?.author === user.id
-                            ? 'bg-gray-100 text-gray-900'
-                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
-                        "
-                        class="block m-auto px-4 py-2 text-sm"
-                      >
-                        <div class="flex items-center">
-                          <div class="flex-shrink-0">
-                            <img
-                              class="h-6 w-6 rounded-full"
-                              :src="user.avatar || user.default_avatar"
-                              :alt="user.name"
-                            />
+                  <MenuItems
+                    class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  >
+                    <div class="py-1">
+                      <MenuItem as="div">
+                        <AppLink
+                          :to="{
+                            name: 'posts',
+                            query: {
+                              ...(query.author && { author: query.author }),
+                              ...(query.sort && { sort: query.sort }),
+                              type: 'published',
+                            },
+                          }"
+                          :class="
+                            route.query?.type === published ||
+                            !route.query?.type
+                              ? 'bg-gray-100 text-gray-900'
+                              : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                          "
+                          class="block m-auto px-4 py-2 text-sm"
+                        >
+                          <div class="flex items-center">
+                            {{ trans.published }}
                           </div>
-                          <div class="ml-3">
-                            {{ user.name }}
+                        </AppLink>
+                      </MenuItem>
+
+                      <MenuItem as="div">
+                        <AppLink
+                          :to="{
+                            name: 'posts',
+                            query: {
+                              ...(query.author && { author: query.author }),
+                              ...(query.sort && { sort: query.sort }),
+                              type: draft,
+                            },
+                          }"
+                          :class="
+                            route.query?.type === draft
+                              ? 'bg-gray-100 text-gray-900'
+                              : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                          "
+                          class="block m-auto px-4 py-2 text-sm"
+                        >
+                          <div class="flex items-center">
+                            {{ trans.draft }}
                           </div>
-                        </div>
-                      </AppLink>
-                    </MenuItem>
-                  </div>
-                </MenuItems>
-              </transition>
-            </Menu>
+                        </AppLink>
+                      </MenuItem>
+                    </div>
+                  </MenuItems>
+                </transition>
+              </Menu>
+              <Menu as="div" class="relative inline-block text-left">
+                <div>
+                  <MenuButton
+                    class="inline-flex px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700"
+                  >
+                    {{ authorLabel }}
+                    <ChevronDownIcon
+                      class="-mr-1 ml-2 h-5 w-5"
+                      aria-hidden="true"
+                    />
+                  </MenuButton>
+                </div>
 
-            <Menu as="div" class="relative inline-block text-left">
-              <div>
-                <MenuButton
-                  class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                <transition
+                  enter-active-class="transition ease-out duration-100"
+                  enter-from-class="transform opacity-0 scale-95"
+                  enter-to-class="transform opacity-100 scale-100"
+                  leave-active-class="transition ease-in duration-75"
+                  leave-from-class="transform opacity-100 scale-100"
+                  leave-to-class="transform opacity-0 scale-95"
                 >
-                  {{ sortLabel }}
-                  <ChevronDownIcon
-                    class="-mr-1 ml-2 h-5 w-5"
-                    aria-hidden="true"
-                  />
-                </MenuButton>
-              </div>
+                  <MenuItems
+                    class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  >
+                    <div class="py-1">
+                      <MenuItem
+                        v-for="user in results.users"
+                        :key="user.id"
+                        as="div"
+                      >
+                        <AppLink
+                          :to="{
+                            name: 'posts',
+                            query: {
+                              author: user.id,
+                              ...(query.type && { type: query.type }),
+                              ...(query.sort && { sort: query.sort }),
+                            },
+                          }"
+                          :class="
+                            route.query?.author === user.id
+                              ? 'bg-gray-100 text-gray-900'
+                              : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                          "
+                          class="block m-auto px-4 py-2 text-sm"
+                        >
+                          <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                              <img
+                                class="h-6 w-6 rounded-full"
+                                :src="user.avatar || user.default_avatar"
+                                :alt="user.name"
+                              />
+                            </div>
+                            <div class="ml-3">
+                              {{ user.name }}
+                            </div>
+                          </div>
+                        </AppLink>
+                      </MenuItem>
+                    </div>
+                  </MenuItems>
+                </transition>
+              </Menu>
 
-              <transition
-                enter-active-class="transition ease-out duration-100"
-                enter-from-class="transform opacity-0 scale-95"
-                enter-to-class="transform opacity-100 scale-100"
-                leave-active-class="transition ease-in duration-75"
-                leave-from-class="transform opacity-100 scale-100"
-                leave-to-class="transform opacity-0 scale-95"
-              >
-                <MenuItems
-                  class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+              <Menu as="div" class="relative inline-block text-left">
+                <div>
+                  <MenuButton
+                    class="inline-flex pl-4 pr-0 py-2 text-sm font-medium text-gray-500 hover:text-gray-700"
+                  >
+                    {{ sortLabel }}
+                    <ChevronDownIcon
+                      class="-mr-1 ml-2 h-5 w-5"
+                      aria-hidden="true"
+                    />
+                  </MenuButton>
+                </div>
+
+                <transition
+                  enter-active-class="transition ease-out duration-100"
+                  enter-from-class="transform opacity-0 scale-95"
+                  enter-to-class="transform opacity-100 scale-100"
+                  leave-active-class="transition ease-in duration-75"
+                  leave-from-class="transform opacity-100 scale-100"
+                  leave-to-class="transform opacity-0 scale-95"
                 >
-                  <div class="py-1">
-                    <MenuItem as="div">
-                      <AppLink
-                        :to="{
-                          name: 'posts',
-                          query: {
-                            sort: descending,
-                            ...(query.type && { type: query.type }),
-                            ...(query.author && {
-                              author: query.author,
-                            }),
-                          },
-                        }"
-                        :class="
-                          route.query?.sort === descending || !route.query.sort
-                            ? 'bg-gray-100 text-gray-900'
-                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
-                        "
-                        class="block m-auto px-4 py-2 text-sm"
-                      >
-                        <div class="flex items-center">{{ trans.newest }}</div>
-                      </AppLink>
-                    </MenuItem>
-                    <MenuItem as="div">
-                      <AppLink
-                        :to="{
-                          name: 'posts',
-                          query: {
-                            sort: ascending,
-                            ...(query.type && { type: query.type }),
-                            ...(query.author && {
-                              author: query.author,
-                            }),
-                          },
-                        }"
-                        :class="
-                          route.query?.sort === ascending
-                            ? 'bg-gray-100 text-gray-900'
-                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
-                        "
-                        class="block m-auto px-4 py-2 text-sm"
-                      >
-                        <div class="flex items-center">{{ trans.oldest }}</div>
-                      </AppLink>
-                    </MenuItem>
-                  </div>
-                </MenuItems>
-              </transition>
-            </Menu>
+                  <MenuItems
+                    class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  >
+                    <div class="py-1">
+                      <MenuItem as="div">
+                        <AppLink
+                          :to="{
+                            name: 'posts',
+                            query: {
+                              sort: descending,
+                              ...(query.type && { type: query.type }),
+                              ...(query.author && {
+                                author: query.author,
+                              }),
+                            },
+                          }"
+                          :class="
+                            route.query?.sort === descending ||
+                            !route.query.sort
+                              ? 'bg-gray-100 text-gray-900'
+                              : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                          "
+                          class="block m-auto px-4 py-2 text-sm"
+                        >
+                          <div class="flex items-center">
+                            {{ trans.newest }}
+                          </div>
+                        </AppLink>
+                      </MenuItem>
+                      <MenuItem as="div">
+                        <AppLink
+                          :to="{
+                            name: 'posts',
+                            query: {
+                              sort: ascending,
+                              ...(query.type && { type: query.type }),
+                              ...(query.author && {
+                                author: query.author,
+                              }),
+                            },
+                          }"
+                          :class="
+                            route.query?.sort === ascending
+                              ? 'bg-gray-100 text-gray-900'
+                              : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                          "
+                          class="block m-auto px-4 py-2 text-sm"
+                        >
+                          <div class="flex items-center">
+                            {{ trans.oldest }}
+                          </div>
+                        </AppLink>
+                      </MenuItem>
+                    </div>
+                  </MenuItems>
+                </transition>
+              </Menu>
+            </div>
           </div>
-        </nav>
+        </div>
 
+        <!-- Stacked list -->
         <div v-if="filteredItems?.length">
-          <ul role="list" class="divide-y divide-gray-200">
+          <ul role="list" class="divide-y divide-gray-200 border-gray-200">
             <li v-for="post in filteredItems" :key="post.id">
               <AppLink
                 :to="{
                   name: 'show-post',
                   params: { id: post.id },
                 }"
-                class="block hover:bg-gray-50 cursor-pointer"
+                class="group block"
               >
-                <div class="flex items-center py-4 px-3">
-                  <div class="min-w-0 flex-1 flex items-center">
+                <div class="flex items-center py-5 px-4 sm:py-6 sm:px-0">
+                  <div class="flex min-w-0 flex-1 items-center">
                     <div class="flex-shrink-0">
                       <img
                         v-if="post.featured_image"
-                        class="h-12 w-12 rounded-full"
+                        class="h-12 w-12 rounded-full group-hover:opacity-75"
                         :src="post.featured_image"
                         :alt="post.title"
                       />
                       <div
                         v-else
-                        class="h-12 w-12 inline-flex justify-center items-center rounded-full bg-gray-100"
+                        class="h-12 w-12 inline-flex justify-center items-center rounded-full group-hover:opacity-75 bg-gray-100"
                       >
                         <CameraIcon
                           class="h-6 w-6 text-gray-400"
@@ -284,20 +313,38 @@
                       class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4"
                     >
                       <div>
-                        <p class="text-sm font-medium text-indigo-600 truncate">
+                        <p class="truncate text-sm font-medium text-purple-600">
                           {{ post.title }}
                         </p>
                         <p class="mt-2 flex items-center text-sm text-gray-500">
-                          <span>{{
-                            dateFromNow(post.created_at, locale)
-                          }}</span>
+                          {{ trans.created }}
+                          {{ ' ' }}
+                          {{ dateFromNow(post.created_at, locale) }}
                         </p>
+                      </div>
+                      <div class="hidden md:block">
+                        <div>
+                          <p class="text-sm text-gray-900">
+                            Applied on
+                            {{ ' ' }}
+                            sometime
+                          </p>
+                          <p
+                            class="mt-2 flex items-center text-sm text-gray-500"
+                          >
+                            <CheckCircleIcon
+                              class="mr-1.5 h-5 w-5 flex-shrink-0 text-green-400"
+                              aria-hidden="true"
+                            />
+                            status
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div>
                     <ChevronRightIcon
-                      class="h-5 w-5 text-gray-400"
+                      class="h-5 w-5 text-gray-400 group-hover:text-gray-700"
                       aria-hidden="true"
                     />
                   </div>
@@ -306,12 +353,35 @@
             </li>
           </ul>
 
+          <!-- Pagination -->
           <nav
-            class="bg-white py-3 px-3 flex items-center justify-between border-t border-gray-200 rounded-b-md"
+            class="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0"
             :aria-label="trans.pagination"
           >
-            <div class="sm:block">
-              <p class="text-sm text-gray-700">
+            <div class="-mt-px flex w-0 flex-1">
+              <AppLink
+                v-if="!!results.posts.prev_page_url"
+                :to="{
+                  name: 'posts',
+                  query: {
+                    page: results.posts.current_page - 1,
+                    ...(query.author && { author: query.author }),
+                    ...(query.type && { type: query.type }),
+                    ...(query.sort && { sort: query.sort }),
+                  },
+                }"
+                class="inline-flex items-center border-t-2 border-transparent pt-4 pr-1 text-sm font-medium text-gray-500 hover:border-gray-200 hover:text-gray-700"
+                @click="decrementPage() && fetchPosts()"
+              >
+                <ArrowLongLeftIcon
+                  class="mr-3 h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+                {{ trans.previous }}
+              </AppLink>
+            </div>
+            <div class="hidden md:-mt-px md:flex">
+              <p class="pt-4 text-sm text-gray-700">
                 {{ trans.showing }} {{ ' '
                 }}<span class="font-medium">{{ results.posts.from }}</span
                 >{{ ' ' }} {{ trans.to }} {{ ' '
@@ -321,41 +391,27 @@
                 >{{ ' ' }} {{ trans.results }}
               </p>
             </div>
-            <div class="ml-auto">
-              <div class="flex-1 flex justify-between sm:justify-end">
-                <AppLink
-                  v-if="!!results.posts.prev_page_url"
-                  :to="{
-                    name: 'posts',
-                    query: {
-                      page: results.posts.current_page - 1,
-                      ...(query.author && { author: query.author }),
-                      ...(query.type && { type: query.type }),
-                      ...(query.sort && { sort: query.sort }),
-                    },
-                  }"
-                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                  @click="decrementPage() && fetchPosts()"
-                >
-                  {{ trans.previous }}
-                </AppLink>
-                <AppLink
-                  v-if="!!results.posts.next_page_url"
-                  :to="{
-                    name: 'posts',
-                    query: {
-                      page: results.posts.current_page + 1,
-                      ...(query.author && { author: query.author }),
-                      ...(query.type && { type: query.type }),
-                      ...(query.sort && { sort: query.sort }),
-                    },
-                  }"
-                  class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                  @click="incrementPage() && fetchPosts()"
-                >
-                  {{ trans.next }}
-                </AppLink>
-              </div>
+            <div class="-mt-px flex w-0 flex-1 justify-end">
+              <AppLink
+                v-if="!!results.posts.next_page_url"
+                :to="{
+                  name: 'posts',
+                  query: {
+                    page: results.posts.current_page + 1,
+                    ...(query.author && { author: query.author }),
+                    ...(query.type && { type: query.type }),
+                    ...(query.sort && { sort: query.sort }),
+                  },
+                }"
+                class="inline-flex items-center border-t-2 border-transparent pt-4 pl-1 text-sm font-medium text-gray-500 hover:border-gray-200 hover:text-gray-700"
+                @click="incrementPage() && fetchPosts()"
+              >
+                {{ trans.next }}
+                <ArrowLongRightIcon
+                  class="ml-3 h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </AppLink>
             </div>
           </nav>
         </div>
@@ -425,7 +481,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -435,11 +491,13 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
 import {
+  ArrowLongLeftIcon,
+  ArrowLongRightIcon,
   ChevronRightIcon,
-  ChevronLeftIcon,
   PlusIcon,
   CameraIcon,
   ChevronDownIcon,
+  CheckCircleIcon,
 } from '@heroicons/vue/24/solid'
 import dateFromNow from '@/utils/dateFromNow'
 import request from '@/utils/request'
@@ -470,6 +528,8 @@ const locale = computed(() => store.getters['config/locale'])
 const results = ref(null)
 const ascending = ref('asc')
 const descending = ref('desc')
+const published = ref('published')
+const draft = ref('draft')
 const query = reactive({
   page: props.page || 1,
   type: props.type || null,
@@ -507,6 +567,17 @@ const authorLabel = computed(() => {
   })[0]
 
   return filteredAuthor ? filteredAuthor.name : trans.value.author
+})
+
+const statusLabel = computed(() => {
+  switch (query.type) {
+    case published.value:
+      return trans.value.published
+    case draft.value:
+      return trans.value.draft
+    default:
+      return trans.value.status
+  }
 })
 
 watchEffect(async () => {

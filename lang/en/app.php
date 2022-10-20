@@ -1,10 +1,10 @@
 <?php
 
 return [
+    'created' => 'Created',
     'oldest' => 'Oldest',
     'newest' => 'Newest',
     'sort' => 'Sort',
-    'back' => 'Back',
     'draft' => 'Draft',
     'details' => 'Details',
     'published' => 'Published',
@@ -115,6 +115,7 @@ return [
     'least_popular' => 'Least popular',
     'everything' => 'Everything',
     'usage' => 'Usage',
+    'status' => 'Status'
 ];
 
 //return [
