@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-7xl py-6">
-    <div class="py-8 px-4 md:px-8">
+    <div class="pb-8 px-4 md:px-8">
       <nav :aria-label="trans.breadcrumb">
         <ol role="list" class="flex items-center space-x-4">
           <li>

@@ -19922,7 +19922,7 @@ var _hoisted_1 = {
   "class": "mx-auto max-w-7xl py-6"
 };
 var _hoisted_2 = {
-  "class": "py-8 px-4 md:px-8"
+  "class": "pb-8 px-4 md:px-8"
 };
 var _hoisted_3 = ["aria-label"];
 var _hoisted_4 = {
@@ -34614,7 +34614,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 /* harmony import */ var _vue_devtools_api__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @vue/devtools-api */ "./node_modules/@vue/devtools-api/lib/esm/index.js");
 /*!
-  * vue-router v4.1.5
+  * vue-router v4.1.6
   * (c) 2022 Eduardo San Martin Morote
   * @license MIT
   */
@@ -35957,7 +35957,14 @@ function createRouterMatcher(routes, globalOptions) {
             // if (parent && isAliasRecord(originalRecord)) {
             //   parent.children.push(originalRecord)
             // }
-            insertMatcher(matcher);
+            // Avoid adding a record that doesn't display anything. This allows passing through records without a component to
+            // not be reached and pass through the catch all route
+            if ((matcher.record.components &&
+                Object.keys(matcher.record.components).length) ||
+                matcher.record.name ||
+                matcher.record.redirect) {
+                insertMatcher(matcher);
+            }
         }
         return originalMatcher
             ? () => {
@@ -36813,6 +36820,9 @@ function useLink(props) {
             }, { flush: 'post' });
         }
     }
+    /**
+     * NOTE: update {@link _RouterLinkI}'s `$slots` type when updating this
+     */
     return {
         route,
         href: (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => route.value.href),
