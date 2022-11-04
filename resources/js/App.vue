@@ -433,7 +433,7 @@
 
   <CommandPalette ref="palette"></CommandPalette>
   <SimpleNotification
-    v-if="config.assetsUpToDate"
+    v-if="!config.assetsUpToDate"
     info="true"
     :description="trans.new_assets_are_available_to_publish"
     url="https://github.com/austintoddj/canvas#updates"
