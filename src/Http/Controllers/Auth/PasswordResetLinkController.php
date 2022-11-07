@@ -9,6 +9,7 @@ use Canvas\Mail\ResetPassword;
 use Canvas\Models\User;
 use Exception;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -40,16 +41,9 @@ class PasswordResetLinkController extends Controller
 
         $token = Str::random();
 
-        if ($user) {
-            cache(["password.reset.{$user->id}" => $token],
-                now()->addMinutes(60)
-            );
+        Cache::add("password.reset.{$user->id}", $token, now()->addMinutes(60));
 
-            // We will send the password reset link to this user. Once we have attempted
-            // to send the link, we will examine the response then see the message we
-            // need to show to the user. Finally, we'll send out a proper response.
-            Mail::to($user->email)->send(new ResetPassword(encrypt("{$user->id}|{$token}")));
-        }
+        Mail::to($user->email)->send(new ResetPassword(encrypt("{$user->id}|{$token}")));
 
         return redirect()
             ->route('canvas.forgot-password.view')

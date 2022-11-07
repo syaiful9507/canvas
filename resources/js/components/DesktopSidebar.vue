@@ -179,7 +179,7 @@
 </template>
 
 <script setup>
-import { computed, defineEmits } from 'vue'
+import { computed } from 'vue'
 import {
   ArrowRightOnRectangleIcon,
   TagIcon,

@@ -68,9 +68,9 @@
                     @error('password')
                     <p class="mt-2 text-sm text-red-600" id="password-error">{{ $message }}</p>
                     @enderror
-                    @error('token')
-                    <p class="mt-2 text-sm text-red-600" id="token-error">{{ $message }}</p>
-                    @enderror
+                    @if(session('invalidResetToken'))
+                    <p class="mt-2 text-sm text-red-600" id="token-error">{{ session('invalidResetToken') }}</p>
+                    @endif
                 </div>
 
                 <div>

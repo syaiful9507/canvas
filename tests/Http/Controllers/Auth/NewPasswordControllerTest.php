@@ -19,7 +19,7 @@ class NewPasswordControllerTest extends TestCase
         $this->withoutMix();
 
         $this->get(route('canvas.reset-password.view', [
-            'token' => Str::random(60),
+            'token' => encrypt($this->admin->id.'|'.Str::random()),
         ]))
              ->assertSuccessful()
              ->assertViewIs('canvas::auth.passwords.reset')
@@ -43,15 +43,13 @@ class NewPasswordControllerTest extends TestCase
             'password_confirmation' => 'password',
         ]))->assertRedirect(route('canvas'));
 
-        $this->assertEmpty(cache()->get("password.reset.{$this->admin->id}"));
+        $this->assertEmpty(cache("password.reset.{$this->admin->id}"));
     }
 
     public function testNewPasswordRequestWillValidateAnInvalidEmail(): void
     {
-        $token = encrypt($this->admin->id.'|'.Str::random());
-
         $response = $this->post(route('canvas.reset-password'), [
-            'token' => $token,
+            'token' =>  encrypt($this->admin->id.'|'.Str::random()),
             'email' => 'not-an-email',
             'password' => 'password',
             'password_confirmation' => 'password',
@@ -62,10 +60,8 @@ class NewPasswordControllerTest extends TestCase
 
     public function testNewPasswordRequestWillValidateUnconfirmedPasswords(): void
     {
-        $token = encrypt($this->admin->id.'|'.Str::random());
-
         $response = $this->post(route('canvas.reset-password'), [
-            'token' => $token,
+            'token' =>  encrypt($this->admin->id.'|'.Str::random()),
             'email' => $this->admin->email,
             'password' => 'password',
             'password_confirmation' => 'secret',
@@ -74,10 +70,16 @@ class NewPasswordControllerTest extends TestCase
         $this->assertInstanceOf(ValidationException::class, $response->exception);
     }
 
-    public function testNewPasswordRequestWillValidateBadTokens(): void
+    public function testNewPasswordRequestWillValidateExpiredTokens(): void
     {
+        $oldToken = encrypt($this->admin->id.'|'.Str::random());
+
+        cache(["password.reset.{$this->admin->id}" => $oldToken],
+            now()->subMinute()
+        );
+
         $this->post(route('canvas.reset-password'), [
-            'token' => Str::random(),
+            'token' => $oldToken,
             'email' => $this->admin->email,
             'password' => 'password',
             'password_confirmation' => 'password',
