@@ -30,20 +30,20 @@
           leave-to="opacity-0 scale-95"
         >
           <DialogPanel
-            class="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
+            class="mx-auto max-w-xl transform divide-y divide-gray-100 dark:divide-gray-500 dark:divide-opacity-20 dark:bg-gray-900 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
           >
             <Combobox
               as="div"
-              class="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
+              class="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white dark:bg-gray-900 dark:divide-gray-700 shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
               @update:model-value="onSelect"
             >
               <div class="relative">
                 <MagnifyingGlassIcon
-                  class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400"
+                  class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400 dark:text-gray-500"
                   aria-hidden="true"
                 />
                 <ComboboxInput
-                  class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 focus:ring-0 sm:text-sm"
+                  class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 dark:text-white dark:placeholder-gray-500 focus:ring-0 sm:text-sm"
                   :placeholder="trans.search_canvas"
                   @change="query = $event.target.value"
                 />
@@ -59,7 +59,7 @@
                   :key="category"
                 >
                   <h2
-                    class="bg-gray-100 py-2.5 px-4 text-xs font-semibold text-gray-900"
+                    class="bg-gray-100 dark:bg-gray-700 dark:text-white py-2.5 px-4 text-xs font-semibold text-gray-900"
                   >
                     {{ category }}
                   </h2>
@@ -79,7 +79,7 @@
                       >
                         <li
                           :class="[
-                            'cursor-pointer select-none px-4 py-2',
+                            'cursor-pointer select-none px-4 py-2 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-900 dark:hover:text-white dark:hover:bg-gray-700',
                             active && 'bg-indigo-600 text-white',
                           ]"
                         >
@@ -95,19 +95,19 @@
                 class="py-14 px-6 text-center text-sm sm:px-14"
               >
                 <ExclamationTriangleIcon
-                  class="mx-auto h-6 w-6 text-gray-400"
+                  class="mx-auto h-6 w-6 text-gray-400 dark:text-gray-300"
                   aria-hidden="true"
                 />
-                <p class="mt-4 font-semibold text-gray-900">
+                <p class="mt-4 font-semibold text-gray-900 dark:text-white">
                   {{ trans.no_results_found }}
                 </p>
-                <p class="mt-2 text-gray-500">
+                <p class="mt-2 text-gray-500 dark:text-gray-300">
                   {{ trans.we_could_not_find_anything }}
                 </p>
               </div>
 
               <div
-                class="flex flex-wrap items-right bg-gray-50 py-2.5 px-4 text-xs text-gray-700"
+                class="flex flex-wrap items-right bg-gray-50 dark:bg-gray-700 dark:text-white py-2.5 px-4 text-xs text-gray-700"
               >
                 {{ trans.open_with_control_k }}
               </div>

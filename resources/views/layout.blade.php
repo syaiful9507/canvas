@@ -4,7 +4,7 @@
     @if(\Canvas\Canvas::usingRightToLeftLanguage($scripts['user']['locale'])) dir="rtl" @endif
     @class([
         'h-full' => true,
-        'dark' => \Canvas\Canvas::enabledDarkMode($scripts['user']['dark_mode'])
+        'dark bg-gray-800' => \Canvas\Canvas::enabledDarkMode($scripts['user']['dark_mode']),
     ])
 >
 <head>

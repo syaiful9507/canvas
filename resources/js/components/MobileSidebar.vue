@@ -24,7 +24,7 @@
           leave-to="-translate-x-full"
         >
           <DialogPanel
-            class="relative flex w-full max-w-xs flex-1 flex-col bg-white"
+            class="relative flex w-full max-w-xs flex-1 flex-col bg-white dark:bg-gray-800"
           >
             <TransitionChild
               as="template"
@@ -60,16 +60,16 @@
                 <AppLink
                   :to="{ name: 'dashboard' }"
                   class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                  active-class="bg-gray-100 text-gray-900"
-                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  active-class="bg-gray-100 text-gray-900 dark:text-white dark:bg-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                   @click="closeSidebar"
                 >
                   <component
                     :is="HomeIcon"
                     :class="[
                       ['dashboard'].includes(route.name)
-                        ? 'text-gray-500'
-                        : 'text-gray-400 group-hover:text-gray-500',
+                        ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
+                        : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300',
                       'mr-4 flex-shrink-0 h-6 w-6',
                     ]"
                     aria-hidden="true"
@@ -79,16 +79,16 @@
                 <AppLink
                   :to="{ name: 'users' }"
                   class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                  active-class="bg-gray-100 text-gray-900"
-                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  active-class="bg-gray-100 text-gray-900 dark:text-white dark:bg-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                   @click="closeSidebar"
                 >
                   <component
                     :is="UserGroupIcon"
                     :class="[
                       ['users', 'create-user', 'show-user'].includes(route.name)
-                        ? 'text-gray-500'
-                        : 'text-gray-400 group-hover:text-gray-500',
+                        ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
+                        : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300',
                       'mr-4 flex-shrink-0 h-6 w-6',
                     ]"
                     aria-hidden="true"
@@ -98,16 +98,16 @@
                 <AppLink
                   :to="{ name: 'posts' }"
                   class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                  active-class="bg-gray-100 text-gray-900"
-                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  active-class="bg-gray-100 text-gray-900 dark:text-white dark:bg-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                   @click="closeSidebar"
                 >
                   <component
                     :is="BookmarkSquareIcon"
                     :class="[
                       ['posts', 'create-post', 'show-post'].includes(route.name)
-                        ? 'text-gray-500'
-                        : 'text-gray-400 group-hover:text-gray-500',
+                        ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
+                        : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300',
                       'mr-4 flex-shrink-0 h-6 w-6',
                     ]"
                     aria-hidden="true"
@@ -117,16 +117,16 @@
                 <AppLink
                   :to="{ name: 'tags' }"
                   class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                  active-class="bg-gray-100 text-gray-900"
-                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  active-class="bg-gray-100 text-gray-900 dark:text-white dark:bg-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                   @click="closeSidebar"
                 >
                   <component
                     :is="TagIcon"
                     :class="[
                       ['tags', 'create-tag', 'show-tag'].includes(route.name)
-                        ? 'text-gray-500'
-                        : 'text-gray-400 group-hover:text-gray-500',
+                        ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
+                        : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300',
                       'mr-4 flex-shrink-0 h-6 w-6',
                     ]"
                     aria-hidden="true"
@@ -136,8 +136,8 @@
                 <AppLink
                   :to="{ name: 'topics' }"
                   class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                  active-class="bg-gray-100 text-gray-900"
-                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  active-class="bg-gray-100 text-gray-900 dark:text-white dark:bg-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                   @click="closeSidebar"
                 >
                   <component
@@ -146,8 +146,8 @@
                       ['topics', 'create-topic', 'show-topic'].includes(
                         route.name
                       )
-                        ? 'text-gray-500'
-                        : 'text-gray-400 group-hover:text-gray-500',
+                        ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
+                        : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300',
                       'mr-4 flex-shrink-0 h-6 w-6',
                     ]"
                     aria-hidden="true"
@@ -155,21 +155,24 @@
                   {{ trans.topics }}
                 </AppLink>
 
-                <hr class="my-5 border-t border-gray-200" aria-hidden="true" />
+                <hr
+                  class="my-5 border-t border-gray-200 dark:border-gray-700"
+                  aria-hidden="true"
+                />
 
                 <AppLink
                   :to="{ name: 'settings' }"
                   class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                  active-class="bg-gray-100 text-gray-900"
-                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  active-class="bg-gray-100 text-gray-900 dark:text-white dark:bg-gray-900"
+                  inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                   @click="closeSidebar"
                 >
                   <component
                     :is="CogIcon"
                     :class="[
                       ['settings'].includes(route.name)
-                        ? 'text-gray-500'
-                        : 'text-gray-400 group-hover:text-gray-500',
+                        ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
+                        : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300',
                       'mr-4 flex-shrink-0 h-6 w-6',
                     ]"
                     aria-hidden="true"
@@ -177,19 +180,21 @@
                   {{ trans.settings }}
                 </AppLink>
                 <a
-                  class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
+                  class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer"
                   @click="logout"
                 >
                   <component
                     :is="ArrowRightOnRectangleIcon"
-                    class="mr-4 flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                    class="mr-4 flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
                     aria-hidden="true"
                   />
                   {{ trans.sign_out }}
                 </a>
               </nav>
             </div>
-            <div class="flex flex-shrink-0 border-t border-gray-200 p-4">
+            <div
+              class="flex flex-shrink-0 border-t border-gray-200 p-4 dark:bg-gray-700 dark:border-transparent"
+            >
               <AppLink
                 :to="{
                   name: 'show-user',
@@ -208,12 +213,12 @@
                   </div>
                   <div class="ml-3">
                     <p
-                      class="text-sm font-medium text-gray-700 group-hover:text-gray-900"
+                      class="text-sm font-medium text-gray-700 group-hover:text-gray-900 dark:text-white dark:group-hover:text-white"
                     >
                       {{ user.name }}
                     </p>
                     <p
-                      class="text-xs font-medium text-gray-500 group-hover:text-gray-700"
+                      class="text-xs font-medium text-gray-500 group-hover:text-gray-700 dark:text-gray-300 dark:group-hover:text-gray-200"
                     >
                       {{ trans.view_profile }}
                     </p>

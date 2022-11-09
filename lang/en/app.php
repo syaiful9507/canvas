@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'dismiss' => 'Dismiss',
     'success_loud' => 'Success!',
     'uh_oh_loud' => 'Uh oh!',
     'heads_up_loud' => 'Heads up!',

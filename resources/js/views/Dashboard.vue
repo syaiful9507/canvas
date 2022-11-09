@@ -4,14 +4,16 @@
       <div class="mt-2 md:flex md:items-center md:justify-between">
         <div class="min-w-0 flex-1">
           <h2
-            class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight"
+            class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight dark:text-white"
           >
             {{ trans.dashboard }}
           </h2>
         </div>
       </div>
       <div class="py-4">
-        <div class="h-96 rounded-lg border-4 border-dashed border-gray-200" />
+        <div
+          class="h-96 rounded-lg border-4 border-dashed border-gray-200 dark:border-gray-600"
+        />
       </div>
     </div>
   </div>
