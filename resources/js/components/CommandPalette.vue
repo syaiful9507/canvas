@@ -63,7 +63,7 @@
                   >
                     {{ category }}
                   </h2>
-                  <ul class="mt-2 text-sm text-gray-800">
+                  <ul class="mt-2 text-sm text-gray-800 dark:text-white">
                     <ComboboxOption
                       v-for="item in items"
                       :key="item.id"
@@ -79,7 +79,7 @@
                       >
                         <li
                           :class="[
-                            'cursor-pointer select-none px-4 py-2 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-900 dark:hover:text-white dark:hover:bg-gray-700',
+                            'cursor-pointer select-none px-4 py-2',
                             active && 'bg-indigo-600 text-white',
                           ]"
                         >

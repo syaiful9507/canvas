@@ -19560,7 +19560,7 @@ var _hoisted_4 = {
   "class": "bg-gray-100 dark:bg-gray-700 dark:text-white py-2.5 px-4 text-xs font-semibold text-gray-900"
 };
 var _hoisted_5 = {
-  "class": "mt-2 text-sm text-gray-800"
+  "class": "mt-2 text-sm text-gray-800 dark:text-white"
 };
 var _hoisted_6 = {
   key: 1,
@@ -19663,7 +19663,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                                   }, {
                                     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
                                       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", {
-                                        "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(['cursor-pointer select-none px-4 py-2 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-900 dark:hover:text-white dark:hover:bg-gray-700', active && 'bg-indigo-600 text-white'])
+                                        "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(['cursor-pointer select-none px-4 py-2', active && 'bg-indigo-600 text-white'])
                                       }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.name), 3 /* TEXT, CLASS */)];
                                     }),
 
