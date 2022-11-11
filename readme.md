@@ -45,7 +45,7 @@ php artisan storage:link
 
 After publishing Canvas's assets, a primary configuration file will be located at `config/canvas.php`. This file allows you to customize various aspects of how your application uses the package.
 
-Canvas exposes its UI at `/canvas` by default. This can be changed by updating either the `path` or `domain` option:
+Canvas is available at `/canvas` by default. You can change this with either the `path` or `domain` option:
 
 ```php
 /*
@@ -127,22 +127,10 @@ When you install a fresh version of Canvas, you'll have a default admin user set
 
 ## Canvas UI
 
-**Want a beautiful, Medium.com-inspired frontend?** Use the `canvas:ui` Artisan command to install the scaffolding:
+**Want a beautiful, hand-crafted frontend with [TailwindCSS](https://tailwindcss.com)?** Use the `canvas:ui` Artisan command to install the scaffolding:
 
 ```bash
 php artisan canvas:ui
-```
-
-After generating the frontend scaffolding, your `package.json` file will include the necessary dependencies to install and compile:
-
-```bash
-# Using NPM
-npm install
-npm run dev
-
-# Using Yarn
-yarn
-yarn dev
 ```
 
 That's it! You can navigate to `/canvas-ui` and check it out for yourself. You're free to modify any aspect of it
@@ -255,24 +243,9 @@ $user->posts()->published()->with('topic')
 
 ## Updates
 
-Canvas follows [Semantic Versioning](https://semver.org) and increments versions as `MAJOR.MINOR.PATCH` numbers.
-- Major versions **will** contain breaking changes, so follow the [upgrade guide](.github/UPGRADE.md) for a
-  step-by-step breakdown
-- Minor and patch versions should **never** contain breaking changes, so you can safely update the package by following the steps below:
+When upgrading to a new major version of Canvas, it's important that you carefully review [the upgrade guide](.github/UPGRADE.md).
 
-You may update your Canvas installation using composer:
-
-```bash
-composer update
-```
-
-Run any new migrations using the `canvas:migrate` Artisan command:
-
-```bash
-php artisan canvas:migrate
-```
-
-Re-publish the assets using the `canvas:publish` Artisan command:
+In addition, when upgrading to any new Canvas version, you should re-publish Canvas' assets:
 
 ```bash
 php artisan canvas:publish

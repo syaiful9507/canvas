@@ -208,15 +208,16 @@ const errorMessages = {
     [41 /* ErrorCodes.X_V_MODEL_NO_EXPRESSION */]: `v-model is missing expression.`,
     [42 /* ErrorCodes.X_V_MODEL_MALFORMED_EXPRESSION */]: `v-model value must be a valid JavaScript member expression.`,
     [43 /* ErrorCodes.X_V_MODEL_ON_SCOPE_VARIABLE */]: `v-model cannot be used on v-for or v-slot scope variables because they are not writable.`,
-    [44 /* ErrorCodes.X_INVALID_EXPRESSION */]: `Error parsing JavaScript expression: `,
-    [45 /* ErrorCodes.X_KEEP_ALIVE_INVALID_CHILDREN */]: `<KeepAlive> expects exactly one child component.`,
+    [44 /* ErrorCodes.X_V_MODEL_ON_PROPS */]: `v-model cannot be used on a prop, because local prop bindings are not writable.\nUse a v-bind binding combined with a v-on listener that emits update:x event instead.`,
+    [45 /* ErrorCodes.X_INVALID_EXPRESSION */]: `Error parsing JavaScript expression: `,
+    [46 /* ErrorCodes.X_KEEP_ALIVE_INVALID_CHILDREN */]: `<KeepAlive> expects exactly one child component.`,
     // generic errors
-    [46 /* ErrorCodes.X_PREFIX_ID_NOT_SUPPORTED */]: `"prefixIdentifiers" option is not supported in this build of compiler.`,
-    [47 /* ErrorCodes.X_MODULE_MODE_NOT_SUPPORTED */]: `ES module mode is not supported in this build of compiler.`,
-    [48 /* ErrorCodes.X_CACHE_HANDLER_NOT_SUPPORTED */]: `"cacheHandlers" option is only supported when the "prefixIdentifiers" option is enabled.`,
-    [49 /* ErrorCodes.X_SCOPE_ID_NOT_SUPPORTED */]: `"scopeId" option is only supported in module mode.`,
+    [47 /* ErrorCodes.X_PREFIX_ID_NOT_SUPPORTED */]: `"prefixIdentifiers" option is not supported in this build of compiler.`,
+    [48 /* ErrorCodes.X_MODULE_MODE_NOT_SUPPORTED */]: `ES module mode is not supported in this build of compiler.`,
+    [49 /* ErrorCodes.X_CACHE_HANDLER_NOT_SUPPORTED */]: `"cacheHandlers" option is only supported when the "prefixIdentifiers" option is enabled.`,
+    [50 /* ErrorCodes.X_SCOPE_ID_NOT_SUPPORTED */]: `"scopeId" option is only supported in module mode.`,
     // just to fulfill types
-    [50 /* ErrorCodes.__EXTEND_POINT__ */]: ``
+    [51 /* ErrorCodes.__EXTEND_POINT__ */]: ``
 };
 
 const FRAGMENT = Symbol(( true) ? `Fragment` : 0);
@@ -3037,7 +3038,7 @@ function validateBrowserExpression(node, context, asParams = false, asRawStateme
         if (keywordMatch) {
             message = `avoid using JavaScript keyword as property name: "${keywordMatch[0]}"`;
         }
-        context.onError(createCompilerError(44 /* ErrorCodes.X_INVALID_EXPRESSION */, node.loc, undefined, message));
+        context.onError(createCompilerError(45 /* ErrorCodes.X_INVALID_EXPRESSION */, node.loc, undefined, message));
     }
 }
 
@@ -3869,7 +3870,7 @@ const transformElement = (node, context) => {
                 // 2. Force keep-alive to always be updated, since it uses raw children.
                 patchFlag |= 1024 /* PatchFlags.DYNAMIC_SLOTS */;
                 if (( true) && node.children.length > 1) {
-                    context.onError(createCompilerError(45 /* ErrorCodes.X_KEEP_ALIVE_INVALID_CHILDREN */, {
+                    context.onError(createCompilerError(46 /* ErrorCodes.X_KEEP_ALIVE_INVALID_CHILDREN */, {
                         start: node.children[0].loc.start,
                         end: node.children[node.children.length - 1].loc.end,
                         source: ''
@@ -4744,8 +4745,14 @@ const transformModel = (dir, node, context) => {
     const expString = exp.type === 4 /* NodeTypes.SIMPLE_EXPRESSION */ ? exp.content : rawExp;
     // im SFC <script setup> inline mode, the exp may have been transformed into
     // _unref(exp)
-    context.bindingMetadata[rawExp];
-    const maybeRef = !true    /* BindingTypes.SETUP_CONST */;
+    const bindingType = context.bindingMetadata[rawExp];
+    // check props
+    if (bindingType === "props" /* BindingTypes.PROPS */ ||
+        bindingType === "props-aliased" /* BindingTypes.PROPS_ALIASED */) {
+        context.onError(createCompilerError(44 /* ErrorCodes.X_V_MODEL_ON_PROPS */, exp.loc));
+        return createTransformProps();
+    }
+    const maybeRef = !true  ;
     if (!expString.trim() ||
         (!isMemberExpression(expString) && !maybeRef)) {
         context.onError(createCompilerError(42 /* ErrorCodes.X_V_MODEL_MALFORMED_EXPRESSION */, exp.loc));
@@ -5014,18 +5021,18 @@ function baseCompile(template, options = {}) {
     /* istanbul ignore if */
     {
         if (options.prefixIdentifiers === true) {
-            onError(createCompilerError(46 /* ErrorCodes.X_PREFIX_ID_NOT_SUPPORTED */));
+            onError(createCompilerError(47 /* ErrorCodes.X_PREFIX_ID_NOT_SUPPORTED */));
         }
         else if (isModuleMode) {
-            onError(createCompilerError(47 /* ErrorCodes.X_MODULE_MODE_NOT_SUPPORTED */));
+            onError(createCompilerError(48 /* ErrorCodes.X_MODULE_MODE_NOT_SUPPORTED */));
         }
     }
     const prefixIdentifiers = !true ;
     if (options.cacheHandlers) {
-        onError(createCompilerError(48 /* ErrorCodes.X_CACHE_HANDLER_NOT_SUPPORTED */));
+        onError(createCompilerError(49 /* ErrorCodes.X_CACHE_HANDLER_NOT_SUPPORTED */));
     }
     if (options.scopeId && !isModuleMode) {
-        onError(createCompilerError(49 /* ErrorCodes.X_SCOPE_ID_NOT_SUPPORTED */));
+        onError(createCompilerError(50 /* ErrorCodes.X_SCOPE_ID_NOT_SUPPORTED */));
     }
     const ast = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isString)(template) ? baseParse(template, options) : template;
     const [nodeTransforms, directiveTransforms] = getBaseTransformPreset();
@@ -5347,26 +5354,26 @@ function createDOMCompilerError(code, loc) {
     return (0,_vue_compiler_core__WEBPACK_IMPORTED_MODULE_0__.createCompilerError)(code, loc,  true ? DOMErrorMessages : 0);
 }
 const DOMErrorMessages = {
-    [50 /* DOMErrorCodes.X_V_HTML_NO_EXPRESSION */]: `v-html is missing expression.`,
-    [51 /* DOMErrorCodes.X_V_HTML_WITH_CHILDREN */]: `v-html will override element children.`,
-    [52 /* DOMErrorCodes.X_V_TEXT_NO_EXPRESSION */]: `v-text is missing expression.`,
-    [53 /* DOMErrorCodes.X_V_TEXT_WITH_CHILDREN */]: `v-text will override element children.`,
-    [54 /* DOMErrorCodes.X_V_MODEL_ON_INVALID_ELEMENT */]: `v-model can only be used on <input>, <textarea> and <select> elements.`,
-    [55 /* DOMErrorCodes.X_V_MODEL_ARG_ON_ELEMENT */]: `v-model argument is not supported on plain elements.`,
-    [56 /* DOMErrorCodes.X_V_MODEL_ON_FILE_INPUT_ELEMENT */]: `v-model cannot be used on file inputs since they are read-only. Use a v-on:change listener instead.`,
-    [57 /* DOMErrorCodes.X_V_MODEL_UNNECESSARY_VALUE */]: `Unnecessary value binding used alongside v-model. It will interfere with v-model's behavior.`,
-    [58 /* DOMErrorCodes.X_V_SHOW_NO_EXPRESSION */]: `v-show is missing expression.`,
-    [59 /* DOMErrorCodes.X_TRANSITION_INVALID_CHILDREN */]: `<Transition> expects exactly one child element or component.`,
-    [60 /* DOMErrorCodes.X_IGNORED_SIDE_EFFECT_TAG */]: `Tags with side effect (<script> and <style>) are ignored in client component templates.`
+    [51 /* DOMErrorCodes.X_V_HTML_NO_EXPRESSION */]: `v-html is missing expression.`,
+    [52 /* DOMErrorCodes.X_V_HTML_WITH_CHILDREN */]: `v-html will override element children.`,
+    [53 /* DOMErrorCodes.X_V_TEXT_NO_EXPRESSION */]: `v-text is missing expression.`,
+    [54 /* DOMErrorCodes.X_V_TEXT_WITH_CHILDREN */]: `v-text will override element children.`,
+    [55 /* DOMErrorCodes.X_V_MODEL_ON_INVALID_ELEMENT */]: `v-model can only be used on <input>, <textarea> and <select> elements.`,
+    [56 /* DOMErrorCodes.X_V_MODEL_ARG_ON_ELEMENT */]: `v-model argument is not supported on plain elements.`,
+    [57 /* DOMErrorCodes.X_V_MODEL_ON_FILE_INPUT_ELEMENT */]: `v-model cannot be used on file inputs since they are read-only. Use a v-on:change listener instead.`,
+    [58 /* DOMErrorCodes.X_V_MODEL_UNNECESSARY_VALUE */]: `Unnecessary value binding used alongside v-model. It will interfere with v-model's behavior.`,
+    [59 /* DOMErrorCodes.X_V_SHOW_NO_EXPRESSION */]: `v-show is missing expression.`,
+    [60 /* DOMErrorCodes.X_TRANSITION_INVALID_CHILDREN */]: `<Transition> expects exactly one child element or component.`,
+    [61 /* DOMErrorCodes.X_IGNORED_SIDE_EFFECT_TAG */]: `Tags with side effect (<script> and <style>) are ignored in client component templates.`
 };
 
 const transformVHtml = (dir, node, context) => {
     const { exp, loc } = dir;
     if (!exp) {
-        context.onError(createDOMCompilerError(50 /* DOMErrorCodes.X_V_HTML_NO_EXPRESSION */, loc));
+        context.onError(createDOMCompilerError(51 /* DOMErrorCodes.X_V_HTML_NO_EXPRESSION */, loc));
     }
     if (node.children.length) {
-        context.onError(createDOMCompilerError(51 /* DOMErrorCodes.X_V_HTML_WITH_CHILDREN */, loc));
+        context.onError(createDOMCompilerError(52 /* DOMErrorCodes.X_V_HTML_WITH_CHILDREN */, loc));
         node.children.length = 0;
     }
     return {
@@ -5379,10 +5386,10 @@ const transformVHtml = (dir, node, context) => {
 const transformVText = (dir, node, context) => {
     const { exp, loc } = dir;
     if (!exp) {
-        context.onError(createDOMCompilerError(52 /* DOMErrorCodes.X_V_TEXT_NO_EXPRESSION */, loc));
+        context.onError(createDOMCompilerError(53 /* DOMErrorCodes.X_V_TEXT_NO_EXPRESSION */, loc));
     }
     if (node.children.length) {
-        context.onError(createDOMCompilerError(53 /* DOMErrorCodes.X_V_TEXT_WITH_CHILDREN */, loc));
+        context.onError(createDOMCompilerError(54 /* DOMErrorCodes.X_V_TEXT_WITH_CHILDREN */, loc));
         node.children.length = 0;
     }
     return {
@@ -5403,12 +5410,12 @@ const transformModel = (dir, node, context) => {
         return baseResult;
     }
     if (dir.arg) {
-        context.onError(createDOMCompilerError(55 /* DOMErrorCodes.X_V_MODEL_ARG_ON_ELEMENT */, dir.arg.loc));
+        context.onError(createDOMCompilerError(56 /* DOMErrorCodes.X_V_MODEL_ARG_ON_ELEMENT */, dir.arg.loc));
     }
     function checkDuplicatedValue() {
         const value = (0,_vue_compiler_core__WEBPACK_IMPORTED_MODULE_0__.findProp)(node, 'value');
         if (value) {
-            context.onError(createDOMCompilerError(57 /* DOMErrorCodes.X_V_MODEL_UNNECESSARY_VALUE */, value.loc));
+            context.onError(createDOMCompilerError(58 /* DOMErrorCodes.X_V_MODEL_UNNECESSARY_VALUE */, value.loc));
         }
     }
     const { tag } = node;
@@ -5436,7 +5443,7 @@ const transformModel = (dir, node, context) => {
                             break;
                         case 'file':
                             isInvalidType = true;
-                            context.onError(createDOMCompilerError(56 /* DOMErrorCodes.X_V_MODEL_ON_FILE_INPUT_ELEMENT */, dir.loc));
+                            context.onError(createDOMCompilerError(57 /* DOMErrorCodes.X_V_MODEL_ON_FILE_INPUT_ELEMENT */, dir.loc));
                             break;
                         default:
                             // text type
@@ -5470,7 +5477,7 @@ const transformModel = (dir, node, context) => {
         }
     }
     else {
-        context.onError(createDOMCompilerError(54 /* DOMErrorCodes.X_V_MODEL_ON_INVALID_ELEMENT */, dir.loc));
+        context.onError(createDOMCompilerError(55 /* DOMErrorCodes.X_V_MODEL_ON_INVALID_ELEMENT */, dir.loc));
     }
     // native vmodel doesn't need the `modelValue` props since they are also
     // passed to the runtime as `binding.value`. removing it reduces code size.
@@ -5594,7 +5601,7 @@ const transformOn = (dir, node, context) => {
 const transformShow = (dir, node, context) => {
     const { exp, loc } = dir;
     if (!exp) {
-        context.onError(createDOMCompilerError(58 /* DOMErrorCodes.X_V_SHOW_NO_EXPRESSION */, loc));
+        context.onError(createDOMCompilerError(59 /* DOMErrorCodes.X_V_SHOW_NO_EXPRESSION */, loc));
     }
     return {
         props: [],
@@ -5613,7 +5620,7 @@ const transformTransition = (node, context) => {
                 }
                 // warn multiple transition children
                 if (hasMultipleChildren(node)) {
-                    context.onError(createDOMCompilerError(59 /* DOMErrorCodes.X_TRANSITION_INVALID_CHILDREN */, {
+                    context.onError(createDOMCompilerError(60 /* DOMErrorCodes.X_TRANSITION_INVALID_CHILDREN */, {
                         start: node.children[0].loc.start,
                         end: node.children[node.children.length - 1].loc.end,
                         source: ''
@@ -5652,7 +5659,7 @@ const ignoreSideEffectTags = (node, context) => {
     if (node.type === 1 /* NodeTypes.ELEMENT */ &&
         node.tagType === 0 /* ElementTypes.ELEMENT */ &&
         (node.tag === 'script' || node.tag === 'style')) {
-        context.onError(createDOMCompilerError(60 /* DOMErrorCodes.X_IGNORED_SIDE_EFFECT_TAG */, node.loc));
+        context.onError(createDOMCompilerError(61 /* DOMErrorCodes.X_IGNORED_SIDE_EFFECT_TAG */, node.loc));
         context.removeNode();
     }
 };
@@ -7903,12 +7910,6 @@ function reload(id, newComp) {
             // components to be unmounted and re-mounted. Queue the update so that we
             // don't end up forcing the same parent to re-render multiple times.
             queueJob(instance.parent.update);
-            // instance is the inner component of an async custom element
-            // invoke to reset styles
-            if (instance.parent.type.__asyncLoader &&
-                instance.parent.ceReload) {
-                instance.parent.ceReload(newComp.styles);
-            }
         }
         else if (instance.appContext.reload) {
             // root instance mounted via createApp() has a reload method
@@ -9183,10 +9184,11 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = _v
                 callWithAsyncErrorHandling(cb, instance, 3 /* ErrorCodes.WATCH_CALLBACK */, [
                     newValue,
                     // pass undefined as the old value when it's changed for the first time
-                    oldValue === INITIAL_WATCHER_VALUE ||
-                        (isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE)
-                        ? []
-                        : oldValue,
+                    oldValue === INITIAL_WATCHER_VALUE
+                        ? undefined
+                        : (isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE)
+                            ? []
+                            : oldValue,
                     onCleanup
                 ]);
                 oldValue = newValue;
@@ -9788,10 +9790,15 @@ function defineAsyncComponent(source) {
         }
     });
 }
-function createInnerComp(comp, { vnode: { ref, props, children, shapeFlag }, parent }) {
+function createInnerComp(comp, parent) {
+    const { ref, props, children, ce } = parent.vnode;
     const vnode = createVNode(comp, props, children);
     // ensure inner component inherits the async wrapper's ref owner
     vnode.ref = ref;
+    // pass the custom element callback on to the inner comp
+    // and remove it from the async wrapper
+    vnode.ce = ce;
+    delete parent.vnode.ce;
     return vnode;
 }
 
@@ -9957,8 +9964,7 @@ const KeepAliveImpl = {
                 : comp);
             const { include, exclude, max } = props;
             if ((include && (!name || !matches(include, name))) ||
-                (exclude && name && matches(exclude, name)) ||
-                (( true) && hmrDirtyComponents.has(comp))) {
+                (exclude && name && matches(exclude, name))) {
                 current = vnode;
                 return rawVNode;
             }
@@ -10068,14 +10074,9 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
     }, target);
 }
 function resetShapeFlag(vnode) {
-    let shapeFlag = vnode.shapeFlag;
-    if (shapeFlag & 256 /* ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE */) {
-        shapeFlag -= 256 /* ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE */;
-    }
-    if (shapeFlag & 512 /* ShapeFlags.COMPONENT_KEPT_ALIVE */) {
-        shapeFlag -= 512 /* ShapeFlags.COMPONENT_KEPT_ALIVE */;
-    }
-    vnode.shapeFlag = shapeFlag;
+    // bitwise operations to remove keep alive flags
+    vnode.shapeFlag &= ~256 /* ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE */;
+    vnode.shapeFlag &= ~512 /* ShapeFlags.COMPONENT_KEPT_ALIVE */;
 }
 function getInnerChild(vnode) {
     return vnode.shapeFlag & 128 /* ShapeFlags.SUSPENSE */ ? vnode.ssContent : vnode;
@@ -10374,7 +10375,9 @@ fallback, noSlotted) {
         (currentRenderingInstance.parent &&
             isAsyncWrapper(currentRenderingInstance.parent) &&
             currentRenderingInstance.parent.isCE)) {
-        return createVNode('slot', name === 'default' ? null : { name }, fallback && fallback());
+        if (name !== 'default')
+            props.name = name;
+        return createVNode('slot', props, fallback && fallback());
     }
     let slot = slots[name];
     if (( true) && slot && slot.length > 1) {
@@ -10474,22 +10477,13 @@ const publicPropertiesMap =
     $watch: i => ( true ? instanceWatch.bind(i) : 0)
 });
 const isReservedPrefix = (key) => key === '_' || key === '$';
+const hasSetupBinding = (state, key) => state !== _vue_shared__WEBPACK_IMPORTED_MODULE_1__.EMPTY_OBJ && !state.__isScriptSetup && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(state, key);
 const PublicInstanceProxyHandlers = {
     get({ _: instance }, key) {
         const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
         // for internal formatters to know that this is a Vue instance
         if (( true) && key === '__isVue') {
             return true;
-        }
-        // prioritize <script setup> bindings during dev.
-        // this allows even properties that start with _ or $ to be used - so that
-        // it aligns with the production behavior where the render fn is inlined and
-        // indeed has access to all declared variables.
-        if (( true) &&
-            setupState !== _vue_shared__WEBPACK_IMPORTED_MODULE_1__.EMPTY_OBJ &&
-            setupState.__isScriptSetup &&
-            (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(setupState, key)) {
-            return setupState[key];
         }
         // data / props / ctx
         // This getter gets called for every property access on the render context
@@ -10513,7 +10507,7 @@ const PublicInstanceProxyHandlers = {
                     // default: just fallthrough
                 }
             }
-            else if (setupState !== _vue_shared__WEBPACK_IMPORTED_MODULE_1__.EMPTY_OBJ && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(setupState, key)) {
+            else if (hasSetupBinding(setupState, key)) {
                 accessCache[key] = 1 /* AccessTypes.SETUP */;
                 return setupState[key];
             }
@@ -10584,23 +10578,28 @@ const PublicInstanceProxyHandlers = {
     },
     set({ _: instance }, key, value) {
         const { data, setupState, ctx } = instance;
-        if (setupState !== _vue_shared__WEBPACK_IMPORTED_MODULE_1__.EMPTY_OBJ && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(setupState, key)) {
+        if (hasSetupBinding(setupState, key)) {
             setupState[key] = value;
             return true;
+        }
+        else if (( true) &&
+            setupState.__isScriptSetup &&
+            (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(setupState, key)) {
+            warn(`Cannot mutate <script setup> binding "${key}" from Options API.`);
+            return false;
         }
         else if (data !== _vue_shared__WEBPACK_IMPORTED_MODULE_1__.EMPTY_OBJ && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(data, key)) {
             data[key] = value;
             return true;
         }
         else if ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(instance.props, key)) {
-            ( true) &&
-                warn(`Attempting to mutate prop "${key}". Props are readonly.`, instance);
+            ( true) && warn(`Attempting to mutate prop "${key}". Props are readonly.`);
             return false;
         }
         if (key[0] === '$' && key.slice(1) in instance) {
             ( true) &&
                 warn(`Attempting to mutate public property "${key}". ` +
-                    `Properties starting with $ are reserved and readonly.`, instance);
+                    `Properties starting with $ are reserved and readonly.`);
             return false;
         }
         else {
@@ -10621,7 +10620,7 @@ const PublicInstanceProxyHandlers = {
         let normalizedProps;
         return (!!accessCache[key] ||
             (data !== _vue_shared__WEBPACK_IMPORTED_MODULE_1__.EMPTY_OBJ && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(data, key)) ||
-            (setupState !== _vue_shared__WEBPACK_IMPORTED_MODULE_1__.EMPTY_OBJ && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(setupState, key)) ||
+            hasSetupBinding(setupState, key) ||
             ((normalizedProps = propsOptions[0]) && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(normalizedProps, key)) ||
             (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(ctx, key) ||
             (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hasOwn)(publicPropertiesMap, key) ||
@@ -13697,6 +13696,10 @@ function traverseStaticChildren(n1, n2, shallow = false) {
                 if (!shallow)
                     traverseStaticChildren(c1, c2);
             }
+            // #6852 also inherit for text nodes
+            if (c2.type === Text) {
+                c2.el = c1.el;
+            }
             // also inherit for comment nodes, but not placeholders (e.g. v-if which
             // would have received .el during block patch)
             if (( true) && c2.type === Comment && !c2.el) {
@@ -13871,6 +13874,7 @@ const TeleportImpl = {
                 }
             }
         }
+        updateCssVars(n2);
     },
     remove(vnode, parentComponent, parentSuspense, optimized, { um: unmount, o: { remove: hostRemove } }, doRemove) {
         const { shapeFlag, children, anchor, targetAnchor, target, props } = vnode;
@@ -13949,11 +13953,26 @@ function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScope
                 hydrateChildren(targetNode, vnode, target, parentComponent, parentSuspense, slotScopeIds, optimized);
             }
         }
+        updateCssVars(vnode);
     }
     return vnode.anchor && nextSibling(vnode.anchor);
 }
 // Force-casted public typing for h and TSX props inference
 const Teleport = TeleportImpl;
+function updateCssVars(vnode) {
+    // presence of .ut method indicates owner component uses css vars.
+    // code path here can assume browser environment.
+    const ctx = vnode.ctx;
+    if (ctx && ctx.ut) {
+        let node = vnode.children[0].el;
+        while (node !== vnode.targetAnchor) {
+            if (node.nodeType === 1)
+                node.setAttribute('data-v-owner', ctx.uid);
+            node = node.nextSibling;
+        }
+        ctx.ut();
+    }
+}
 
 const Fragment = Symbol(( true) ? 'Fragment' : 0);
 const Text = Symbol(( true) ? 'Text' : 0);
@@ -14049,6 +14068,10 @@ function isSameVNodeType(n1, n2) {
     if (( true) &&
         n2.shapeFlag & 6 /* ShapeFlags.COMPONENT */ &&
         hmrDirtyComponents.has(n2.type)) {
+        // #7042, ensure the vnode being unmounted during HMR
+        // bitwise operations to remove keep alive flags
+        n1.shapeFlag &= ~256 /* ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE */;
+        n2.shapeFlag &= ~512 /* ShapeFlags.COMPONENT_KEPT_ALIVE */;
         // HMR only: if the component has been hot-updated, force a reload.
         return false;
     }
@@ -14104,7 +14127,8 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
         patchFlag,
         dynamicProps,
         dynamicChildren: null,
-        appContext: null
+        appContext: null,
+        ctx: currentRenderingInstance
     };
     if (needFullChildrenNormalization) {
         normalizeChildren(vnode, children);
@@ -14271,7 +14295,8 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
         ssContent: vnode.ssContent && cloneVNode(vnode.ssContent),
         ssFallback: vnode.ssFallback && cloneVNode(vnode.ssFallback),
         el: vnode.el,
-        anchor: vnode.anchor
+        anchor: vnode.anchor,
+        ctx: vnode.ctx
     };
     return cloned;
 }
@@ -15253,7 +15278,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.43";
+const version = "3.2.45";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -15435,8 +15460,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "withModifiers": () => (/* binding */ withModifiers),
 /* harmony export */   "withScopeId": () => (/* reexport safe */ _vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.withScopeId)
 /* harmony export */ });
-/* harmony import */ var _vue_shared__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @vue/shared */ "./node_modules/@vue/shared/dist/shared.esm-bundler.js");
 /* harmony import */ var _vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @vue/runtime-core */ "./node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js");
+/* harmony import */ var _vue_shared__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @vue/shared */ "./node_modules/@vue/shared/dist/shared.esm-bundler.js");
 /* harmony import */ var _vue_runtime_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @vue/runtime-core */ "./node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js");
 
 
@@ -15573,6 +15598,7 @@ function patchStyle(el, prev, next) {
         }
     }
 }
+const semicolonRE = /[^\\];\s*$/;
 const importantRE = /\s*!important$/;
 function setStyle(style, name, val) {
     if ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isArray)(val)) {
@@ -15581,6 +15607,11 @@ function setStyle(style, name, val) {
     else {
         if (val == null)
             val = '';
+        if ((true)) {
+            if (semicolonRE.test(val)) {
+                (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.warn)(`Unexpected semicolon at the end of '${name}' style value: '${val}'`);
+            }
+        }
         if (name.startsWith('--')) {
             // custom property definition
             style.setProperty(name, val);
@@ -15910,12 +15941,21 @@ class VueElement extends BaseClass {
                     `defined as hydratable. Use \`defineSSRCustomElement\`.`);
             }
             this.attachShadow({ mode: 'open' });
+            if (!this._def.__asyncLoader) {
+                // for sync component defs we can immediately resolve props
+                this._resolveProps(this._def);
+            }
         }
     }
     connectedCallback() {
         this._connected = true;
         if (!this._instance) {
-            this._resolveDef();
+            if (this._resolved) {
+                this._update();
+            }
+            else {
+                this._resolveDef();
+            }
         }
     }
     disconnectedCallback() {
@@ -15931,9 +15971,6 @@ class VueElement extends BaseClass {
      * resolve inner component definition (handle possible async component)
      */
     _resolveDef() {
-        if (this._resolved) {
-            return;
-        }
         this._resolved = true;
         // set initial attrs
         for (let i = 0; i < this.attributes.length; i++) {
@@ -15945,38 +15982,26 @@ class VueElement extends BaseClass {
                 this._setAttr(m.attributeName);
             }
         }).observe(this, { attributes: true });
-        const resolve = (def) => {
-            const { props = {}, styles } = def;
-            const hasOptions = !(0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isArray)(props);
-            const rawKeys = props ? (hasOptions ? Object.keys(props) : props) : [];
+        const resolve = (def, isAsync = false) => {
+            const { props, styles } = def;
             // cast Number-type props set before resolve
             let numberProps;
-            if (hasOptions) {
-                for (const key in this._props) {
+            if (props && !(0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isArray)(props)) {
+                for (const key in props) {
                     const opt = props[key];
                     if (opt === Number || (opt && opt.type === Number)) {
-                        this._props[key] = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.toNumber)(this._props[key]);
-                        (numberProps || (numberProps = Object.create(null)))[key] = true;
+                        if (key in this._props) {
+                            this._props[key] = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.toNumber)(this._props[key]);
+                        }
+                        (numberProps || (numberProps = Object.create(null)))[(0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.camelize)(key)] = true;
                     }
                 }
             }
             this._numberProps = numberProps;
-            // check if there are props set pre-upgrade or connect
-            for (const key of Object.keys(this)) {
-                if (key[0] !== '_') {
-                    this._setProp(key, this[key], true, false);
-                }
-            }
-            // defining getter/setters on prototype
-            for (const key of rawKeys.map(_vue_shared__WEBPACK_IMPORTED_MODULE_1__.camelize)) {
-                Object.defineProperty(this, key, {
-                    get() {
-                        return this._getProp(key);
-                    },
-                    set(val) {
-                        this._setProp(key, val);
-                    }
-                });
+            if (isAsync) {
+                // defining getter/setters on prototype
+                // for sync defs, this already happened in the constructor
+                this._resolveProps(def);
             }
             // apply CSS
             this._applyStyles(styles);
@@ -15985,10 +16010,31 @@ class VueElement extends BaseClass {
         };
         const asyncDef = this._def.__asyncLoader;
         if (asyncDef) {
-            asyncDef().then(resolve);
+            asyncDef().then(def => resolve(def, true));
         }
         else {
             resolve(this._def);
+        }
+    }
+    _resolveProps(def) {
+        const { props } = def;
+        const declaredPropKeys = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isArray)(props) ? props : Object.keys(props || {});
+        // check if there are props set pre-upgrade or connect
+        for (const key of Object.keys(this)) {
+            if (key[0] !== '_' && declaredPropKeys.includes(key)) {
+                this._setProp(key, this[key], true, false);
+            }
+        }
+        // defining getter/setters on prototype
+        for (const key of declaredPropKeys.map(_vue_shared__WEBPACK_IMPORTED_MODULE_1__.camelize)) {
+            Object.defineProperty(this, key, {
+                get() {
+                    return this._getProp(key);
+                },
+                set(val) {
+                    this._setProp(key, val);
+                }
+            });
         }
     }
     _setAttr(key) {
@@ -16046,20 +16092,23 @@ class VueElement extends BaseClass {
                             this._styles.length = 0;
                         }
                         this._applyStyles(newStyles);
-                        // if this is an async component, ceReload is called from the inner
-                        // component so no need to reload the async wrapper
-                        if (!this._def.__asyncLoader) {
-                            // reload
-                            this._instance = null;
-                            this._update();
-                        }
+                        this._instance = null;
+                        this._update();
                     };
                 }
-                // intercept emit
-                instance.emit = (event, ...args) => {
+                const dispatch = (event, args) => {
                     this.dispatchEvent(new CustomEvent(event, {
                         detail: args
                     }));
+                };
+                // intercept emit
+                instance.emit = (event, ...args) => {
+                    // dispatch both the raw and hyphenated versions of an event
+                    // to match Vue behavior
+                    dispatch(event, args);
+                    if ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hyphenate)(event) !== event) {
+                        dispatch((0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.hyphenate)(event), args);
+                    }
                 };
                 // locate nearest Vue custom element parent for provide/inject
                 let parent = this;
@@ -16067,6 +16116,7 @@ class VueElement extends BaseClass {
                     parent && (parent.parentNode || parent.host))) {
                     if (parent instanceof VueElement) {
                         instance.parent = parent._instance;
+                        instance.provides = parent._instance.provides;
                         break;
                     }
                 }
@@ -16124,7 +16174,14 @@ function useCssVars(getter) {
             (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.warn)(`useCssVars is called without current active component instance.`);
         return;
     }
-    const setVars = () => setVarsOnVNode(instance.subTree, getter(instance.proxy));
+    const updateTeleports = (instance.ut = (vars = getter(instance.proxy)) => {
+        Array.from(document.querySelectorAll(`[data-v-owner="${instance.uid}"]`)).forEach(node => setVarsOnNode(node, vars));
+    });
+    const setVars = () => {
+        const vars = getter(instance.proxy);
+        setVarsOnVNode(instance.subTree, vars);
+        updateTeleports(vars);
+    };
     (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.watchPostEffect)(setVars);
     (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.onMounted)(() => {
         const ob = new MutationObserver(setVars);
@@ -17838,14 +17895,30 @@ __webpack_require__.r(__webpack_exports__);
       logout: logout,
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
-      Bars3Icon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_8__["default"],
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_7__.useStore,
-      CommandPalette: _components_CommandPalette__WEBPACK_IMPORTED_MODULE_1__["default"],
-      MobileSidebar: _components_MobileSidebar__WEBPACK_IMPORTED_MODULE_2__["default"],
-      DesktopSidebar: _components_DesktopSidebar__WEBPACK_IMPORTED_MODULE_3__["default"],
-      request: _utils_request__WEBPACK_IMPORTED_MODULE_4__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_6__.useRoute,
-      SimpleNotification: _components_SimpleNotification__WEBPACK_IMPORTED_MODULE_5__["default"]
+      get Bars3Icon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_8__["default"];
+      },
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_7__.useStore;
+      },
+      get CommandPalette() {
+        return _components_CommandPalette__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get MobileSidebar() {
+        return _components_MobileSidebar__WEBPACK_IMPORTED_MODULE_2__["default"];
+      },
+      get DesktopSidebar() {
+        return _components_DesktopSidebar__WEBPACK_IMPORTED_MODULE_3__["default"];
+      },
+      get request() {
+        return _utils_request__WEBPACK_IMPORTED_MODULE_4__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_6__.useRoute;
+      },
+      get SimpleNotification() {
+        return _components_SimpleNotification__WEBPACK_IMPORTED_MODULE_5__["default"];
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18000,19 +18073,45 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       onMounted: vue__WEBPACK_IMPORTED_MODULE_0__.onMounted,
       watchEffect: vue__WEBPACK_IMPORTED_MODULE_0__.watchEffect,
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_3__.useStore,
-      useRouter: vue_router__WEBPACK_IMPORTED_MODULE_2__.useRouter,
-      MagnifyingGlassIcon: _heroicons_vue_20_solid__WEBPACK_IMPORTED_MODULE_4__["default"],
-      ExclamationTriangleIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_5__["default"],
-      AppLink: _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"],
-      Combobox: _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.Combobox,
-      ComboboxInput: _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.ComboboxInput,
-      ComboboxOptions: _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.ComboboxOptions,
-      ComboboxOption: _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.ComboboxOption,
-      Dialog: _headlessui_vue__WEBPACK_IMPORTED_MODULE_7__.Dialog,
-      DialogPanel: _headlessui_vue__WEBPACK_IMPORTED_MODULE_7__.DialogPanel,
-      TransitionChild: _headlessui_vue__WEBPACK_IMPORTED_MODULE_8__.TransitionChild,
-      TransitionRoot: _headlessui_vue__WEBPACK_IMPORTED_MODULE_8__.TransitionRoot
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_3__.useStore;
+      },
+      get useRouter() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_2__.useRouter;
+      },
+      get MagnifyingGlassIcon() {
+        return _heroicons_vue_20_solid__WEBPACK_IMPORTED_MODULE_4__["default"];
+      },
+      get ExclamationTriangleIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_5__["default"];
+      },
+      get AppLink() {
+        return _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get Combobox() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.Combobox;
+      },
+      get ComboboxInput() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.ComboboxInput;
+      },
+      get ComboboxOptions() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.ComboboxOptions;
+      },
+      get ComboboxOption() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.ComboboxOption;
+      },
+      get Dialog() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_7__.Dialog;
+      },
+      get DialogPanel() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_7__.DialogPanel;
+      },
+      get TransitionChild() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_8__.TransitionChild;
+      },
+      get TransitionRoot() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_8__.TransitionRoot;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18083,16 +18182,36 @@ __webpack_require__.r(__webpack_exports__);
       trans: trans,
       logout: logout,
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
-      ArrowRightOnRectangleIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_4__["default"],
-      TagIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_5__["default"],
-      CogIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_6__["default"],
-      BookmarkSquareIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_7__["default"],
-      HomeIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_8__["default"],
-      RectangleStackIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_9__["default"],
-      UserGroupIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_10__["default"],
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_3__.useStore,
-      AppLink: _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_2__.useRoute
+      get ArrowRightOnRectangleIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_4__["default"];
+      },
+      get TagIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_5__["default"];
+      },
+      get CogIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_6__["default"];
+      },
+      get BookmarkSquareIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_7__["default"];
+      },
+      get HomeIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_8__["default"];
+      },
+      get RectangleStackIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_9__["default"];
+      },
+      get UserGroupIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_10__["default"];
+      },
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_3__.useStore;
+      },
+      get AppLink() {
+        return _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_2__.useRoute;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18171,21 +18290,51 @@ __webpack_require__.r(__webpack_exports__);
       closeSidebar: closeSidebar,
       logout: logout,
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
-      Dialog: _headlessui_vue__WEBPACK_IMPORTED_MODULE_4__.Dialog,
-      DialogPanel: _headlessui_vue__WEBPACK_IMPORTED_MODULE_4__.DialogPanel,
-      TransitionChild: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.TransitionChild,
-      TransitionRoot: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.TransitionRoot,
-      ArrowRightOnRectangleIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_6__["default"],
-      TagIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_7__["default"],
-      CogIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_8__["default"],
-      BookmarkSquareIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_9__["default"],
-      HomeIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_10__["default"],
-      RectangleStackIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_11__["default"],
-      UserGroupIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_12__["default"],
-      XMarkIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_13__["default"],
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_3__.useStore,
-      AppLink: _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_2__.useRoute
+      get Dialog() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_4__.Dialog;
+      },
+      get DialogPanel() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_4__.DialogPanel;
+      },
+      get TransitionChild() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.TransitionChild;
+      },
+      get TransitionRoot() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.TransitionRoot;
+      },
+      get ArrowRightOnRectangleIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_6__["default"];
+      },
+      get TagIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_7__["default"];
+      },
+      get CogIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_8__["default"];
+      },
+      get BookmarkSquareIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_9__["default"];
+      },
+      get HomeIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_10__["default"];
+      },
+      get RectangleStackIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_11__["default"];
+      },
+      get UserGroupIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_12__["default"];
+      },
+      get XMarkIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_13__["default"];
+      },
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_3__.useStore;
+      },
+      get AppLink() {
+        return _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_2__.useRoute;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18217,6 +18366,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _heroicons_vue_20_solid__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @heroicons/vue/20/solid */ "./node_modules/@heroicons/vue/20/solid/esm/ArrowTopRightOnSquareIcon.js");
 /* harmony import */ var _heroicons_vue_20_solid__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @heroicons/vue/20/solid */ "./node_modules/@heroicons/vue/20/solid/esm/XMarkIcon.js");
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
+function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
 
 
 
@@ -18271,21 +18421,42 @@ __webpack_require__.r(__webpack_exports__);
       show.value = false;
     }, 5000);
     var __returned__ = {
-      props: props,
+      get props() {
+        return props;
+      },
+      set props(v) {
+        v, _readOnlyError("props");
+      },
       store: store,
       show: show,
       trans: trans,
       icon: icon,
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
-      ArrowUpCircleIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_2__["default"],
-      BookmarkSquareIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_3__["default"],
-      TagIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_4__["default"],
-      RectangleStackIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_5__["default"],
-      UserIcon: _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_6__["default"],
-      ArrowTopRightOnSquareIcon: _heroicons_vue_20_solid__WEBPACK_IMPORTED_MODULE_7__["default"],
-      XMarkIcon: _heroicons_vue_20_solid__WEBPACK_IMPORTED_MODULE_8__["default"],
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_1__.useStore
+      get ArrowUpCircleIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_2__["default"];
+      },
+      get BookmarkSquareIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_3__["default"];
+      },
+      get TagIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_4__["default"];
+      },
+      get RectangleStackIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_5__["default"];
+      },
+      get UserIcon() {
+        return _heroicons_vue_24_outline__WEBPACK_IMPORTED_MODULE_6__["default"];
+      },
+      get ArrowTopRightOnSquareIcon() {
+        return _heroicons_vue_20_solid__WEBPACK_IMPORTED_MODULE_7__["default"];
+      },
+      get XMarkIcon() {
+        return _heroicons_vue_20_solid__WEBPACK_IMPORTED_MODULE_8__["default"];
+      },
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_1__.useStore;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18325,7 +18496,9 @@ __webpack_require__.r(__webpack_exports__);
       store: store,
       trans: trans,
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_1__.useStore
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_1__.useStore;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18514,22 +18687,54 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       reactive: vue__WEBPACK_IMPORTED_MODULE_0__.reactive,
       watchEffect: vue__WEBPACK_IMPORTED_MODULE_0__.watchEffect,
-      Menu: _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.Menu,
-      MenuButton: _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.MenuButton,
-      MenuItem: _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.MenuItem,
-      MenuItems: _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.MenuItems,
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_5__.useStore,
-      AppLink: _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"],
-      ArrowLongLeftIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_7__["default"],
-      ArrowLongRightIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_8__["default"],
-      ChevronRightIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_9__["default"],
-      PlusIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_10__["default"],
-      CameraIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_11__["default"],
-      ChevronDownIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_12__["default"],
-      CheckCircleIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_13__["default"],
-      dateFromNow: _utils_dateFromNow__WEBPACK_IMPORTED_MODULE_2__["default"],
-      request: _utils_request__WEBPACK_IMPORTED_MODULE_3__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute
+      get Menu() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.Menu;
+      },
+      get MenuButton() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.MenuButton;
+      },
+      get MenuItem() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.MenuItem;
+      },
+      get MenuItems() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_6__.MenuItems;
+      },
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_5__.useStore;
+      },
+      get AppLink() {
+        return _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get ArrowLongLeftIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_7__["default"];
+      },
+      get ArrowLongRightIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_8__["default"];
+      },
+      get ChevronRightIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_9__["default"];
+      },
+      get PlusIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_10__["default"];
+      },
+      get CameraIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_11__["default"];
+      },
+      get ChevronDownIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_12__["default"];
+      },
+      get CheckCircleIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_13__["default"];
+      },
+      get dateFromNow() {
+        return _utils_dateFromNow__WEBPACK_IMPORTED_MODULE_2__["default"];
+      },
+      get request() {
+        return _utils_request__WEBPACK_IMPORTED_MODULE_3__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18569,7 +18774,9 @@ __webpack_require__.r(__webpack_exports__);
       store: store,
       trans: trans,
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_1__.useStore
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_1__.useStore;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18635,8 +18842,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       fetchPost: fetchPost,
       onMounted: vue__WEBPACK_IMPORTED_MODULE_0__.onMounted,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
-      request: _utils_request__WEBPACK_IMPORTED_MODULE_1__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_2__.useRoute
+      get request() {
+        return _utils_request__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_2__.useRoute;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18716,12 +18927,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       onMounted: vue__WEBPACK_IMPORTED_MODULE_0__.onMounted,
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_3__.useStore,
-      request: _utils_request__WEBPACK_IMPORTED_MODULE_1__["default"],
-      AppLink: _components_AppLink__WEBPACK_IMPORTED_MODULE_2__["default"],
-      ChevronRightIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_5__["default"],
-      ChevronLeftIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_3__.useStore;
+      },
+      get request() {
+        return _utils_request__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get AppLink() {
+        return _components_AppLink__WEBPACK_IMPORTED_MODULE_2__["default"];
+      },
+      get ChevronRightIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_5__["default"];
+      },
+      get ChevronLeftIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18801,12 +19024,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       onMounted: vue__WEBPACK_IMPORTED_MODULE_0__.onMounted,
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_3__.useStore,
-      request: _utils_request__WEBPACK_IMPORTED_MODULE_1__["default"],
-      AppLink: _components_AppLink__WEBPACK_IMPORTED_MODULE_2__["default"],
-      ChevronRightIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_5__["default"],
-      ChevronLeftIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_3__.useStore;
+      },
+      get request() {
+        return _utils_request__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get AppLink() {
+        return _components_AppLink__WEBPACK_IMPORTED_MODULE_2__["default"];
+      },
+      get ChevronRightIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_5__["default"];
+      },
+      get ChevronLeftIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -18886,12 +19121,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       onMounted: vue__WEBPACK_IMPORTED_MODULE_0__.onMounted,
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_3__.useStore,
-      request: _utils_request__WEBPACK_IMPORTED_MODULE_1__["default"],
-      AppLink: _components_AppLink__WEBPACK_IMPORTED_MODULE_2__["default"],
-      ChevronRightIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_5__["default"],
-      ChevronLeftIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_3__.useStore;
+      },
+      get request() {
+        return _utils_request__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get AppLink() {
+        return _components_AppLink__WEBPACK_IMPORTED_MODULE_2__["default"];
+      },
+      get ChevronRightIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_5__["default"];
+      },
+      get ChevronLeftIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -19058,19 +19305,45 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       reactive: vue__WEBPACK_IMPORTED_MODULE_0__.reactive,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       watchEffect: vue__WEBPACK_IMPORTED_MODULE_0__.watchEffect,
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_5__.useStore,
-      AppLink: _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"],
-      ChevronRightIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"],
-      ChevronLeftIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_7__["default"],
-      PlusIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_8__["default"],
-      ChevronDownIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_9__["default"],
-      Menu: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.Menu,
-      MenuButton: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuButton,
-      MenuItem: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuItem,
-      MenuItems: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuItems,
-      request: _utils_request__WEBPACK_IMPORTED_MODULE_2__["default"],
-      dateFromNow: _utils_dateFromNow__WEBPACK_IMPORTED_MODULE_3__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_5__.useStore;
+      },
+      get AppLink() {
+        return _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get ChevronRightIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"];
+      },
+      get ChevronLeftIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_7__["default"];
+      },
+      get PlusIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_8__["default"];
+      },
+      get ChevronDownIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_9__["default"];
+      },
+      get Menu() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.Menu;
+      },
+      get MenuButton() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuButton;
+      },
+      get MenuItem() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuItem;
+      },
+      get MenuItems() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuItems;
+      },
+      get request() {
+        return _utils_request__WEBPACK_IMPORTED_MODULE_2__["default"];
+      },
+      get dateFromNow() {
+        return _utils_dateFromNow__WEBPACK_IMPORTED_MODULE_3__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -19237,19 +19510,45 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       reactive: vue__WEBPACK_IMPORTED_MODULE_0__.reactive,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       watchEffect: vue__WEBPACK_IMPORTED_MODULE_0__.watchEffect,
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_5__.useStore,
-      AppLink: _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"],
-      ChevronRightIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"],
-      ChevronLeftIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_7__["default"],
-      PlusIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_8__["default"],
-      ChevronDownIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_9__["default"],
-      Menu: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.Menu,
-      MenuButton: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuButton,
-      MenuItem: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuItem,
-      MenuItems: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuItems,
-      request: _utils_request__WEBPACK_IMPORTED_MODULE_2__["default"],
-      dateFromNow: _utils_dateFromNow__WEBPACK_IMPORTED_MODULE_3__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_5__.useStore;
+      },
+      get AppLink() {
+        return _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get ChevronRightIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"];
+      },
+      get ChevronLeftIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_7__["default"];
+      },
+      get PlusIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_8__["default"];
+      },
+      get ChevronDownIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_9__["default"];
+      },
+      get Menu() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.Menu;
+      },
+      get MenuButton() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuButton;
+      },
+      get MenuItem() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuItem;
+      },
+      get MenuItems() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.MenuItems;
+      },
+      get request() {
+        return _utils_request__WEBPACK_IMPORTED_MODULE_2__["default"];
+      },
+      get dateFromNow() {
+        return _utils_dateFromNow__WEBPACK_IMPORTED_MODULE_3__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -19407,18 +19706,42 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       reactive: vue__WEBPACK_IMPORTED_MODULE_0__.reactive,
       watchEffect: vue__WEBPACK_IMPORTED_MODULE_0__.watchEffect,
-      useStore: vuex__WEBPACK_IMPORTED_MODULE_4__.useStore,
-      AppLink: _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"],
-      Menu: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.Menu,
-      MenuButton: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.MenuButton,
-      MenuItem: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.MenuItem,
-      MenuItems: _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.MenuItems,
-      ChevronRightIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"],
-      ChevronLeftIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_7__["default"],
-      PlusIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_8__["default"],
-      ChevronDownIcon: _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_9__["default"],
-      request: _utils_request__WEBPACK_IMPORTED_MODULE_2__["default"],
-      useRoute: vue_router__WEBPACK_IMPORTED_MODULE_3__.useRoute
+      get useStore() {
+        return vuex__WEBPACK_IMPORTED_MODULE_4__.useStore;
+      },
+      get AppLink() {
+        return _components_AppLink__WEBPACK_IMPORTED_MODULE_1__["default"];
+      },
+      get Menu() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.Menu;
+      },
+      get MenuButton() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.MenuButton;
+      },
+      get MenuItem() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.MenuItem;
+      },
+      get MenuItems() {
+        return _headlessui_vue__WEBPACK_IMPORTED_MODULE_5__.MenuItems;
+      },
+      get ChevronRightIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_6__["default"];
+      },
+      get ChevronLeftIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_7__["default"];
+      },
+      get PlusIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_8__["default"];
+      },
+      get ChevronDownIcon() {
+        return _heroicons_vue_24_solid__WEBPACK_IMPORTED_MODULE_9__["default"];
+      },
+      get request() {
+        return _utils_request__WEBPACK_IMPORTED_MODULE_2__["default"];
+      },
+      get useRoute() {
+        return vue_router__WEBPACK_IMPORTED_MODULE_3__.useRoute;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,

@@ -85,7 +85,7 @@ class Post extends Model
     /**
      * Get the tags relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function tags()
     {
