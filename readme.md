@@ -135,7 +135,7 @@ perform any basic CRUD actions on users, as well as assign their various roles.
 
 ## Canvas UI
 
-**Want a beautiful, hand-crafted frontend with [TailwindCSS](https://tailwindcss.com)?** Use the `canvas:ui` Artisan
+**Want a beautiful, hand-crafted frontend built with [TailwindCSS](https://tailwindcss.com)?** Use the `canvas:ui` Artisan
 command to install the scaffolding:
 
 ```bash
