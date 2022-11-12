@@ -97,7 +97,9 @@ class Post extends Model
     }
 
     /**
-     * Get the topic relationship.
+     * Get the topic relationship. Ideally, this would instead be a one-to-one
+     * relationship without the use of a pivot. The frontend is responsible
+     * for limiting the number of topics that can be linked with a post.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
