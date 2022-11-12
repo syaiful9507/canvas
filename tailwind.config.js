@@ -4,6 +4,7 @@ module.exports = {
   future: {
     removeDeprecatedGapUtilities: true,
     purgeLayersByDefault: true,
+    hoverOnlyWhenSupported: true,
   },
   content: ['./resources/**/*.{vue,js,blade.php}'],
   darkMode: 'class',
@@ -11,6 +12,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        serif: ['Merriweather', ...defaultTheme.fontFamily.serif],
       },
     },
   },
