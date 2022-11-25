@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { Bars3Icon } from '@heroicons/vue/24/outline'
 import { useStore } from 'vuex'
 import CommandPalette from '@/components/CommandPalette'
@@ -63,4 +63,26 @@ function logout() {
     window.location.href = config.value.path === '' ? '/' : config.value.path
   })
 }
+
+onMounted(() => {
+  // TODO: Cleanup and consolidate calls up with a theme.js utils file
+
+  if (
+    store.getters['config/isDarkAppearance'] ||
+    (store.getters['config/isSystemAppearance'] &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches)
+  ) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', (e) =>
+      e.matches
+        ? document.documentElement.classList.add('dark')
+        : document.documentElement.classList.remove('dark')
+    )
+})
 </script>

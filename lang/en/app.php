@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'system' => 'System',
+    'light' => 'Light',
+    'dark' => 'Dark',
+    'configure_your_system_preferences' => 'Configure the system preferences on your account.',
+    'canvas_is_open_sourced_software' => 'Canvas is open-sourced software licensed under the MIT license.',
+    'documentation' => 'Documentation',
+    'changelog' => 'Changelog',
+    'appearance' => 'Appearance',
+    'general' => 'General',
+    'language' => 'Language',
     'dismiss' => 'Dismiss',
     'success_loud' => 'Success!',
     'uh_oh_loud' => 'Uh oh!',

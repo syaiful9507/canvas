@@ -4,7 +4,7 @@
     @if(\Canvas\Canvas::usingRightToLeftLanguage($scripts['user']['locale'])) dir="rtl" @endif
     @class([
         'h-full' => true,
-        'dark bg-gray-800' => \Canvas\Canvas::enabledDarkMode($scripts['user']['dark_mode']),
+        'dark' => \Canvas\Canvas::enabledDarkMode($scripts['user']['dark_mode']),
     ])
 >
 <head>
@@ -28,7 +28,7 @@
 
     <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"></script>
 </head>
-<body class="h-full">
+<body class="h-full bg-white dark:bg-gray-800 ">
 
 <div id="app"></div>
 

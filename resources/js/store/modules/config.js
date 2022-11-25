@@ -40,7 +40,7 @@ const actions = {
       })
   },
 
-  updateDarkMode(context, payload) {
+  updateAppearance(context, payload) {
     request
       .post(`/api/users/${state.user.id}`, {
         name: state.user.name,
@@ -48,7 +48,19 @@ const actions = {
         dark_mode: payload,
       })
       .then(({ data }) => {
-        context.commit('UPDATE_DARK_MODE', data.user)
+        context.commit('UPDATE_APPEARANCE', data.user)
+
+        // TODO: Cleanup and consolidate calls up with a theme.js utils file
+
+        if (
+          state.user.dark_mode === true ||
+          (state.user.dark_mode === null &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
       })
   },
 
@@ -67,7 +79,7 @@ const mutations = {
     state.user.locale = data.user.locale
   },
 
-  UPDATE_DARK_MODE(state, user) {
+  UPDATE_APPEARANCE(state, user) {
     state.user.dark_mode = user.dark_mode
   },
 
@@ -83,6 +95,35 @@ const getters = {
 
   locale(state) {
     return state.user.locale || state.user.default_locale
+  },
+
+  getLocaleDisplayName: () => (locale) => {
+    let code = require('../../data/lang.json')[locale]
+
+    return code.nativeName
+  },
+
+  getAppearanceName(state) {
+    switch (state.user.dark_mode) {
+      case true:
+        return JSON.parse(state.i18n).dark
+      case false:
+        return JSON.parse(state.i18n).light
+      default:
+        return JSON.parse(state.i18n).system
+    }
+  },
+
+  isLightAppearance(state) {
+    return state.user.dark_mode === false
+  },
+
+  isDarkAppearance(state) {
+    return state.user.dark_mode === true
+  },
+
+  isSystemAppearance(state) {
+    return state.user.dark_mode === null
   },
 
   isContributor(state) {
