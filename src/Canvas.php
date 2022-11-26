@@ -156,8 +156,6 @@ class Canvas
      */
     public static function usingRightToLeftLanguage(?string $locale)
     {
-        // TODO: Can this just be accessed in the controller?
-
         return in_array($locale, ['ar', 'fa']);
     }
 

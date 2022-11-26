@@ -17886,11 +17886,14 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
     (0,vue__WEBPACK_IMPORTED_MODULE_0__.onMounted)(function () {
+      // Set the theme on initial page load
       if (store.getters['config/isDarkAppearance'] || store.getters['config/isSystemAppearance'] && (0,_utils_theme__WEBPACK_IMPORTED_MODULE_5__.prefersDarkColorScheme)()) {
         (0,_utils_theme__WEBPACK_IMPORTED_MODULE_5__.setDarkTheme)();
       } else {
         (0,_utils_theme__WEBPACK_IMPORTED_MODULE_5__.setLightTheme)();
       }
+
+      // Watch for OS System changes
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
         if (store.getters['config/isDarkAppearance'] || store.getters['config/isSystemAppearance'] && (0,_utils_theme__WEBPACK_IMPORTED_MODULE_5__.prefersDarkColorScheme)()) {
           (0,_utils_theme__WEBPACK_IMPORTED_MODULE_5__.setDarkTheme)();
