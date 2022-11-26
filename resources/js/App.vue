@@ -70,6 +70,7 @@ function logout() {
 }
 
 onMounted(() => {
+  // Set the theme on initial page load
   if (
     store.getters['config/isDarkAppearance'] ||
     (store.getters['config/isSystemAppearance'] && prefersDarkColorScheme())
@@ -79,6 +80,7 @@ onMounted(() => {
     setLightTheme()
   }
 
+  // Watch for OS System changes
   window
     .matchMedia('(prefers-color-scheme: dark)')
     .addEventListener('change', function () {
