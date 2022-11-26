@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    class="h-full"
     @if(\Canvas\Canvas::usingRightToLeftLanguage($scripts['user']['locale'])) dir="rtl" @endif
-    @class([
-        'h-full' => true,
-        'dark' => \Canvas\Canvas::enabledDarkMode($scripts['user']['dark_mode']),
-    ])
 >
 <head>
     <meta charset="utf-8">

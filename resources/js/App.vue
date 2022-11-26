@@ -40,6 +40,11 @@ import CommandPalette from '@/components/CommandPalette'
 import MobileSidebar from '@/components/MobileSidebar'
 import DesktopSidebar from '@/components/DesktopSidebar'
 import request from '@/utils/request'
+import {
+  setDarkTheme,
+  setLightTheme,
+  prefersDarkColorScheme,
+} from '@/utils/theme'
 import { useRoute } from 'vue-router'
 import SimpleNotification from '@/components/SimpleNotification'
 
@@ -65,24 +70,26 @@ function logout() {
 }
 
 onMounted(() => {
-  // TODO: Cleanup and consolidate calls up with a theme.js utils file
-
   if (
     store.getters['config/isDarkAppearance'] ||
-    (store.getters['config/isSystemAppearance'] &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches)
+    (store.getters['config/isSystemAppearance'] && prefersDarkColorScheme())
   ) {
-    document.documentElement.classList.add('dark')
+    setDarkTheme()
   } else {
-    document.documentElement.classList.remove('dark')
+    setLightTheme()
   }
 
   window
     .matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', (e) =>
-      e.matches
-        ? document.documentElement.classList.add('dark')
-        : document.documentElement.classList.remove('dark')
-    )
+    .addEventListener('change', function () {
+      if (
+        store.getters['config/isDarkAppearance'] ||
+        (store.getters['config/isSystemAppearance'] && prefersDarkColorScheme())
+      ) {
+        setDarkTheme()
+      } else {
+        setLightTheme()
+      }
+    })
 })
 </script>

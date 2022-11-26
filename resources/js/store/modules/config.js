@@ -1,4 +1,9 @@
 import request from '@/utils/request'
+import {
+  setDarkTheme,
+  setLightTheme,
+  prefersDarkColorScheme,
+} from '@/utils/theme'
 
 const initialState = {
   assetsUpToDate: window.Canvas.assetsUpToDate,
@@ -50,16 +55,13 @@ const actions = {
       .then(({ data }) => {
         context.commit('UPDATE_APPEARANCE', data.user)
 
-        // TODO: Cleanup and consolidate calls up with a theme.js utils file
-
         if (
           state.user.dark_mode === true ||
-          (state.user.dark_mode === null &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches)
+          (state.user.dark_mode === null && prefersDarkColorScheme())
         ) {
-          document.documentElement.classList.add('dark')
+          setDarkTheme()
         } else {
-          document.documentElement.classList.remove('dark')
+          setLightTheme()
         }
       })
   },
