@@ -5,7 +5,6 @@ namespace Canvas\Tests;
 use Canvas\CanvasServiceProvider;
 use Canvas\Models\User;
 use Exception;
-use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
@@ -14,23 +13,23 @@ abstract class TestCase extends OrchestraTestCase
     use RefreshDatabase;
 
     /**
-     * A test user with the role of Contributor.
+     * A test user with Contributor access.
      *
-     * @var User
+     * @var \Canvas\Models\User
      */
     protected $contributor;
 
     /**
-     * A test user with the role of Editor.
+     * A test user with Editor access.
      *
-     * @var User
+     * @var \Canvas\Models\User
      */
     protected $editor;
 
     /**
-     * A test user with the role of Admin.
+     * A test user with Admin access.
      *
-     * @var User
+     * @var \Canvas\Models\User
      */
     protected $admin;
 
@@ -45,21 +44,11 @@ abstract class TestCase extends OrchestraTestCase
 
         $this->setUpDatabase($this->app);
 
-        $this->contributor = factory(User::class)->create([
-            'role' => User::CONTRIBUTOR,
-        ]);
-
-        $this->editor = factory(User::class)->create([
-            'role' => User::EDITOR,
-        ]);
-
-        $this->admin = factory(User::class)->create([
-            'role' => User::ADMIN,
-        ]);
+        $this->createTestUsers();
     }
 
     /**
-     * @param  Application  $app
+     * @param  \Illuminate\Foundation\Application  $app
      * @return array
      */
     protected function getPackageProviders($app): array
@@ -70,7 +59,7 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param  Application  $app
+     * @param  \Illuminate\Foundation\Application  $app
      * @return void
      */
     protected function resolveApplicationCore($app): void
@@ -83,7 +72,7 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param  Application  $app
+     * @param  \Illuminate\Foundation\Application  $app
      * @return void
      */
     protected function getEnvironmentSetUp($app): void
@@ -112,17 +101,37 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param  Application  $app
+     * @param  \Illuminate\Foundation\Application  $app
      * @return void
      *
      * @throws Exception
      */
-    protected function setUpDatabase($app): void
+    protected function setUpDatabase($app)
     {
         $this->loadLaravelMigrations();
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadFactoriesUsing($app, __DIR__.'/../database/factories');
 
         $this->artisan('migrate');
+    }
+
+    /**
+     * Create a test user for each role.
+     *
+     * @return void
+     */
+    protected function createTestUsers()
+    {
+        $this->contributor = factory(User::class)->create([
+            'role' => User::$contributor_id,
+        ]);
+
+        $this->editor = factory(User::class)->create([
+            'role' => User::$editor_id,
+        ]);
+
+        $this->admin = factory(User::class)->create([
+            'role' => User::$admin_id,
+        ]);
     }
 }

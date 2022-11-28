@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Listeners;
 
 use Canvas\Canvas;
@@ -13,10 +15,10 @@ class CaptureView
      * hour. The ID of the post is stored in session to be validated against
      * until it "expires" and is pruned by the Session middleware class.
      *
-     * @param  PostViewed  $event
+     * @param  \Canvas\Events\PostViewed  $event
      * @return void
      */
-    public function handle(PostViewed $event): void
+    public function handle(PostViewed $event)
     {
         if (! $this->wasRecentlyViewed($event->post)) {
             $data = [
@@ -35,12 +37,12 @@ class CaptureView
     /**
      * Check if a given post exists in the session.
      *
-     * @param  Post  $post
+     * @param  \Canvas\Models\Post  $post
      * @return bool
      */
-    private function wasRecentlyViewed(Post $post): bool
+    private function wasRecentlyViewed(Post $post)
     {
-        $viewed = session()->get('viewed_posts', []);
+        $viewed = session('canvas.viewed_posts', []);
 
         return array_key_exists($post->id, $viewed);
     }
@@ -48,11 +50,11 @@ class CaptureView
     /**
      * Add a given post to the session.
      *
-     * @param  Post  $post
+     * @param  Canvas\Models\Post  $post
      * @return void
      */
-    private function storeInSession(Post $post): void
+    private function storeInSession(Post $post)
     {
-        session()->put("viewed_posts.{$post->id}", now()->timestamp);
+        session()->put("canvas.viewed_posts.{$post->id}", now()->timestamp);
     }
 }

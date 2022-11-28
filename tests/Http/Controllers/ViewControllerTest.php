@@ -20,7 +20,7 @@ class ViewControllerTest extends TestCase
              ->get(config('canvas.path'))
              ->assertSuccessful()
              ->assertViewIs('canvas::layout')
-             ->assertViewHas('jsVars')
+             ->assertViewHas('scripts')
              ->assertSee('canvas');
     }
 }

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
-use Canvas\Http\Requests\TopicRequest;
+use Canvas\Http\Requests\StoreTopicRequest;
 use Canvas\Models\Topic;
 use Exception;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
 
@@ -14,39 +16,53 @@ class TopicController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index()
     {
+        $sortAscending = request()->query('sort', 'desc') === 'asc';
+        $filterByPopular = request()->query('usage') === 'popular';
+        $filterByUnpopular = request()->query('usage') === 'unpopular';
+
         return response()->json(
             Topic::query()
                ->select('id', 'name', 'created_at')
-               ->latest()
-               ->withCount('posts')
-               ->paginate(), 200
+                ->withCount('posts')
+                ->when($filterByPopular, function (Builder $query) {
+                    return $query->orderBy('posts_count', 'desc');
+                })
+                ->when($filterByUnpopular, function (Builder $query) {
+                    return $query->orderBy('posts_count', 'asc');
+                })
+                ->when($sortAscending, function (Builder $query) {
+                    return $query->oldest();
+                }, function (Builder $query) {
+                    return $query->latest();
+                })
+               ->paginate()
         );
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create(): JsonResponse
+    public function create()
     {
         return response()->json(Topic::query()->make([
             'id' => Uuid::uuid4()->toString(),
-        ]), 200);
+        ]));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  TopicRequest  $request
-     * @param $id
-     * @return JsonResponse
+     * @param  \Canvas\Http\Requests\StoreTopicRequest  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(TopicRequest $request, $id): JsonResponse
+    public function store(StoreTopicRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -74,38 +90,38 @@ class TopicController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id): JsonResponse
+    public function show(string $id)
     {
         $topic = Topic::query()->findOrFail($id);
 
-        return response()->json($topic, 200);
+        return response()->json($topic);
     }
 
     /**
      * Display the specified relationship.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function posts($id): JsonResponse
+    public function posts(string $id)
     {
         $topic = Topic::query()->with('posts')->findOrFail($id);
 
-        return response()->json($topic->posts()->withCount('views')->paginate(), 200);
+        return response()->json($topic->posts()->withCount('views')->paginate());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param $id
-     * @return mixed
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws Exception
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
         $topic = Topic::query()->findOrFail($id);
 

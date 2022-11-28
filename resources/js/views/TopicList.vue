@@ -1,194 +1,464 @@
 <template>
-    <section>
-        <page-header>
-            <template slot="options">
-                <div class="dropdown">
-                    <a
-                        id="navbarDropdown"
-                        class="nav-link pr-1"
-                        href="#"
-                        role="button"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            width="25"
-                            class="icon-dots-horizontal"
-                        >
-                            <path
-                                class="fill-light-gray"
-                                fill-rule="evenodd"
-                                d="M5 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm7 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm7 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"
-                            />
-                        </svg>
-                    </a>
-
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <router-link :to="{ name: 'create-topic' }" class="dropdown-item">
-                            {{ trans.new_topic }}
-                        </router-link>
-                    </div>
+  <div class="py-6">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
+      <div class="pb-4">
+        <div>
+          <nav class="sm:hidden" :aria-label="trans.back">
+            <AppLink
+              :to="{ name: 'dashboard' }"
+              class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
+            >
+              <ChevronLeftIcon
+                class="-ml-1 mr-1 h-5 w-5 flex-shrink-0 text-gray-400"
+                aria-hidden="true"
+              />
+              {{ trans.back }}
+            </AppLink>
+          </nav>
+          <nav class="hidden sm:flex" :aria-label="trans.breadcrumb">
+            <ol role="list" class="flex items-center space-x-4">
+              <li>
+                <div class="flex">
+                  <AppLink
+                    :to="{ name: 'dashboard' }"
+                    class="text-sm font-medium text-gray-500 hover:text-gray-700"
+                  >
+                    {{ trans.dashboard }}
+                  </AppLink>
                 </div>
-            </template>
-        </page-header>
-
-        <main class="py-4">
-            <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
-                <div class="my-3">
-                    <h3 class="mt-3">{{ trans.topics }}</h3>
-
-                    <p class="mt-2 text-secondary">
-                        {{ trans.topics_are_great_for }}
-                    </p>
+              </li>
+              <li>
+                <div class="flex items-center">
+                  <ChevronRightIcon
+                    class="h-5 w-5 flex-shrink-0 text-gray-400"
+                    aria-hidden="true"
+                  />
+                  <p
+                    aria-current="page"
+                    class="ml-4 text-sm font-medium text-gray-500"
+                  >
+                    {{ trans.topics }}
+                  </p>
                 </div>
+              </li>
+            </ol>
+          </nav>
+        </div>
+        <div class="mt-2 md:flex md:items-center md:justify-between">
+          <div class="min-w-0 flex-1">
+            <h2
+              class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight"
+            >
+              {{ trans.topics }}
+            </h2>
+          </div>
+          <div
+            v-if="filteredItems?.length > 0"
+            class="mt-4 flex flex-shrink-0 md:mt-0 md:ml-4"
+          >
+            <AppLink
+              :to="{ name: 'create-topic' }"
+              class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              <PlusIcon class="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+              {{ trans.new_topic }}
+            </AppLink>
+          </div>
+        </div>
+      </div>
 
-                <div v-if="isReady" class="mt-5 card shadow-lg">
-                    <div class="card-body p-0">
-                        <div :key="`${index}-${topic.id}`" v-for="(topic, index) in topics">
-                            <router-link
-                                :to="{
-                                    name: 'edit-topic',
-                                    params: { id: topic.id },
-                                }"
-                                class="text-decoration-none"
-                            >
-                                <div
-                                    v-hover="{ class: `hover-bg` }"
-                                    class="p-3"
-                                    :class="{
-                                        'border-top': index !== 0,
-                                        'rounded-top': index === 0,
-                                        'rounded-bottom': index === topics.length - 1,
-                                    }"
-                                >
-                                    <div class="d-flex align-items-center">
-                                        <div class="mr-auto pl-2">
-                                            <p class="mb-0 py-1 lead font-weight-bold">
-                                                {{ topic.name }}
-                                            </p>
-                                        </div>
-                                        <div class="ml-auto d-none d-md-inline-block">
-                                            <span class="text-secondary mr-3"
-                                                >{{ suffixedNumber(topic.posts_count) }}
-                                                {{ topic.posts_count == 1 ? trans.post : trans.posts }}</span
-                                            >
-                                            <span class="mr-3"
-                                                >{{ trans.created }}
-                                                {{ moment(topic.created_at).format('MMM D, YYYY') }}</span
-                                            >
-                                        </div>
+      <div class="border rounded-md shadow-sm">
+        <nav
+          class="bg-white py-3 px-3 flex items-center justify-between border-b border-gray-200 rounded-t-md"
+        >
+          <div class="ml-auto flex space-x-4">
+            <Menu as="div" class="relative inline-block text-left">
+              <div>
+                <MenuButton
+                  class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                >
+                  {{ usageLabel }}
+                  <ChevronDownIcon
+                    class="-mr-1 ml-2 h-5 w-5"
+                    aria-hidden="true"
+                  />
+                </MenuButton>
+              </div>
 
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="25"
-                                            viewBox="0 0 24 24"
-                                            class="icon-cheveron-right-circle"
-                                        >
-                                            <circle cx="12" cy="12" r="10" style="fill: none" />
-                                            <path
-                                                class="fill-light-gray"
-                                                d="M10.3 8.7a1 1 0 0 1 1.4-1.4l4 4a1 1 0 0 1 0 1.4l-4 4a1 1 0 0 1-1.4-1.4l3.29-3.3-3.3-3.3z"
-                                            />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </router-link>
+              <transition
+                enter-active-class="transition ease-out duration-100"
+                enter-from-class="transform opacity-0 scale-95"
+                enter-to-class="transform opacity-100 scale-100"
+                leave-active-class="transition ease-in duration-75"
+                leave-from-class="transform opacity-100 scale-100"
+                leave-to-class="transform opacity-0 scale-95"
+              >
+                <MenuItems
+                  class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                >
+                  <div class="py-1">
+                    <MenuItem as="div">
+                      <AppLink
+                        :to="{
+                          name: 'topics',
+                        }"
+                        :class="
+                          !route.query?.usage
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
+                        class="block m-auto px-4 py-2 text-sm"
+                      >
+                        <div class="flex items-center">
+                          {{ trans.everything }}
                         </div>
+                      </AppLink>
+                    </MenuItem>
+                    <MenuItem as="div">
+                      <AppLink
+                        :to="{
+                          name: 'topics',
+                          query: {
+                            usage: popular,
+                            ...(query.sort && { sort: query.sort }),
+                          },
+                        }"
+                        :class="
+                          route.query?.usage === popular
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
+                        class="block m-auto px-4 py-2 text-sm"
+                      >
+                        <div class="flex items-center">
+                          {{ trans.most_popular }}
+                        </div>
+                      </AppLink>
+                    </MenuItem>
+                    <MenuItem as="div">
+                      <AppLink
+                        :to="{
+                          name: 'topics',
+                          query: {
+                            usage: unpopular,
+                            ...(query.sort && { sort: query.sort }),
+                          },
+                        }"
+                        :class="
+                          route.query?.usage === unpopular
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
+                        class="block m-auto px-4 py-2 text-sm"
+                      >
+                        <div class="flex items-center">
+                          {{ trans.least_popular }}
+                        </div>
+                      </AppLink>
+                    </MenuItem>
+                  </div>
+                </MenuItems>
+              </transition>
+            </Menu>
 
-                        <infinite-loading spinner="spiral" @infinite="fetchTopics">
-                            <span slot="no-more" />
-                            <div slot="no-results" class="text-left">
-                                <div class="my-5">
-                                    <p class="lead text-center text-muted mt-5">
-                                        {{ trans.you_have_no_topics }}
-                                    </p>
-                                    <p class="lead text-center text-muted mt-1">
-                                        {{ trans.write_on_the_go }}
-                                    </p>
-                                </div>
-                            </div>
-                        </infinite-loading>
+            <Menu as="div" class="relative inline-block text-left">
+              <div>
+                <MenuButton
+                  class="inline-flex justify-center w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                >
+                  {{ sortLabel }}
+                  <ChevronDownIcon
+                    class="-mr-1 ml-2 h-5 w-5"
+                    aria-hidden="true"
+                  />
+                </MenuButton>
+              </div>
+
+              <transition
+                enter-active-class="transition ease-out duration-100"
+                enter-from-class="transform opacity-0 scale-95"
+                enter-to-class="transform opacity-100 scale-100"
+                leave-active-class="transition ease-in duration-75"
+                leave-from-class="transform opacity-100 scale-100"
+                leave-to-class="transform opacity-0 scale-95"
+              >
+                <MenuItems
+                  class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                >
+                  <div class="py-1">
+                    <MenuItem as="div">
+                      <AppLink
+                        :to="{
+                          name: 'topics',
+                          query: {
+                            sort: descending,
+                            ...(query.usage && { usage: query.usage }),
+                          },
+                        }"
+                        :class="
+                          route.query?.sort === descending || !route.query.sort
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
+                        class="block m-auto px-4 py-2 text-sm"
+                      >
+                        <div class="flex items-center">{{ trans.newest }}</div>
+                      </AppLink>
+                    </MenuItem>
+                    <MenuItem as="div">
+                      <AppLink
+                        :to="{
+                          name: 'topics',
+                          query: {
+                            sort: ascending,
+                            ...(query.usage && { usage: query.usage }),
+                          },
+                        }"
+                        :class="
+                          route.query?.sort === ascending
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900'
+                        "
+                        class="block m-auto px-4 py-2 text-sm"
+                      >
+                        <div class="flex items-center">{{ trans.oldest }}</div>
+                      </AppLink>
+                    </MenuItem>
+                  </div>
+                </MenuItems>
+              </transition>
+            </Menu>
+          </div>
+        </nav>
+
+        <div v-if="filteredItems?.length">
+          <ul role="list" class="divide-y divide-gray-200">
+            <li v-for="topic in filteredItems" :key="topic.id">
+              <AppLink
+                :to="{
+                  name: 'show-topic',
+                  params: { id: topic.id },
+                }"
+                class="block hover:bg-gray-50 cursor-pointer"
+              >
+                <div class="flex items-center py-4 px-3">
+                  <div class="min-w-0 flex-1 flex items-center">
+                    <div
+                      class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4"
+                    >
+                      <div>
+                        <p class="text-sm font-medium text-indigo-600 truncate">
+                          {{ topic.name }}
+                          <span
+                            v-if="!!topic.posts_count"
+                            class="inline-flex items-center px-2.5 py-0.5 ml-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+                            >{{ topic.posts_count }}</span
+                          >
+                        </p>
+                        <p class="mt-2 flex items-center text-sm text-gray-500">
+                          <span>{{
+                            dateFromNow(topic.created_at, locale)
+                          }}</span>
+                        </p>
+                      </div>
                     </div>
+                  </div>
+                  <div>
+                    <ChevronRightIcon
+                      class="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </div>
                 </div>
+              </AppLink>
+            </li>
+          </ul>
+
+          <nav
+            class="bg-white py-3 px-3 flex items-center justify-between border-t border-gray-200 rounded-b-md"
+            :aria-label="trans.pagination"
+          >
+            <div class="sm:block">
+              <p class="text-sm text-gray-700">
+                {{ trans.showing }} {{ ' '
+                }}<span class="font-medium">{{ results.from }}</span
+                >{{ ' ' }} {{ trans.to }} {{ ' '
+                }}<span class="font-medium">{{ results.to }}</span
+                >{{ ' ' }} {{ trans.of }} {{ ' '
+                }}<span class="font-medium">{{ results.total }}</span
+                >{{ ' ' }} {{ trans.results }}
+              </p>
             </div>
-        </main>
-    </section>
+            <div class="ml-auto">
+              <div class="flex-1 flex justify-between sm:justify-end">
+                <AppLink
+                  v-if="!!results.prev_page_url"
+                  :to="{
+                    name: 'topics',
+                    query: {
+                      page: results.current_page - 1,
+                      page: results.current_page - 1,
+                      ...(query.usage && { usage: query.usage }),
+                      ...(query.sort && { sort: query.sort }),
+                    },
+                  }"
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  @click="decrementPage() && fetchTopics()"
+                >
+                  {{ trans.previous }}
+                </AppLink>
+                <AppLink
+                  v-if="!!results.next_page_url"
+                  :to="{
+                    name: 'topics',
+                    query: {
+                      page: results.current_page + 1,
+                      ...(query.usage && { usage: query.usage }),
+                      ...(query.sort && { sort: query.sort }),
+                    },
+                  }"
+                  class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  @click="incrementPage() && fetchTopics()"
+                >
+                  {{ trans.next }}
+                </AppLink>
+              </div>
+            </div>
+          </nav>
+        </div>
+
+        <div v-if="filteredItems?.length === 0">
+          <div class="py-24 text-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1"
+              stroke="currentColor"
+              class="mx-auto h-12 w-12 text-gray-400"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 6.878V6a2.25 2.25 0 012.25-2.25h7.5A2.25 2.25 0 0118 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 004.5 9v.878m13.5-3A2.25 2.25 0 0119.5 9v.878m0 0a2.246 2.246 0 00-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0121 12v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6c0-.98.626-1.813 1.5-2.122"
+              />
+            </svg>
+
+            <h3 class="mt-2 text-sm font-medium text-gray-900">
+              {{ trans.no_topics }}
+            </h3>
+            <p class="mt-1 text-sm text-gray-500">
+              {{ trans.get_started_by_creating_a_new_topic }}
+            </p>
+            <div class="mt-6">
+              <AppLink
+                :to="{ name: 'create-topic' }"
+                class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <PlusIcon class="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+                {{ trans.new_topic }}
+              </AppLink>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex';
-import Hover from '../directives/Hover';
-import InfiniteLoading from 'vue-infinite-loading';
-import NProgress from 'nprogress';
-import PageHeader from '../components/PageHeader';
-import isEmpty from 'lodash/isEmpty';
-import strings from '../mixins/strings';
+<script setup>
+import { computed, reactive, ref, watchEffect } from 'vue'
+import { useStore } from 'vuex'
+import AppLink from '@/components/AppLink'
+import {
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  PlusIcon,
+  ChevronDownIcon,
+} from '@heroicons/vue/24/solid'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import request from '@/utils/request'
+import dateFromNow from '@/utils/dateFromNow'
+import { useRoute } from 'vue-router'
 
-export default {
-    name: 'topic-list',
+const props = defineProps({
+  page: {
+    type: String,
+    default: '',
+  },
+  sort: {
+    type: String,
+    default: '',
+  },
+  usage: {
+    type: String,
+    default: '',
+  },
+})
+const route = useRoute()
+const store = useStore()
+const trans = computed(() => store.getters['config/trans'])
+const locale = computed(() => store.getters['config/locale'])
+const results = ref(null)
+const ascending = ref('asc')
+const descending = ref('desc')
+const popular = ref('popular')
+const unpopular = ref('unpopular')
+const query = reactive({
+  page: props.page || 1,
+  sort: props.sort || null,
+  usage: props.usage || null,
+})
 
-    components: {
-        InfiniteLoading,
-        PageHeader,
-    },
+const filteredItems = computed(() => {
+  return results?.value?.data || []
+})
 
-    directives: {
-        Hover,
-    },
+const sortLabel = computed(() => {
+  switch (query.sort) {
+    case descending.value:
+      return trans.value.newest
+    case ascending.value:
+      return trans.value.oldest
+    default:
+      return trans.value.sort
+  }
+})
 
-    mixins: [strings],
+const usageLabel = computed(() => {
+  switch (query.usage) {
+    case popular.value:
+      return trans.value.most_popular
+    case unpopular.value:
+      return trans.value.least_popular
+    default:
+      return trans.value.usage
+  }
+})
 
-    data() {
-        return {
-            page: 1,
-            topics: [],
-            isReady: false,
-        };
-    },
+watchEffect(async () => {
+  await fetchTopics()
+})
 
-    computed: {
-        ...mapGetters({
-            trans: 'settings/trans',
-        }),
-    },
+function fetchTopics() {
+  return request
+    .get('api/topics', {
+      params: {
+        ...(query.page > 1 && { page: query.page }),
+        ...(query.sort && { sort: query.sort }),
+        ...(query.usage && { usage: query.usage }),
+      },
+    })
+    .then(({ data }) => {
+      results.value = data
+    })
+}
 
-    async created() {
-        await Promise.all([this.fetchTopics()]);
-        this.isReady = true;
-        NProgress.done();
-    },
+function incrementPage() {
+  query.page++
+}
 
-    methods: {
-        fetchTopics($state) {
-            if ($state) {
-                return this.request()
-                    .get('/api/topics', {
-                        params: {
-                            page: this.page,
-                        },
-                    })
-                    .then((response) => {
-                        if (!isEmpty(response.data) && !isEmpty(response.data.data)) {
-                            this.page += 1;
-                            this.topics.push(...response.data.data);
-
-                            $state.loaded();
-                        } else {
-                            $state.complete();
-                        }
-
-                        if (isEmpty($state)) {
-                            NProgress.inc();
-                        }
-                    })
-                    .catch(() => {
-                        NProgress.done();
-                    });
-            }
-        },
-    },
-};
+function decrementPage() {
+  query.page--
+}
 </script>

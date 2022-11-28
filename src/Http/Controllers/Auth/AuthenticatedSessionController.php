@@ -1,23 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers\Auth;
 
-use Canvas\Http\Requests\LoginRequest;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use Canvas\Http\Requests\AuthenticatedSessionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
      *
-     * @return Application|Factory|View|RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function create()
     {
@@ -31,12 +28,12 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      *
-     * @param  LoginRequest  $request
-     * @return RedirectResponse
+     * @param  \Canvas\Http\Requests\AuthenticatedSessionRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(LoginRequest $request)
+    public function store(AuthenticatedSessionRequest $request)
     {
         $request->authenticate();
 
@@ -48,8 +45,8 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      *
-     * @param  Request  $request
-     * @return RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Request $request)
     {

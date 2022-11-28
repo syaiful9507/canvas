@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
  * Class NewPasswordControllerTest.
  *
  * @covers \Canvas\Http\Controllers\Auth\NewPasswordController
+ * @covers \Canvas\Http\Requests\NewPasswordRequest
  */
 class NewPasswordControllerTest extends TestCase
 {
@@ -17,12 +18,12 @@ class NewPasswordControllerTest extends TestCase
     {
         $this->withoutMix();
 
-        $this->get(route('canvas.password.reset', [
-            'token' => Str::random(60),
+        $this->get(route('canvas.reset-password.view', [
+            'token' => encrypt($this->admin->id.'|'.Str::random()),
         ]))
              ->assertSuccessful()
              ->assertViewIs('canvas::auth.passwords.reset')
-             ->assertSeeText('Reset password');
+             ->assertSeeText(trans('canvas::app.update_password'));
     }
 
     public function testPasswordCanBeReset(): void
@@ -35,22 +36,20 @@ class NewPasswordControllerTest extends TestCase
             now()->addMinutes(60)
         );
 
-        $this->post(route('canvas.password.update', [
+        $this->post(route('canvas.reset-password', [
             'token' => $token,
             'email' => $this->admin->email,
             'password' => 'password',
             'password_confirmation' => 'password',
         ]))->assertRedirect(route('canvas'));
 
-        $this->assertEmpty(cache()->get("password.reset.{$this->admin->id}"));
+        $this->assertEmpty(cache("password.reset.{$this->admin->id}"));
     }
 
     public function testNewPasswordRequestWillValidateAnInvalidEmail(): void
     {
-        $token = encrypt($this->admin->id.'|'.Str::random());
-
-        $response = $this->post(route('canvas.password.update'), [
-            'token' => $token,
+        $response = $this->post(route('canvas.reset-password'), [
+            'token' =>  encrypt($this->admin->id.'|'.Str::random()),
             'email' => 'not-an-email',
             'password' => 'password',
             'password_confirmation' => 'password',
@@ -61,10 +60,8 @@ class NewPasswordControllerTest extends TestCase
 
     public function testNewPasswordRequestWillValidateUnconfirmedPasswords(): void
     {
-        $token = encrypt($this->admin->id.'|'.Str::random());
-
-        $response = $this->post(route('canvas.password.update'), [
-            'token' => $token,
+        $response = $this->post(route('canvas.reset-password'), [
+            'token' =>  encrypt($this->admin->id.'|'.Str::random()),
             'email' => $this->admin->email,
             'password' => 'password',
             'password_confirmation' => 'secret',
@@ -73,10 +70,16 @@ class NewPasswordControllerTest extends TestCase
         $this->assertInstanceOf(ValidationException::class, $response->exception);
     }
 
-    public function testNewPasswordRequestWillValidateBadTokens(): void
+    public function testNewPasswordRequestWillValidateExpiredTokens(): void
     {
-        $this->post(route('canvas.password.update'), [
-            'token' => Str::random(),
+        $oldToken = encrypt($this->admin->id.'|'.Str::random());
+
+        cache(["password.reset.{$this->admin->id}" => $oldToken],
+            now()->subMinute()
+        );
+
+        $this->post(route('canvas.reset-password'), [
+            'token' => $oldToken,
             'email' => $this->admin->email,
             'password' => 'password',
             'password_confirmation' => 'password',

@@ -1,0 +1,9 @@
+
+Route::prefix('canvas-ui')->group(function () {
+    Route::get('/', [\App\Http\Controllers\CanvasUiController::class, 'index']);
+    Route::get('{slug}', [\App\Http\Controllers\CanvasUiController::class, 'showPost'])
+         ->middleware('Canvas\Http\Middleware\ExpireTrafficInSession');
+    Route::get('tag/{slug}', [\App\Http\Controllers\CanvasUiController::class, 'showTag']);
+    Route::get('topic/{slug}', [\App\Http\Controllers\CanvasUiController::class, 'showTopic']);
+    Route::get('user/{id}', [\App\Http\Controllers\CanvasUiController::class, 'showUser']);
+});

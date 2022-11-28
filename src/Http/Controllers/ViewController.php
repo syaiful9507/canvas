@@ -1,28 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
+use Canvas\Models\User;
 use Illuminate\Routing\Controller;
-use Illuminate\View\View;
 
 class ViewController extends Controller
 {
     /**
      * Handle the incoming request.
      *
-     * @return Application|Factory|View
+     * @return \Illuminate\View\View
      */
-    public function __invoke()
+    public function index()
     {
         return view('canvas::layout')->with([
-            'jsVars' => [
+            'scripts' => [
+                'assetsUpToDate' => Canvas::assetsUpToDate(),
                 'languageCodes' => Canvas::availableLanguageCodes(),
                 'maxUpload' => config('canvas.upload_filesize'),
                 'path' => Canvas::basePath(),
-                'roles' => Canvas::availableRoles(),
+                'roles' => User::roles(),
                 'timezone' => config('app.timezone'),
                 'translations' => Canvas::availableTranslations(request()->user('canvas')->locale),
                 'unsplash' => config('canvas.unsplash.access_key'),

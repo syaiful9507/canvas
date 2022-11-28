@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
-use Canvas\Http\Requests\PostRequest;
+use Canvas\Http\Requests\StorePostRequest;
 use Canvas\Models\Post;
 use Canvas\Models\Tag;
 use Canvas\Models\Topic;
-use Canvas\Services\StatsAggregator;
+use Canvas\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
 
@@ -18,59 +19,67 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index()
     {
+        $isContributor = request()->user('canvas')->isContributor;
+        $sortAscending = request()->query('sort', 'desc') === 'asc';
+        $filterByAuthor = ! $isContributor && request()->query('author');
+        $filterByDraftType = request()->query('type', 'published') === 'draft';
+
         $posts = Post::query()
-                    ->select('id', 'title', 'summary', 'featured_image', 'published_at', 'created_at', 'updated_at')
-                     ->when(request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all', function (Builder $query) {
+                     ->select('id', 'title', 'summary', 'featured_image', 'published_at', 'created_at', 'updated_at')
+                     ->when($isContributor, function (Builder $query) {
                          return $query->where('user_id', request()->user('canvas')->id);
                      }, function (Builder $query) {
                          return $query;
                      })
-                     ->when(request()->query('type', 'published') != 'draft', function (Builder $query) {
-                         return $query->published();
+                     ->when($filterByAuthor, function (Builder $query) {
+                         return $query->where('user_id', request()->query('author'));
                      }, function (Builder $query) {
-                         return $query->draft();
+                         return $query;
                      })
-                     ->latest()
+                     ->when($filterByDraftType, function (Builder $query) {
+                         return $query->draft();
+                     }, function (Builder $query) {
+                         return $query->published();
+                     })
+                     ->when($sortAscending, function (Builder $query) {
+                         return $query->oldest();
+                     }, function (Builder $query) {
+                         return $query->latest();
+                     })
                      ->withCount('views')
                      ->paginate();
 
-        // TODO: The count() queries here are duplicated
-
-        $draftCount = Post::query()
-                          ->when(request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all', function (Builder $query) {
-                              return $query->where('user_id', request()->user('canvas')->id);
-                          }, function (Builder $query) {
-                              return $query;
-                          })
-                          ->draft()
-                          ->count();
-
-        $publishedCount = Post::query()
-                              ->when(request()->user('canvas')->isContributor || request()->query('scope', 'user') != 'all', function (Builder $query) {
-                                  return $query->where('user_id', request()->user('canvas')->id);
-                              }, function (Builder $query) {
-                                  return $query;
-                              })
-                              ->published()
-                              ->count();
+        $users = User::query()
+                     ->select('id', 'name', 'avatar')
+                     ->get()
+                     ->toArray();
 
         return response()->json([
             'posts' => $posts,
-            'draftCount' => $draftCount,
-            'publishedCount' => $publishedCount,
-        ], 200);
+            'users' => $users,
+            'drafts_count' => $filterByDraftType ? $posts->total() : Post::query()->when($filterByAuthor, function (Builder $query) {
+                return $query->where('user_id', request()->user('canvas')->id);
+            }, function (Builder $query) {
+                return $query;
+            })->draft()->count(),
+            'published_count' => ! $filterByDraftType ? $posts->total() : Post::query()->when($filterByAuthor, function (Builder $query) {
+                return $query->where('user_id', request()->user('canvas')->id);
+            }, function (Builder $query) {
+                return $query;
+            })->published()->count(),
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create(): JsonResponse
+    public function create()
     {
         $uuid = Uuid::uuid4();
 
@@ -79,32 +88,34 @@ class PostController extends Controller
                 'id' => $uuid->toString(),
                 'slug' => "post-{$uuid->toString()}",
             ]),
-            'tags' => Tag::query()->get(['name', 'slug']),
-            'topics' => Topic::query()->get(['name', 'slug']),
+            'tags' => Tag::get(['name', 'slug']),
+            'topics' => Topic::get(['name', 'slug']),
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  PostRequest  $request
-     * @param $id
-     * @return JsonResponse
+     * @param  \Canvas\Http\Requests\StorePostRequest  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws Exception
      */
-    public function store(PostRequest $request, $id): JsonResponse
+    public function store(StorePostRequest $request, string $id)
     {
         $data = $request->validated();
 
-        $post = Post::query()
-                    ->when($request->user('canvas')->isContributor, function (Builder $query) {
-                        return $query->where('user_id', request()->user('canvas')->id);
-                    }, function (Builder $query) {
-                        return $query;
-                    })
-                    ->with('tags', 'topic')
-                    ->find($id);
+        $post = Post::query()->when($request->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })->with('tags', 'topic')->find($id);
+
+        if ($request->user('canvas')->isContributor &&
+            $request->user('canvas')->id != optional($post)->user_id) {
+            abort(403);
+        }
 
         if (! $post) {
             $post = new Post(['id' => $id]);
@@ -123,8 +134,8 @@ class PostController extends Controller
             $tag = $tags->firstWhere('slug', $item['slug']);
 
             if (! $tag) {
-                $tag = Tag::create([
-                    'id' => $id = Uuid::uuid4()->toString(),
+                $tag = Tag::query()->create([
+                    'id' => Uuid::uuid4()->toString(),
                     'name' => $item['name'],
                     'slug' => $item['slug'],
                     'user_id' => request()->user('canvas')->id,
@@ -138,8 +149,8 @@ class PostController extends Controller
             $topic = $topics->firstWhere('slug', $item['slug']);
 
             if (! $topic) {
-                $topic = Topic::create([
-                    'id' => $id = Uuid::uuid4()->toString(),
+                $topic = Topic::query()->create([
+                    'id' => Uuid::uuid4()->toString(),
                     'name' => $item['name'],
                     'slug' => $item['slug'],
                     'user_id' => request()->user('canvas')->id,
@@ -159,19 +170,16 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id): JsonResponse
+    public function show(string $id)
     {
-        $post = Post::query()
-                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
-                        return $query->where('user_id', request()->user('canvas')->id);
-                    }, function (Builder $query) {
-                        return $query;
-                    })
-                    ->with('tags:name,slug', 'topic:name,slug')
-                    ->findOrFail($id);
+        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })->with('tags:name,slug', 'topic:name,slug')->findOrFail($id);
 
         return response()->json([
             'post' => $post,
@@ -181,46 +189,20 @@ class PostController extends Controller
     }
 
     /**
-     * Display stats for the specified resource.
-     *
-     * @param  string  $id
-     * @return JsonResponse
-     */
-    public function stats(string $id): JsonResponse
-    {
-        $post = Post::query()
-                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
-                        return $query->where('user_id', request()->user('canvas')->id);
-                    }, function (Builder $query) {
-                        return $query;
-                    })
-                    ->published()
-                    ->findOrFail($id);
-
-        $stats = new StatsAggregator(request()->user('canvas'));
-
-        $results = $stats->getStatsForPost($post);
-
-        return response()->json($results);
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
-     * @param $id
-     * @return mixed
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws Exception
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $post = Post::query()
-                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
-                        return $query->where('user_id', request()->user('canvas')->id);
-                    }, function (Builder $query) {
-                        return $query;
-                    })
-                    ->findOrFail($id);
+        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })->findOrFail($id);
 
         $post->delete();
 

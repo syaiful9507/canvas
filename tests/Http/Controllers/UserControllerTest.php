@@ -14,23 +14,101 @@ use Ramsey\Uuid\Uuid;
  * Class UserControllerTest.
  *
  * @covers \Canvas\Http\Controllers\UserController
- * @covers \Canvas\Http\Requests\UserRequest
+ * @covers \Canvas\Http\Requests\StoreUserRequest
  */
 class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testListAllUsers(): void
+    public function testAllUsersAreFetchedByDefault(): void
     {
         $response = $this->actingAs($this->admin, 'canvas')
-                         ->getJson('canvas/api/users')
-                         ->assertSuccessful();
+            ->getJson('canvas/api/users')
+            ->assertJsonFragment([
+                'id' => $this->admin->id,
+                'id' => $this->editor->id,
+                'id' => $this->contributor->id,
+            ])
+            ->assertSuccessful();
 
         $this->assertInstanceOf(User::class, $response->getOriginalContent()->first());
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response->getOriginalContent());
 
         $this->assertCount(3, $response->getOriginalContent());
+    }
+
+    public function testUsersCanBeSortedByCreationDateWithAGivenQueryParameter(): void
+    {
+        $newUser = factory(User::class)->create([
+            // The 3 users (Admin, Editor, Contributor) take precedence in the database for
+            // some reason, so adding a second here ensures this user is new ¯\_(ツ)_/¯
+            'created_at' => now()->addSecond(),
+        ]);
+
+        $oldUser = factory(User::class)->create([
+            'created_at' => now()->subDay(),
+        ]);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index', ['sort' => 'desc']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $newUser->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index', ['sort' => 'asc']))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $oldUser->id);
+
+        $response = $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index'))
+            ->assertSuccessful();
+
+        $this->assertSame($response->getOriginalContent()->first()->id, $newUser->id);
+    }
+
+    public function testAdminsCanBeFetchedWithAGivenQueryParameter(): void
+    {
+        $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index', ['role' => User::$admin_id]))
+            ->assertSuccessful()
+            ->assertJsonFragment([
+                'id' => $this->admin->id,
+            ])
+            ->assertJsonMissing([
+                'id' => $this->contributor->id,
+                'id' => $this->editor->id,
+            ]);
+    }
+
+    public function testEditorsCanBeFetchedWithAGivenQueryParameter(): void
+    {
+        $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index', ['role' => User::$editor_id]))
+            ->assertSuccessful()
+            ->assertJsonFragment([
+                'id' => $this->editor->id,
+            ])
+            ->assertJsonMissing([
+                'id' => $this->admin->id,
+                'id' => $this->contributor->id,
+            ]);
+    }
+
+    public function testContributorsCanBeFetchedWithAGivenQueryParameter(): void
+    {
+        $this->actingAs($this->admin, 'canvas')
+            ->getJson(route('canvas.users.index', ['role' => User::$contributor_id]))
+            ->assertSuccessful()
+            ->assertJsonFragment([
+                'id' => $this->contributor->id,
+            ])
+            ->assertJsonMissing([
+                'id' => $this->admin->id,
+                'id' => $this->editor->id,
+            ]);
     }
 
     public function testCreateDataForUser(): void

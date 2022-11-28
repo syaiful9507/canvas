@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
-use Canvas\Http\Requests\UserRequest;
+use Canvas\Http\Requests\StoreUserRequest;
 use Canvas\Models\User;
-use Exception;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
@@ -17,40 +18,52 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index()
     {
+        $sortAscending = request()->query('sort', 'desc') === 'asc';
+        $filterByRole = request()->query('role');
+
         return response()->json(
             User::query()
                 ->select('id', 'name', 'email', 'avatar', 'role')
-                ->latest()
+                ->when($filterByRole, function (Builder $query) {
+                    return $query->where('role', request()->query('role'));
+                }, function (Builder $query) {
+                    return $query;
+                })
+                ->when($sortAscending, function (Builder $query) {
+                    return $query->oldest();
+                }, function (Builder $query) {
+                    return $query->latest();
+                })
                 ->withCount('posts')
-                ->paginate(), 200
+                ->paginate()
         );
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create(): JsonResponse
+    public function create()
     {
         return response()->json(User::query()->make([
             'id' => Uuid::uuid4()->toString(),
-            'role' => User::CONTRIBUTOR,
-        ]), 200);
+            'role' => User::$contributor_id,
+        ]));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  UserRequest  $request
-     * @param $id
-     * @return JsonResponse
+     * @param  \Canvas\Http\Requests\StoreUserRequest  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(UserRequest $request, $id): JsonResponse
+    public function store(StoreUserRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -92,41 +105,39 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id): JsonResponse
+    public function show(string $id)
     {
-        $user = User::query()->withCount('posts')->find($id);
+        $user = User::query()->withCount('posts')->findOrFail($id);
 
-        return $user ? response()->json($user, 200) : response()->json(null, 404);
+        return response()->json($user);
     }
 
     /**
      * Display the specified relationship.
      *
-     * @param $id
-     * @return JsonResponse
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function posts($id): JsonResponse
+    public function posts(string $id)
     {
-        $user = User::query()->with('posts')->find($id);
+        $user = User::query()->with('posts')->findOrFail($id);
 
-        return $user ? response()->json($user->posts()->withCount('views')->paginate(), 200) : response()->json(null, 200);
+        return response()->json($user->posts()->withCount('views')->paginate());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param $id
-     * @return mixed
-     *
-     * @throws Exception
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
         // Prevent a user from deleting their own account
-        if (request()->user('canvas')->id == $id) {
+        if (request()->user('canvas')->id === $id) {
             return response()->json(null, 403);
         }
 

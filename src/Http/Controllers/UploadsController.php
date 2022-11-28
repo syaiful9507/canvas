@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
@@ -11,7 +13,7 @@ class UploadsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store()
     {
@@ -23,13 +25,14 @@ class UploadsController extends Controller
 
         // Only grab the first element because single file uploads
         // are not supported at this time
+        // TODO: What does that comment even mean?
         $file = reset($payload);
 
         $path = $file->storePublicly(Canvas::baseStoragePath(), [
             'disk' => config('canvas.storage_disk'),
         ]);
 
-        return Storage::disk(config('canvas.storage_disk'))->url($path);
+        return response()->json(Storage::disk(config('canvas.storage_disk'))->url($path));
     }
 
     /**

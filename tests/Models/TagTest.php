@@ -38,7 +38,7 @@ class TagTest extends TestCase
         ]);
 
         $secondaryAdmin = factory(User::class)->create([
-            'role' => User::ADMIN,
+            'role' => User::$admin_id,
         ]);
         $secondaryTag = factory(Tag::class)->create([
             'user_id' => $secondaryAdmin->id,

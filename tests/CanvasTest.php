@@ -3,7 +3,6 @@
 namespace Canvas\Tests;
 
 use Canvas\Canvas;
-use Canvas\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -28,15 +27,6 @@ class CanvasTest extends TestCase
     public function testAvailableTranslations(): void
     {
         $this->assertIsString(Canvas::availableTranslations(config('app.locale')));
-    }
-
-    public function testAvailableRoles(): void
-    {
-        $this->assertSame([
-            User::CONTRIBUTOR => 'Contributor',
-            User::EDITOR => 'Editor',
-            User::ADMIN => 'Admin',
-        ], Canvas::availableRoles());
     }
 
     public function testAssetsAreUpToDate(): void

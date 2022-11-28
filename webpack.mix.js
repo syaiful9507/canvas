@@ -1,5 +1,6 @@
-const mix = require('laravel-mix');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const mix = require('laravel-mix')
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 /*
  |--------------------------------------------------------------------------
@@ -12,26 +13,29 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
  |
  */
 
-// mix.webpackConfig({
-//     plugins: [
-//         new BundleAnalyzerPlugin(),
-//     ],
-// });
-
-mix.options({
-    uglify: {
-        uglifyOptions: {
-            compress: {
-                drop_console: true,
-            },
+mix
+  .webpackConfig({
+    plugins: [
+      // new BundleAnalyzerPlugin(),
+    ],
+  })
+  .options({
+    terser: {
+      terserOptions: {
+        compress: {
+          drop_console: true,
         },
+      },
     },
-});
+  })
+  .setPublicPath('public')
+  .js('resources/js/app.js', 'public/js')
+  .vue({ version: 3 })
+  .postCss('resources/css/app.css', 'public/css', [require('tailwindcss')])
+  .alias({
+    '@': 'resources/js',
+  })
 
-mix.setPublicPath('public')
-    .setResourceRoot('../')
-    .js('resources/js/app.js', 'public/js')
-    .vue()
-    .sass('resources/sass/app.scss', 'public/css')
-    .version()
-    .sourceMaps();
+if (mix.inProduction()) {
+  mix.version()
+}

@@ -23,7 +23,7 @@ class InstallCommandTest extends TestCase
 
         $this->assertDatabaseHas('canvas_users', [
             'email' => 'email@example.com',
-            'role' => User::ADMIN,
+            'role' => User::$admin_id,
         ]);
     }
 }

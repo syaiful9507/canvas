@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Console;
 
 use Canvas\Mail\WeeklyDigest;
@@ -23,7 +25,7 @@ class DigestCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Send the weekly email digest';
+    protected $description = 'Send a weekly digest for content published with Canvas';
 
     /**
      * Execute the console command.
@@ -32,17 +34,19 @@ class DigestCommand extends Command
      */
     public function handle()
     {
-        $startDate = today()->subDays(7)->startOfDay();
+        $startDate = today()->subWeek()->startOfDay();
         $endDate = today()->endOfDay();
 
-        $recipients = User::whereIn('id', Post::published()->pluck('user_id')->unique())->get();
+        $recipients = User::query()
+                          ->whereIn('id', Post::query()->published()->pluck('user_id')->unique())
+                          ->get();
 
         foreach ($recipients as $user) {
-            if ($user->digest != true) {
+            if (! $user->digest) {
                 continue;
             }
 
-            $posts = Post::where('user_id', $user->id)
+            $posts = Post::query()->where('user_id', $user->id)
                          ->published()
                          ->withCount(['views' => function (Builder $query) use ($startDate, $endDate) {
                              $query->whereBetween('created_at', [

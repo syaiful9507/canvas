@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class View extends Model
 {
@@ -24,9 +25,9 @@ class View extends Model
     /**
      * Get the post relationship.
      *
-     * @return BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function post(): BelongsTo
+    public function post()
     {
         return $this->belongsTo(Post::class);
     }
