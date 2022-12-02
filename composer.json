@@ -26,14 +26,14 @@
     "laravel/framework": "^9.0"
   },
   "require-dev": {
-    "laravel/legacy-factories": "^1.0",
     "mockery/mockery": "^1.4",
     "orchestra/testbench": "^7.0",
     "phpunit/phpunit": "^9.3"
   },
   "autoload": {
     "psr-4": {
-      "Canvas\\": "src/"
+      "Canvas\\": "src/",
+      "Canvas\\Database\\Factories\\": "database/factories/"
     }
   },
   "autoload-dev": {

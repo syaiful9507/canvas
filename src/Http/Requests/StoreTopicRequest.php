@@ -16,7 +16,7 @@ class StoreTopicRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user('canvas')->isAdmin;
+        return request()->user('canvas')->isAdmin;
     }
 
     /**

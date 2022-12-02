@@ -19,7 +19,7 @@ class CaptureVisitTest extends TestCase
 
     public function testInstantiation(): void
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->published()->create();
 
         $event = new PostViewed($post);
 
@@ -37,7 +37,7 @@ class CaptureVisitTest extends TestCase
 
     public function testVisitsAreCountedByIpInSessionOncePerDay(): void
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->published()->create();
 
         $event = new PostViewed($post);
 

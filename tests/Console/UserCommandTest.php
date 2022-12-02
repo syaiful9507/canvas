@@ -33,8 +33,10 @@ class UserCommandTest extends TestCase
 
     public function testCanvasUserCommandWillValidateAnExistingEmail(): void
     {
+        $user = User::factory()->contributor()->create();
+
         $this->artisan('canvas:user')
-             ->expectsQuestion('What email should be attached to the user?', $this->contributor->email)
+             ->expectsQuestion('What email should be attached to the user?', $user->email)
              ->assertExitCode(0)
              ->expectsOutput('That email already exists in the system.');
     }

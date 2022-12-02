@@ -106,31 +106,37 @@ class PostController extends Controller
     {
         $data = $request->validated();
 
-        $post = Post::query()->when($request->user('canvas')->isContributor, function (Builder $query) {
+        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
             return $query->where('user_id', request()->user('canvas')->id);
         }, function (Builder $query) {
             return $query;
-        })->with('tags', 'topic')->find($id);
-
-        if ($request->user('canvas')->isContributor &&
-            $request->user('canvas')->id != optional($post)->user_id) {
-            abort(403);
-        }
-
-        if (! $post) {
-            $post = new Post(['id' => $id]);
-        }
+        })->with(['tags', 'topic'])->firstOrNew(['id' => $id]);
 
         $post->fill($data);
 
-        $post->user_id = $post->user_id ?? request()->user('canvas')->id;
+        $post->user()->associate($post->user ?? request()->user('canvas'));
 
-        $post->save();
+        // TODO: Could be in a dedicated Service Class
+        if ($incomingTopic = request()->input('topic')) {
+            $existingTopic = Topic::query()->firstWhere('slug', $incomingTopic['slug']);
 
+            if (!$existingTopic) {
+                $topic = Topic::query()->create([
+                    'id' => Uuid::uuid4()->toString(),
+                    'name' => $incomingTopic['name'],
+                    'slug' => $incomingTopic['slug'],
+                    'user_id' => request()->user('canvas')->id,
+                ]);
+
+                $post->topic()->associate($topic);
+            } else {
+                $post->topic()->associate($existingTopic);
+            }
+        }
+
+        // TODO: Could be in a dedicated Service Class
         $tags = Tag::query()->get(['id', 'name', 'slug']);
-        $topics = Topic::query()->get(['id', 'name', 'slug']);
-
-        $tagsToSync = collect($request->input('tags', []))->map(function ($item) use ($tags) {
+        $tagsToSync = collect(request()->input('tags', []))->map(function ($item) use ($tags) {
             $tag = $tags->firstWhere('slug', $item['slug']);
 
             if (! $tag) {
@@ -144,25 +150,9 @@ class PostController extends Controller
 
             return (string) $tag->id;
         })->toArray();
-
-        $topicToSync = collect($request->input('topic', []))->map(function ($item) use ($topics) {
-            $topic = $topics->firstWhere('slug', $item['slug']);
-
-            if (! $topic) {
-                $topic = Topic::query()->create([
-                    'id' => Uuid::uuid4()->toString(),
-                    'name' => $item['name'],
-                    'slug' => $item['slug'],
-                    'user_id' => request()->user('canvas')->id,
-                ]);
-            }
-
-            return (string) $topic->id;
-        })->toArray();
-
         $post->tags()->sync($tagsToSync);
 
-        $post->topic()->sync($topicToSync);
+        $post->save();
 
         return response()->json($post->refresh(), 201);
     }
@@ -179,7 +169,7 @@ class PostController extends Controller
             return $query->where('user_id', request()->user('canvas')->id);
         }, function (Builder $query) {
             return $query;
-        })->with('tags:name,slug', 'topic:name,slug')->findOrFail($id);
+        })->with(['tags:name,slug', 'topic:name,slug'])->findOrFail($id);
 
         return response()->json([
             'post' => $post,

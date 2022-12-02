@@ -5,6 +5,7 @@ namespace Canvas\Tests\Http\Controllers;
 use Canvas\Models\Post;
 use Canvas\Models\Tag;
 use Canvas\Models\Topic;
+use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
@@ -22,292 +23,286 @@ class PostControllerTest extends TestCase
 
     public function testAllPublishedPostsAreFetchedByDefault(): void
     {
-        $published = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $user = User::factory()
+            ->has(Post::factory()->published())
+            ->has(Post::factory()->draft())
+            ->create();
 
-        $draft = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => null,
-        ]);
-
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($user, 'canvas')
              ->getJson(route('canvas.posts.index'))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'users',
              ])
              ->assertJsonFragment([
-                 'id' => $published->id,
+                 'id' => $user->posts()->published()->first()->id,
                  'total' => Post::published()->count(),
                  'drafts_count' => Post::draft()->count(),
                  'published_count' => Post::published()->count(),
              ])
              ->assertJsonMissing([
-                 'id' => $draft->id,
+                 'id' => $user->posts()->draft()->first()->id,
              ]);
     }
 
     public function testPublishedPostsCanBeFetchedWithAGivenQueryParameter(): void
     {
-        $published = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $user = User::factory()
+            ->has(Post::factory()->published())
+            ->has(Post::factory()->draft())
+            ->create();
 
-        $draft = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => null,
-        ]);
-
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($user, 'canvas')
              ->getJson(route('canvas.posts.index', ['type' => 'published']))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'users',
              ])
              ->assertJsonFragment([
-                 'id' => $published->id,
-                 'total' => $this->admin->posts()->published()->count(),
-                 'drafts_count' => $this->admin->posts()->draft()->count(),
-                 'published_count' => $this->admin->posts()->published()->count(),
-             ])
-             ->assertJsonMissing([
-                 'id' => $draft->id,
-             ]);
-    }
-
-    public function testAllPublishedPostsAreFetchedByDefaultForAdmin(): void
-    {
-        $byAdmin = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => now()->subDay(),
-        ]);
-
-        $byEditor = factory(Post::class)->create([
-            'user_id' => $this->editor->id,
-            'published_at' => now()->subDay(),
-        ]);
-
-        $byContributor = factory(Post::class)->create([
-            'user_id' => $this->contributor->id,
-            'published_at' => now()->addDay(),
-        ]);
-
-        $this->actingAs($this->admin, 'canvas')
-             ->getJson(route('canvas.posts.index'))
-             ->assertSuccessful()
-             ->assertJsonStructure([
-                 'users',
-             ])
-             ->assertJsonFragment([
-                 'id' => $byAdmin->id,
-                 'id' => $byEditor->id,
+                 'id' => $user->posts()->published()->first()->id,
                  'total' => Post::published()->count(),
                  'drafts_count' => Post::draft()->count(),
                  'published_count' => Post::published()->count(),
              ])
              ->assertJsonMissing([
-                 'id' => $byContributor->id,
+                 'id' => $user->posts()->draft()->first()->id,
              ]);
     }
 
-    public function testContributorsFetchOwnedPublishedPostsByDefault(): void
+    public function testAllPublishedPostsAreFetchedByDefaultForAdmin(): void
     {
-        $byAdmin = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $admin = User::factory()
+            ->admin()
+            ->has(Post::factory()->published())
+            ->create();
 
-        $byEditor = factory(Post::class)->create([
-            'user_id' => $this->editor->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $editor = User::factory()
+            ->editor()
+            ->has(Post::factory()->published())
+            ->create();
 
-        $byContributor = factory(Post::class)->create([
-            'user_id' => $this->contributor->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $contributor = User::factory()
+            ->contributor()
+            ->has(Post::factory()->draft())
+            ->create();
 
-        $this->actingAs($this->contributor, 'canvas')
+        $this->actingAs($admin, 'canvas')
              ->getJson(route('canvas.posts.index'))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'users',
              ])
              ->assertJsonFragment([
-                 'id' => $byContributor->id,
-                 'total' => $this->contributor->posts()->count(),
-                 'drafts_count' => $this->contributor->posts()->draft()->count(),
-                 'published_count' => $this->contributor->posts()->published()->count(),
+                 'id' => $admin->posts()->first()->id,
+                 'id' => $editor->posts()->first()->id,
+                 'total' => Post::published()->count(),
+                 'drafts_count' => Post::draft()->count(),
+                 'published_count' => Post::published()->count(),
              ])
              ->assertJsonMissing([
-                 'id' => $byAdmin->id,
-                 'id' => $byEditor->id,
+                 'id' => $contributor->posts()->first()->id,
+             ]);
+    }
+
+    public function testContributorsFetchOwnedPublishedPostsByDefault(): void
+    {
+        $admin = User::factory()
+            ->admin()
+            ->has(Post::factory()->published())
+            ->create();
+
+        $editor = User::factory()
+            ->editor()
+            ->has(Post::factory()->published())
+            ->create();
+
+        $contributor = User::factory()
+            ->contributor()
+            ->has(Post::factory()->published())
+            ->create();
+
+        $this->actingAs($contributor, 'canvas')
+             ->getJson(route('canvas.posts.index'))
+             ->assertSuccessful()
+             ->assertJsonStructure([
+                 'users',
+             ])
+             ->assertJsonFragment([
+                 'id' => $contributor->posts()->first()->id,
+                 'total' => $contributor->posts()->count(),
+                 'drafts_count' => $contributor->posts()->draft()->count(),
+                 'published_count' => $contributor->posts()->published()->count(),
+             ])
+             ->assertJsonMissing([
+                 'id' => $admin->posts()->first()->id,
+                 'id' => $editor->posts()->first()->id,
              ]);
     }
 
     public function testContributorsAreRestrictedToOwnedPosts(): void
     {
-        $byAdmin = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $admin = User::factory()
+            ->admin()
+            ->has(Post::factory()->published())
+            ->create();
 
-        $byEditor = factory(Post::class)->create([
-            'user_id' => $this->editor->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $editor = User::factory()
+            ->editor()
+            ->has(Post::factory()->published())
+            ->create();
 
-        $byContributor = factory(Post::class)->create([
-            'user_id' => $this->contributor->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $contributor = User::factory()
+            ->contributor()
+            ->has(Post::factory()->published())
+            ->create();
 
-        $this->actingAs($this->contributor, 'canvas')
-             ->getJson(route('canvas.posts.index', ['author' => $this->editor->id]))
+        $this->actingAs($contributor, 'canvas')
+             ->getJson(route('canvas.posts.index', ['author' => $editor->id]))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'users',
              ])
              ->assertJsonFragment([
-                 'id' => $byContributor->id,
-                 'total' => $this->contributor->posts()->count(),
-                 'drafts_count' => $this->contributor->posts()->draft()->count(),
-                 'published_count' => $this->contributor->posts()->published()->count(),
+                 'id' => $contributor->posts()->first()->id,
+                 'total' => $contributor->posts()->count(),
+                 'drafts_count' => $contributor->posts()->draft()->count(),
+                 'published_count' => $contributor->posts()->published()->count(),
              ])
              ->assertJsonMissing([
-                 'id' => $byAdmin->id,
-                 'id' => $byEditor->id,
+                 'id' => $admin->posts()->first()->id,
+                 'id' => $editor->posts()->first()->id,
              ]);
     }
 
     public function testPublishedPostsCanBeFetchedByAuthorWithAGivenQueryParameter(): void
     {
-        $byAdmin = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $admin = User::factory()
+            ->admin()
+            ->has(Post::factory()->published())
+            ->create();
 
-        $byEditor = factory(Post::class)->create([
-            'user_id' => $this->editor->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $editor = User::factory()
+            ->editor()
+            ->has(Post::factory()->published())
+            ->create();
 
-        $this->actingAs($this->admin, 'canvas')
-             ->getJson(route('canvas.posts.index', ['author' => $this->editor->id, 'type' => 'published']))
+        $this->actingAs($admin, 'canvas')
+             ->getJson(route('canvas.posts.index', ['author' => $editor->id, 'type' => 'published']))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'users',
              ])
              ->assertJsonFragment([
-                 'id' => $byEditor->id,
-                 'total' => $this->editor->posts()->published()->count(),
-                 'drafts_count' => $this->editor->posts()->draft()->count(),
-                 'published_count' => $this->editor->posts()->published()->count(),
+                 'id' => $editor->posts()->first()->id,
+                 'total' => $editor->posts()->published()->count(),
+                 'drafts_count' => $editor->posts()->draft()->count(),
+                 'published_count' => $editor->posts()->published()->count(),
              ])
              ->assertJsonMissing([
-                 'id' => $byAdmin->id,
+                 'id' => $admin->posts()->first()->id,
              ]);
     }
 
     public function testDraftPostsCanBeFetchedByAuthorWithAGivenQueryParameter(): void
     {
-        $byAdmin = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => now()->addDay(),
-        ]);
+        $admin = User::factory()
+            ->admin()
+            ->has(Post::factory()->draft())
+            ->create();
 
-        $byEditor = factory(Post::class)->create([
-            'user_id' => $this->editor->id,
-            'published_at' => now()->addDay(),
-        ]);
+        $editor = User::factory()
+            ->editor()
+            ->has(Post::factory()->draft())
+            ->create();
 
-        $this->actingAs($this->admin, 'canvas')
-             ->getJson(route('canvas.posts.index', ['author' => $this->editor->id, 'type' => 'draft']))
+        $this->actingAs($admin, 'canvas')
+             ->getJson(route('canvas.posts.index', ['author' => $editor->id, 'type' => 'draft']))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'users',
              ])
              ->assertJsonFragment([
-                 'id' => $byEditor->id,
-                 'total' => $this->editor->posts()->draft()->count(),
-                 'drafts_count' => $this->editor->posts()->draft()->count(),
-                 'published_count' => $this->editor->posts()->published()->count(),
+                 'id' => $editor->posts()->first()->id,
+                 'total' => $editor->posts()->draft()->count(),
+                 'drafts_count' => $editor->posts()->draft()->count(),
+                 'published_count' => $editor->posts()->published()->count(),
              ])
              ->assertJsonMissing([
-                 'id' => $byAdmin->id,
+                 'id' => $admin->posts()->first()->id,
              ]);
     }
 
     public function testAllDraftPostsCanBeFetchedWithAGivenQueryParameter(): void
     {
-        $byAdmin = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => now()->addDay(),
-        ]);
+        $admin = User::factory()
+            ->admin()
+            ->has(Post::factory()->draft())
+            ->create();
 
-        $byEditor = factory(Post::class)->create([
-            'user_id' => $this->editor->id,
-            'published_at' => now()->addDay(),
-        ]);
+        $editor = User::factory()
+            ->editor()
+            ->has(Post::factory()->draft())
+            ->create();
 
-        $byContributor = factory(Post::class)->create([
-            'user_id' => $this->contributor->id,
-            'published_at' => now()->subDay(),
-        ]);
+        $contributor = User::factory()
+            ->contributor()
+            ->has(Post::factory()->published())
+            ->create();
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($admin, 'canvas')
              ->getJson(route('canvas.posts.index', ['type' => 'draft']))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'users',
              ])
              ->assertJsonFragment([
-                 'id' => $byAdmin->id,
-                 'id' => $byEditor->id,
+                 'id' => $admin->posts()->first()->id,
+                 'id' => $editor->posts()->first()->id,
                  'total' => Post::draft()->count(),
                  'drafts_count' => Post::draft()->count(),
                  'published_count' => Post::published()->count(),
              ])
              ->assertJsonMissing([
-                 'id' => $byContributor->id,
+                 'id' => $contributor->posts()->first()->id,
              ]);
     }
 
     public function testPostsCanBeSortedByCreationDateWithAGivenQueryParameter(): void
     {
-        $newPost = factory(Post::class)->create([
-            'created_at' => now()->subHour(),
-        ]);
+        $admin = User::factory()
+            ->admin()
+            ->has(Post::factory()->published()->state(fn () => ['created_at' => now()->subHour()]))
+            ->create();
 
-        $oldPost = factory(Post::class)->create([
-            'created_at' => now()->subDay(),
-        ]);
+        $editor = User::factory()
+            ->editor()
+            ->has(Post::factory()->published()->state(fn () => ['created_at' => now()->subDay()]))
+            ->create();
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($admin, 'canvas')
             ->getJson(route('canvas.posts.index', ['sort' => 'desc']))
             ->assertSuccessful();
 
-        $this->assertSame($response->getOriginalContent()['posts']->first()->id, $newPost->id);
+        $this->assertSame($response->getOriginalContent()['posts']->first()->id, $admin->posts()->first()->id);
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($admin, 'canvas')
             ->getJson(route('canvas.posts.index', ['sort' => 'asc']))
             ->assertSuccessful();
 
-        $this->assertSame($response->getOriginalContent()['posts']->first()->id, $oldPost->id);
+        $this->assertSame($response->getOriginalContent()['posts']->first()->id, $editor->posts()->first()->id);
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($admin, 'canvas')
             ->getJson(route('canvas.posts.index'))
             ->assertSuccessful();
 
-        $this->assertSame($response->getOriginalContent()['posts']->first()->id, $newPost->id);
+        $this->assertSame($response->getOriginalContent()['posts']->first()->id, $admin->posts()->first()->id);
     }
 
     public function testNewPostData(): void
     {
-        $this->actingAs($this->admin, 'canvas')
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin, 'canvas')
              ->getJson(route('canvas.posts.create'))
              ->assertSuccessful()
              ->assertJsonStructure([
@@ -319,10 +314,13 @@ class PostControllerTest extends TestCase
 
     public function testExistingPostData(): void
     {
-        $post = factory(Post::class)->create();
+        $admin = User::factory()
+            ->admin()
+            ->has(Post::factory()->published())
+            ->create();
 
-        $this->actingAs($this->admin, 'canvas')
-             ->getJson(route('canvas.posts.show', ['id' => $post->id]))
+        $this->actingAs($admin, 'canvas')
+             ->getJson(route('canvas.posts.show', ['id' => $admin->posts()->first()->id]))
              ->assertSuccessful()
              ->assertJsonStructure([
                  'post',
@@ -330,61 +328,65 @@ class PostControllerTest extends TestCase
                  'topics',
              ])
              ->assertJsonFragment([
-                 'id' => $post->id,
+                 'id' => $admin->posts()->first()->id,
              ]);
     }
 
     public function testPostNotFound(): void
     {
-        $this->actingAs($this->admin, 'canvas')
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin, 'canvas')
              ->getJson(route('canvas.posts.show', ['id' => 'not-a-post']))
              ->assertNotFound();
     }
 
     public function testContributorAccessRestricted(): void
     {
-        $post = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-        ]);
+        $post = Post::factory()->for(User::factory()->admin())->create();
 
-        $this->actingAs($this->contributor, 'canvas')
+        $contributor = User::factory()->contributor()->create();
+
+        $this->actingAs($contributor, 'canvas')
              ->getJson(route('canvas.posts.show', ['id' => $post->id]))
              ->assertNotFound();
     }
 
     public function testStoreNewPost(): void
     {
+        $user = User::factory()->contributor()->create();
+
         $data = [
             'id' => Uuid::uuid4()->toString(),
             'slug' => 'a-new-post',
             'title' => 'A new post',
         ];
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($user, 'canvas')
              ->postJson(route('canvas.posts.store', ['id' => $data['id']]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $data['id'],
                  'slug' => $data['slug'],
                  'title' => $data['title'],
-                 'user_id' => $this->admin->id,
+                 'user_id' => $user->id,
              ]);
     }
 
     public function testUpdateExistingPost(): void
     {
-        $post = factory(Post::class)->create();
+        $user = User::factory()->has(Post::factory())->create();
 
         $data = [
             'title' => 'Updated Title',
             'slug' => 'updated-slug',
         ];
 
-        $this->actingAs($this->admin, 'canvas')
-             ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
+        $this->actingAs($user, 'canvas')
+             ->postJson(route('canvas.posts.store', ['id' => $user->posts()->first()->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
-                 'id' => $post->id,
+                 'id' => $user->posts()->first()->id,
                  'title' => $data['title'],
                  'slug' => $data['slug'],
              ]);
@@ -392,16 +394,14 @@ class PostControllerTest extends TestCase
 
     public function testAContributorCanUpdateTheirOwnPost(): void
     {
-        $post = factory(Post::class)->create([
-            'user_id' => $this->contributor->id,
-        ]);
+        $post = Post::factory()->for(User::factory()->contributor())->create();
 
         $data = [
             'title' => 'Updated Title',
             'slug' => 'updated-slug',
         ];
 
-        $this->actingAs($this->contributor, 'canvas')
+        $this->actingAs($post->user, 'canvas')
              ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
@@ -413,23 +413,23 @@ class PostControllerTest extends TestCase
 
     public function testAContributorCannotUpdateAnEditorsPost(): void
     {
-        $post = factory(Post::class)->create([
-            'user_id' => $this->editor->id,
-        ]);
+        $contributor = User::factory()->contributor()->create();
+
+        $post = Post::factory()->for(User::factory()->editor())->create();
 
         $data = [
             'title' => 'Updated Title',
             'slug' => 'updated-slug',
         ];
 
-        $this->actingAs($this->contributor, 'canvas')
+        $this->actingAs($contributor, 'canvas')
              ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertForbidden();
     }
 
     public function testSyncNewTags(): void
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->for(User::factory())->create();
 
         $data = [
             'title' => $post->title,
@@ -446,7 +446,7 @@ class PostControllerTest extends TestCase
             ],
         ];
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($post->user, 'canvas')
              ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
@@ -463,8 +463,9 @@ class PostControllerTest extends TestCase
 
     public function testSyncExistingTags(): void
     {
-        $post = factory(Post::class)->create();
-        $tag = factory(Tag::class)->create();
+        $post = Post::factory()->for(User::factory())->create();
+
+        $tag = Tag::factory()->create();
 
         $data = [
             'title' => $post->title,
@@ -477,7 +478,7 @@ class PostControllerTest extends TestCase
             ],
         ];
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($post->user, 'canvas')
              ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
@@ -493,22 +494,20 @@ class PostControllerTest extends TestCase
         ]);
     }
 
-    public function testSyncNewTopic(): void
+    public function testAssociateNewTopic(): void
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->for(User::factory())->create();
 
         $data = [
             'title' => $post->title,
             'slug' => $post->slug,
             'topic' => [
-                [
-                    'name' => 'A new topic',
-                    'slug' => 'a-new-topic',
-                ],
+                'name' => 'A new topic',
+                'slug' => 'a-new-topic',
             ],
         ];
 
-        $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($post->user, 'canvas')
              ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
@@ -517,29 +516,25 @@ class PostControllerTest extends TestCase
                  'slug' => $data['slug'],
              ]);
 
-        $this->assertCount(1, $post->topic);
-        $this->assertDatabaseHas('canvas_posts_topics', [
-            'post_id' => $post->id,
-        ]);
+        $this->assertModelExists($response->getOriginalContent()->topic);
+        $this->assertSame($data['topic']['slug'], $response->getOriginalContent()->topic->slug);
     }
 
-    public function testSyncExistingTopic(): void
+    public function testAssociateExistingTopic(): void
     {
-        $post = factory(Post::class)->create();
-        $topic = factory(Topic::class)->create();
+        $post = Post::factory()->for(User::factory())->create();
+        $topic = Topic::factory()->create();
 
         $data = [
             'title' => $post->title,
             'slug' => $post->slug,
             'topic' => [
-                [
-                    'name' => $topic->name,
-                    'slug' => $topic->slug,
-                ],
+                'name' => $topic->name,
+                'slug' => $topic->slug,
             ],
         ];
 
-        $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($post->user, 'canvas')
              ->postJson(route('canvas.posts.store', ['id' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
@@ -548,18 +543,15 @@ class PostControllerTest extends TestCase
                  'slug' => $data['slug'],
              ]);
 
-        $this->assertCount(1, $post->topic);
-        $this->assertDatabaseHas('canvas_posts_topics', [
-            'post_id' => $post->id,
-            'topic_id' => $topic->id,
-        ]);
+        $this->assertModelExists($response->getOriginalContent()->topic);
+        $this->assertSame($data['topic']['slug'], $response->getOriginalContent()->topic->slug);
     }
 
     public function testInvalidSlugsAreValidated(): void
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->for(User::factory())->create();
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($post->user, 'canvas')
              ->postJson(route('canvas.posts.store', ['id' => $post->id]), [
                  'slug' => 'a new.slug',
                  'title' => $post->title,
@@ -574,20 +566,18 @@ class PostControllerTest extends TestCase
 
     public function testDeleteExistingPost(): void
     {
-        $post = factory(Post::class)->create([
-            'user_id' => $this->editor->id,
-            'slug' => 'a-new-post',
-        ]);
+        $contributor = User::factory()->contributor()->create();
+        $post = Post::factory()->for(User::factory()->editor())->create();
 
-        $this->actingAs($this->contributor, 'canvas')
+        $this->actingAs($contributor, 'canvas')
              ->deleteJson(route('canvas.posts.store', ['id' => $post->id]))
              ->assertNotFound();
 
-        $this->actingAs($this->editor, 'canvas')
+        $this->actingAs($post->user, 'canvas')
              ->deleteJson(route('canvas.posts.store', ['id' => 'not-a-post']))
              ->assertNotFound();
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($post->user, 'canvas')
              ->deleteJson(route('canvas.posts.store', ['id' => $post->id]))
              ->assertSuccessful()
              ->assertNoContent();
@@ -596,55 +586,5 @@ class PostControllerTest extends TestCase
             'id' => $post->id,
             'slug' => $post->slug,
         ]);
-    }
-
-    public function testDeSyncRelatedTaxonomy(): void
-    {
-        $post = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'slug' => 'a-new-post',
-        ]);
-
-        $tag = factory(Tag::class)->create();
-        $post->tags()->sync([$tag->id]);
-
-        $this->assertDatabaseHas('canvas_posts_tags', [
-            'post_id' => $post->id,
-            'tag_id' => $tag->id,
-        ]);
-
-        $this->assertCount(1, $post->tags);
-
-        $topic = factory(Topic::class)->create();
-        $post->topic()->sync([$topic->id]);
-        $this->assertCount(1, $post->topic);
-
-        $this->assertDatabaseHas('canvas_posts_topics', [
-            'post_id' => $post->id,
-            'topic_id' => $topic->id,
-        ]);
-
-        $this->actingAs($this->admin, 'canvas')
-             ->deleteJson(route('canvas.posts.store', ['id' => $post->id]))
-             ->assertSuccessful()
-             ->assertNoContent();
-
-        $this->assertSoftDeleted('canvas_posts', [
-            'id' => $post->id,
-            'slug' => $post->slug,
-        ]);
-
-        $this->assertDatabaseMissing('canvas_posts_tags', [
-            'post_id' => $post->id,
-            'tag_id' => $tag->id,
-        ]);
-
-        $this->assertDatabaseMissing('canvas_posts_topics', [
-            'post_id' => $post->id,
-            'topic_id' => $tag->id,
-        ]);
-
-        $this->assertCount(0, $post->refresh()->tags);
-        $this->assertCount(0, $post->refresh()->topic);
     }
 }

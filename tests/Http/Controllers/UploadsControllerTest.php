@@ -2,6 +2,7 @@
 
 namespace Canvas\Tests\Http\Controllers;
 
+use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -20,7 +21,7 @@ class UploadsControllerTest extends TestCase
     {
         Storage::fake(config('canvas.storage_disk'));
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs(User::factory()->create(), 'canvas')
              ->postJson('canvas/api/uploads', [null])
              ->assertStatus(400);
     }
@@ -29,7 +30,7 @@ class UploadsControllerTest extends TestCase
     {
         Storage::fake(config('canvas.storage_disk'));
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs(User::factory()->create(), 'canvas')
                          ->postJson('canvas/api/uploads', [$file = UploadedFile::fake()->image('1.jpg')])
                          ->assertSuccessful();
 
@@ -49,12 +50,12 @@ class UploadsControllerTest extends TestCase
     {
         Storage::fake(config('canvas.storage_disk'));
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs(User::factory()->create(), 'canvas')
              ->delete('canvas/api/uploads', [
                  null,
              ])->assertStatus(400);
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs(User::factory()->create(), 'canvas')
              ->deleteJson('canvas/api/uploads', [$file = UploadedFile::fake()->image('1.jpg')])
              ->assertSuccessful();
 

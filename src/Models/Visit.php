@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Canvas\Models;
 
+use Canvas\Database\Factories\VisitFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Visit extends Model
 {
+    use HasFactory;
+
     /**
      * The table associated with the model.
      *
@@ -30,5 +34,15 @@ class Visit extends Model
     public function post()
     {
         return $this->belongsTo(Post::class);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return VisitFactory::new();
     }
 }

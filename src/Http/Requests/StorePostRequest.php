@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Canvas\Http\Requests;
 
+use Canvas\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,6 +17,12 @@ class StorePostRequest extends FormRequest
      */
     public function authorize()
     {
+        $post = Post::query()->find($this->route('id'));
+
+        if ($post && request()->user('canvas')->isContributor) {
+            return request()->user('canvas')->id === $post->user_id;
+        }
+
         return true;
     }
 

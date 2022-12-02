@@ -3,6 +3,7 @@
 namespace Canvas\Tests\Http\Controllers\Auth;
 
 use Canvas\Mail\ResetPassword;
+use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
@@ -38,14 +39,16 @@ class PasswordResetLinkControllerTest extends TestCase
     {
         Mail::fake();
 
+        $user = User::factory()->create();
+
         $this->post(route('canvas.forgot-password'), [
-            'email' => $this->admin->email,
+            'email' => $user->email,
         ])->assertRedirect(route('canvas.forgot-password.view'));
 
-        Mail::assertSent(ResetPassword::class, function ($mail) {
+        Mail::assertSent(ResetPassword::class, function ($mail) use ($user) {
             $this->assertIsString($mail->token);
 
-            return $mail->hasTo($this->admin->email);
+            return $mail->hasTo($user->email);
         });
     }
 }

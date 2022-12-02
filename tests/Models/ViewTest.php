@@ -19,13 +19,7 @@ class ViewTest extends TestCase
 
     public function testPostRelationship(): void
     {
-        $post = factory(Post::class)->create();
-
-        $view = factory(View::class)->create([
-            'post_id' => $post->id,
-        ]);
-
-        $post->views()->saveMany([$view]);
+        $view = View::factory()->has(Post::factory())->create();
 
         $this->assertInstanceOf(BelongsTo::class, $view->post());
         $this->assertInstanceOf(Post::class, $view->post()->first());

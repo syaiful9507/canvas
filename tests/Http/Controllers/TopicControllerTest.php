@@ -4,6 +4,7 @@ namespace Canvas\Tests\Http\Controllers;
 
 use Canvas\Models\Post;
 use Canvas\Models\Topic;
+use Canvas\Models\User;
 use Canvas\Models\View;
 use Canvas\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,9 +23,9 @@ class TopicControllerTest extends TestCase
 
     public function testListAllTopics(): void
     {
-        factory(Topic::class, 2)->create();
+        $topic = Topic::factory(2)->create();
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($topic->first()->user, 'canvas')
                          ->getJson('canvas/api/topics')
                          ->assertSuccessful();
 
@@ -37,75 +38,51 @@ class TopicControllerTest extends TestCase
 
     public function testTopicsCanBeSortedByCreationDateWithAGivenQueryParameter(): void
     {
-        $newTopic = factory(Topic::class)->create([
-            'created_at' => now()->subHour(),
-        ]);
+        $topic = Topic::factory()->create(['created_at' => now()]);
 
-        $oldTopic = factory(Topic::class)->create([
-            'created_at' => now()->subDay(),
-        ]);
+        $oldTopic = Topic::factory()->create(['created_at' => now()->subDay()]);
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($topic->user, 'canvas')
             ->getJson(route('canvas.topics.index', ['sort' => 'desc']))
             ->assertSuccessful();
 
-        $this->assertSame($response->getOriginalContent()->first()->id, $newTopic->id);
+        $this->assertSame($response->getOriginalContent()->first()->id, $topic->id);
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($topic->user, 'canvas')
             ->getJson(route('canvas.topics.index', ['sort' => 'asc']))
             ->assertSuccessful();
 
         $this->assertSame($response->getOriginalContent()->first()->id, $oldTopic->id);
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($topic->user, 'canvas')
             ->getJson(route('canvas.topics.index'))
             ->assertSuccessful();
 
-        $this->assertSame($response->getOriginalContent()->first()->id, $newTopic->id);
+        $this->assertSame($response->getOriginalContent()->first()->id, $topic->id);
     }
 
     public function testTopicsCanBeFilteredByUsageWithAGivenQueryParameter(): void
     {
-        $posts = factory(Post::class, 10)->create();
+        $popularTopic = Topic::factory()->has(Post::factory(2))->create();
 
-        $lessPopularTopic = factory(Topic::class)->create([
-            'created_at' => now()->subHour(),
-        ]);
+        $unpopularTopic = Topic::factory()->has(Post::factory())->create();
 
-        $popularTopic = factory(Topic::class)->create([
-            'created_at' => now()->subDay(),
-        ]);
-
-        $unpopularTopic = factory(Topic::class)->create([
-            'created_at' => now()->subMonth(),
-        ]);
-
-        $popularTopic->posts()->sync($posts->take(10)->pluck('id'));
-        $lessPopularTopic->posts()->sync($posts->take(5)->pluck('id'));
-        $unpopularTopic->posts()->sync($posts->take(0)->pluck('id'));
-
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($popularTopic->user, 'canvas')
             ->getJson(route('canvas.topics.index', ['usage' => 'popular']))
             ->assertSuccessful();
 
         $this->assertSame($response->getOriginalContent()->first()->id, $popularTopic->id);
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($popularTopic->user, 'canvas')
             ->getJson(route('canvas.topics.index', ['usage' => 'unpopular']))
             ->assertSuccessful();
 
         $this->assertSame($response->getOriginalContent()->first()->id, $unpopularTopic->id);
-
-        $response = $this->actingAs($this->admin, 'canvas')
-            ->getJson(route('canvas.topics.index'))
-            ->assertSuccessful();
-
-        $this->assertSame($response->getOriginalContent()->first()->id, $lessPopularTopic->id);
     }
 
     public function testCreateDataForTopic(): void
     {
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
                          ->getJson('canvas/api/topics/create')
                          ->assertSuccessful();
 
@@ -114,9 +91,9 @@ class TopicControllerTest extends TestCase
 
     public function testExistingTopicData(): void
     {
-        $topic = factory(Topic::class)->create();
+        $topic = Topic::factory()->create();
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($topic->user, 'canvas')
                          ->getJson("canvas/api/topics/{$topic->id}")
                          ->assertSuccessful();
 
@@ -125,16 +102,9 @@ class TopicControllerTest extends TestCase
 
     public function testListPostsForTopic(): void
     {
-        $topic = factory(Topic::class)->create();
-        $post = factory(Post::class)->create();
+        $topic = Topic::factory()->has(Post::factory())->create();
 
-        factory(View::class)->create([
-            'post_id' => $post->id,
-        ]);
-
-        $topic->posts()->sync([$post->id]);
-
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($topic->user, 'canvas')
                          ->getJson("canvas/api/topics/{$topic->id}/posts")
                          ->assertSuccessful();
 
@@ -147,7 +117,7 @@ class TopicControllerTest extends TestCase
 
     public function testTopicNotFound(): void
     {
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs(User::factory()->admin()->create(), 'canvas')
              ->getJson('canvas/api/topics/not-a-topic')
              ->assertNotFound();
     }
@@ -160,7 +130,7 @@ class TopicControllerTest extends TestCase
             'slug' => 'a-new-topic',
         ];
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
                          ->postJson("canvas/api/topics/{$data['id']}", $data)
                          ->assertSuccessful();
 
@@ -171,13 +141,7 @@ class TopicControllerTest extends TestCase
 
     public function testDeletedTopicsCanBeRefreshed(): void
     {
-        $deletedTopic = factory(Topic::class)->create([
-            'id' => Uuid::uuid4()->toString(),
-            'name' => 'A deleted topic',
-            'slug' => 'a-deleted-topic',
-            'user_id' => $this->editor->id,
-            'deleted_at' => now(),
-        ]);
+        $deletedTopic = Topic::factory()->create(['deleted_at' => now()]);
 
         $data = [
             'id' => Uuid::uuid4()->toString(),
@@ -185,7 +149,7 @@ class TopicControllerTest extends TestCase
             'slug' => $deletedTopic->slug,
         ];
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($deletedTopic->user, 'canvas')
                          ->postJson("canvas/api/topics/{$data['id']}", $data)
                          ->assertSuccessful();
 
@@ -196,14 +160,14 @@ class TopicControllerTest extends TestCase
 
     public function testUpdateExistingTopic(): void
     {
-        $topic = factory(Topic::class)->create();
+        $topic = Topic::factory()->create();
 
         $data = [
             'name' => 'An updated topic',
             'slug' => 'an-updated-topic',
         ];
 
-        $response = $this->actingAs($this->admin, 'canvas')
+        $response = $this->actingAs($topic->user, 'canvas')
                          ->postJson("canvas/api/topics/{$topic->id}", $data)
                          ->assertSuccessful();
 
@@ -214,9 +178,9 @@ class TopicControllerTest extends TestCase
 
     public function testInvalidSlugsAreValidated(): void
     {
-        $topic = factory(Topic::class)->create();
+        $topic = Topic::factory()->create();
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($topic->user, 'canvas')
              ->postJson("canvas/api/topics/{$topic->id}", [
                  'name' => 'A new topic',
                  'slug' => 'a new.slug',
@@ -231,13 +195,13 @@ class TopicControllerTest extends TestCase
 
     public function testDeleteExistingTopic(): void
     {
-        $topic = factory(Topic::class)->create();
+        $topic = Topic::factory()->create();
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($topic->user, 'canvas')
              ->deleteJson('canvas/api/topics/not-a-topic')
              ->assertNotFound();
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs($topic->user, 'canvas')
              ->deleteJson("canvas/api/topics/{$topic->id}")
              ->assertSuccessful()
              ->assertNoContent();
@@ -246,37 +210,5 @@ class TopicControllerTest extends TestCase
             'id' => $topic->id,
             'slug' => $topic->slug,
         ]);
-    }
-
-    public function testDeSyncPostRelationship(): void
-    {
-        $topic = factory(Topic::class)->create();
-        $post = factory(Post::class)->create();
-
-        $topic->posts()->sync([$post->id]);
-
-        $this->assertDatabaseHas('canvas_posts_topics', [
-            'post_id' => $post->id,
-            'topic_id' => $topic->id,
-        ]);
-
-        $this->assertCount(1, $topic->posts);
-
-        $this->actingAs($this->admin, 'canvas')
-             ->deleteJson("canvas/api/posts/{$post->id}")
-             ->assertSuccessful()
-             ->assertNoContent();
-
-        $this->assertSoftDeleted('canvas_posts', [
-            'id' => $post->id,
-            'slug' => $post->slug,
-        ]);
-
-        $this->assertDatabaseMissing('canvas_posts_topics', [
-            'post_id' => $post->id,
-            'topic_id' => $topic->id,
-        ]);
-
-        $this->assertCount(0, $topic->refresh()->posts);
     }
 }

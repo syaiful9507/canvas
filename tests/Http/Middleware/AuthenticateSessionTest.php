@@ -2,6 +2,7 @@
 
 namespace Canvas\Tests\Http\Middleware;
 
+use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -87,11 +88,11 @@ class AuthenticateSessionTest extends TestCase
     {
         $this->withoutMix();
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs(User::factory()->admin()->create(), 'canvas')
              ->get(route('canvas.login'))
              ->assertRedirect(config('canvas.path'));
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs(User::factory()->admin()->create(), 'canvas')
              ->get('canvas/api')
              ->assertSuccessful();
     }

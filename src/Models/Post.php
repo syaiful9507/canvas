@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Canvas\Models;
 
+use Canvas\Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -97,20 +99,13 @@ class Post extends Model
     }
 
     /**
-     * Get the topic relationship. Ideally, this would instead be a one-to-one
-     * relationship without the use of a pivot. The frontend is responsible
-     * for limiting the number of topics that can be linked with a post.
+     * Get the topic relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function topic()
     {
-        return $this->belongsToMany(
-            Topic::class,
-            'canvas_posts_topics',
-            'post_id',
-            'topic_id'
-        );
+        return $this->belongsTo(Topic::class);
     }
 
     /**
@@ -196,6 +191,16 @@ class Post extends Model
     }
 
     /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return PostFactory::new();
+    }
+
+    /**
      * The "booting" method of the model.
      *
      * @return void
@@ -206,7 +211,6 @@ class Post extends Model
 
         static::deleting(function (self $post) {
             $post->tags()->detach();
-            $post->topic()->detach();
         });
     }
 }

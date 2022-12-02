@@ -2,6 +2,7 @@
 
 namespace Canvas\Tests\Http\Middleware;
 
+use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,96 +17,125 @@ class VerifyPermissionTest extends TestCase
 
     public function testAdminCanViewAnyUserProfile(): void
     {
-        $this->actingAs($this->admin, 'canvas')
-            ->getJson("canvas/api/users/{$this->contributor->id}")
+        $admin = User::factory()->admin()->create();
+        $contributor = User::factory()->contributor()->create();
+
+        $this->actingAs($admin, 'canvas')
+            ->getJson("canvas/api/users/{$contributor->id}")
             ->assertSuccessful();
     }
 
     public function testAdminCanListAnyUserPosts(): void
     {
-        $this->actingAs($this->admin, 'canvas')
-            ->getJson("canvas/api/users/{$this->contributor->id}/posts")
+        $admin = User::factory()->admin()->create();
+        $editor = User::factory()->editor()->create();
+        $contributor = User::factory()->contributor()->create();
+
+        $this->actingAs($admin, 'canvas')
+            ->getJson("canvas/api/users/{$contributor->id}/posts")
             ->assertSuccessful();
 
-        $this->actingAs($this->admin, 'canvas')
-            ->getJson("canvas/api/users/{$this->editor->id}/posts")
+        $this->actingAs($admin, 'canvas')
+            ->getJson("canvas/api/users/{$editor->id}/posts")
             ->assertSuccessful();
     }
 
     public function testAdminCanUpdateAnyUser(): void
     {
-        $this->actingAs($this->admin, 'canvas')
-            ->postJson("canvas/api/users/{$this->contributor->id}", $this->contributor->toArray())
+        $admin = User::factory()->admin()->create();
+        $editor = User::factory()->editor()->create();
+        $contributor = User::factory()->contributor()->create();
+
+        $this->actingAs($admin, 'canvas')
+            ->postJson("canvas/api/users/{$contributor->id}", $contributor->toArray())
             ->assertSuccessful();
 
-        $this->actingAs($this->admin, 'canvas')
-            ->postJson("canvas/api/users/{$this->editor->id}", $this->editor->toArray())
+        $this->actingAs($admin, 'canvas')
+            ->postJson("canvas/api/users/{$editor->id}", $editor->toArray())
             ->assertSuccessful();
     }
 
     public function testEditorCanOnlyViewTheirUserProfile(): void
     {
-        $this->actingAs($this->editor, 'canvas')
-            ->getJson("canvas/api/users/{$this->contributor->id}")
+        $editor = User::factory()->editor()->create();
+        $contributor = User::factory()->contributor()->create();
+
+        $this->actingAs($editor, 'canvas')
+            ->getJson("canvas/api/users/{$contributor->id}")
             ->assertForbidden();
 
-        $this->actingAs($this->editor, 'canvas')
-            ->getJson("canvas/api/users/{$this->editor->id}")
+        $this->actingAs($editor, 'canvas')
+            ->getJson("canvas/api/users/{$editor->id}")
             ->assertSuccessful();
     }
 
     public function testEditorCanOnlyListTheirUserPosts(): void
     {
-        $this->actingAs($this->editor, 'canvas')
-            ->getJson("canvas/api/users/{$this->contributor->id}/posts")
+        $editor = User::factory()->editor()->create();
+        $contributor = User::factory()->contributor()->create();
+
+        $this->actingAs($editor, 'canvas')
+            ->getJson("canvas/api/users/{$contributor->id}/posts")
             ->assertForbidden();
 
-        $this->actingAs($this->editor, 'canvas')
-            ->getJson("canvas/api/users/{$this->editor->id}/posts")
+        $this->actingAs($editor, 'canvas')
+            ->getJson("canvas/api/users/{$editor->id}/posts")
             ->assertSuccessful();
     }
 
     public function testEditorCanOnlyUpdateTheirProfile(): void
     {
-        $this->actingAs($this->editor, 'canvas')
-            ->postJson("canvas/api/users/{$this->contributor->id}", $this->contributor->toArray())
+        $editor = User::factory()->editor()->create();
+        $contributor = User::factory()->contributor()->create();
+
+        $this->actingAs($editor, 'canvas')
+            ->postJson("canvas/api/users/{$contributor->id}", $contributor->toArray())
             ->assertForbidden();
 
-        $this->actingAs($this->editor, 'canvas')
-            ->postJson("canvas/api/users/{$this->editor->id}", $this->editor->toArray())
+        $this->actingAs($editor, 'canvas')
+            ->postJson("canvas/api/users/{$editor->id}", $editor->toArray())
             ->assertSuccessful();
     }
 
     public function testContributorCanOnlyViewTheirUserProfile(): void
     {
-        $this->actingAs($this->contributor, 'canvas')
-            ->getJson("canvas/api/users/{$this->editor->id}")
+        $editor = User::factory()->editor()->create();
+        $contributor = User::factory()->contributor()->create();
+
+        $this->actingAs($contributor, 'canvas')
+            ->getJson("canvas/api/users/{$editor->id}")
             ->assertForbidden();
 
-        $this->actingAs($this->contributor, 'canvas')
-            ->getJson("canvas/api/users/{$this->contributor->id}")
+        $this->actingAs($contributor, 'canvas')
+            ->getJson("canvas/api/users/{$contributor->id}")
             ->assertSuccessful();
     }
 
     public function testContributorCanOnlyListTheirUserPosts(): void
     {
-        $this->actingAs($this->contributor, 'canvas')
-            ->getJson("canvas/api/users/{$this->editor->id}/posts")
+        $editor = User::factory()->editor()->create();
+        $contributor = User::factory()->contributor()->create();
+
+        $this->actingAs($contributor, 'canvas')
+            ->getJson("canvas/api/users/{$editor->id}/posts")
             ->assertForbidden();
 
-        $this->actingAs($this->contributor, 'canvas')
-            ->getJson("canvas/api/users/{$this->contributor->id}/posts")
+        $this->actingAs($contributor, 'canvas')
+            ->getJson("canvas/api/users/{$contributor->id}/posts")
             ->assertSuccessful();
     }
 
     public function testContributorCanOnlyUpdateTheirProfile(): void
     {
-        $this->actingAs($this->contributor, 'canvas')
-            ->postJson("canvas/api/users/{$this->editor->id}", $this->editor->toArray())
+        $editor = User::factory()->editor()->create();
+        $contributor = User::factory()->contributor()->create();
+
+        $this->actingAs($contributor, 'canvas')
+            ->postJson("canvas/api/users/{$editor->id}", $editor->toArray())
             ->assertForbidden();
 
-        $this->actingAs($this->contributor, 'canvas')
-            ->postJson("canvas/api/users/{$this->contributor->id}", $this->contributor->toArray())
+        $this->actingAs($contributor, 'canvas')
+            ->postJson("canvas/api/users/{$contributor->id}", $contributor->toArray())
             ->assertSuccessful();
     }
 }

@@ -26,10 +26,9 @@ class TagTest extends TestCase
             'slug' => 'a-new-tag',
         ];
 
-        $primaryTag = factory(Tag::class)->create([
-            'user_id' => $this->admin->id,
-        ]);
-        $response = $this->actingAs($this->admin, 'canvas')->postJson("/canvas/api/tags/{$primaryTag->id}", $data);
+        $primaryAdmin = User::factory()->admin()->has(Tag::factory())->create();
+
+        $response = $this->actingAs($primaryAdmin, 'canvas')->postJson("/canvas/api/tags/{$primaryAdmin->tags()->first()->id}", $data);
 
         $this->assertDatabaseHas('canvas_tags', [
             'id' => $response->original['id'],
@@ -37,14 +36,9 @@ class TagTest extends TestCase
             'user_id' => $response->original['user_id'],
         ]);
 
-        $secondaryAdmin = factory(User::class)->create([
-            'role' => User::$admin_id,
-        ]);
-        $secondaryTag = factory(Tag::class)->create([
-            'user_id' => $secondaryAdmin->id,
-        ]);
+        $secondaryAdmin = User::factory()->admin()->has(Tag::factory())->create();
 
-        $response = $this->actingAs($secondaryAdmin, 'canvas')->postJson("/canvas/api/tags/{$secondaryTag->id}", $data);
+        $response = $this->actingAs($secondaryAdmin, 'canvas')->postJson("/canvas/api/tags/{$secondaryAdmin->tags()->first()->id}", $data);
 
         $this->assertDatabaseHas('canvas_tags', [
             'id' => $response->original['id'],
@@ -55,19 +49,15 @@ class TagTest extends TestCase
 
     public function testPostsRelationship(): void
     {
-        $tag = factory(Tag::class)->create();
-        $post = factory(Post::class)->create();
+        $tag = Tag::factory()->has(Post::factory())->create();
 
-        $post->tags()->sync($tag);
-
-        $this->assertCount(1, $post->tags);
         $this->assertInstanceOf(BelongsToMany::class, $tag->posts());
-        $this->assertInstanceOf(Post::class, $tag->posts->first());
+        $this->assertInstanceOf(Post::class, $tag->posts()->first());
     }
 
     public function testUserRelationship(): void
     {
-        $tag = factory(Tag::class)->create();
+        $tag = Tag::factory()->for(User::factory())->create();
 
         $this->assertInstanceOf(BelongsTo::class, $tag->user());
         $this->assertInstanceOf(User::class, $tag->user);
@@ -75,10 +65,14 @@ class TagTest extends TestCase
 
     public function testDetachPostsOnDelete(): void
     {
-        $tag = factory(Tag::class)->create();
-        $post = factory(Post::class)->create();
+        $tag = Tag::factory()->has(Post::factory())->create();
 
-        $tag->posts()->sync([$post->id]);
+        $post = $tag->posts()->first();
+
+        $this->assertDatabaseHas('canvas_posts_tags', [
+            'post_id' => $post->id,
+            'tag_id' => $tag->id,
+        ]);
 
         $tag->delete();
 

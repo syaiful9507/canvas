@@ -19,13 +19,7 @@ class VisitTest extends TestCase
 
     public function testPostRelationship(): void
     {
-        $post = factory(Post::class)->create();
-
-        $visit = factory(Visit::class)->create([
-            'post_id' => $post->id,
-        ]);
-
-        $post->visits()->saveMany([$visit]);
+        $visit = Visit::factory()->has(Post::factory())->create();
 
         $this->assertInstanceOf(BelongsTo::class, $visit->post());
         $this->assertInstanceOf(Post::class, $visit->post()->first());

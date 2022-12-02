@@ -3,6 +3,7 @@
 namespace Canvas\Tests\Http;
 
 use Canvas\Canvas;
+use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 use Illuminate\Support\Facades\Config;
 
@@ -18,7 +19,7 @@ class RouteTest extends TestCase
 
     public function testRouteWithDefaultBasePath(): void
     {
-        $this->actingAs($this->admin)
+        $this->actingAs(User::factory()->create())
              ->get(route('canvas'))
              ->assertRedirect(route('canvas.login'))
              ->assertLocation('http://laravel.test/canvas/login');
@@ -30,7 +31,7 @@ class RouteTest extends TestCase
     {
         Config::set('canvas.domain', 'http://canvas.laravel.test');
 
-        $this->actingAs($this->admin)
+        $this->actingAs(User::factory()->admin()->create())
              ->get(config('canvas.domain').'/canvas')
              ->assertRedirect(route('canvas.login'))
              ->assertLocation('http://canvas.laravel.test/canvas/login');
@@ -44,7 +45,7 @@ class RouteTest extends TestCase
 
         Config::set('canvas.domain', 'http://canvas.laravel.test');
 
-        $this->actingAs($this->admin)
+        $this->actingAs(User::factory()->admin()->create())
              ->get(config('canvas.domain').'/canvas')
              ->assertRedirect(route('canvas.login'));
 

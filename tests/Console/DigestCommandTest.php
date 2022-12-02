@@ -24,24 +24,13 @@ class DigestCommandTest extends TestCase
     {
         Mail::fake();
 
-        $user = factory(User::class)->create([
-            'digest' => 1,
-        ]);
-
-        $posts = factory(Post::class, 2)->create([
-            'user_id' => $user->id,
-            'published_at' => now()->subWeek(),
-        ]);
-
-        foreach ($posts as $post) {
-            $post->views()->createMany(
-                factory(View::class, 2)->make()->toArray()
-            );
-
-            $post->visits()->createMany(
-                factory(Visit::class, 1)->make()->toArray()
-            );
-        }
+        $user = User::factory()
+            ->has(Post::factory(2)
+                ->published()
+                ->has(View::factory(2))
+                ->has(Visit::factory(1)))
+            ->enabledDigest()
+            ->create();
 
         $this->artisan('canvas:digest');
 
@@ -68,24 +57,13 @@ class DigestCommandTest extends TestCase
     {
         Mail::fake();
 
-        $user = factory(User::class)->create([
-            'digest' => 0,
-        ]);
+        $user = User::factory()->disabledDigest()->create();
 
-        $posts = factory(Post::class, 2)->create([
-            'user_id' => $user->id,
-            'published_at' => now()->subWeek(),
-        ]);
-
-        foreach ($posts as $post) {
-            $post->views()->createMany(
-                factory(View::class, 2)->make()->toArray()
-            );
-
-            $post->visits()->createMany(
-                factory(Visit::class, 1)->make()->toArray()
-            );
-        }
+        Post::factory(2)
+            ->for($user)
+            ->has(View::factory(2), 'views')
+            ->has(Visit::factory(1), 'visits')
+            ->create();
 
         $this->artisan('canvas:digest');
 

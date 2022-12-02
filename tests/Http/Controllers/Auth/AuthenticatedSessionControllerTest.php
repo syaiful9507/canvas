@@ -4,7 +4,6 @@ namespace Canvas\Tests\Http\Controllers\Auth;
 
 use Canvas\Models\User;
 use Canvas\Tests\TestCase;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -37,8 +36,10 @@ class AuthenticatedSessionControllerTest extends TestCase
 
     public function testLoginRequestWillValidateAnUnknownPassword(): void
     {
+        $user = User::factory()->create();
+
         $response = $this->post(route('canvas.login'), [
-            'email' => $this->admin->email,
+            'email' => $user->email,
             'password' => 'what-is-my-password',
         ])->assertSessionHasErrors();
 
@@ -47,9 +48,7 @@ class AuthenticatedSessionControllerTest extends TestCase
 
     public function testSuccessfulLogin(): void
     {
-        $user = factory(User::class)->create([
-            'password' => Hash::make('password'),
-        ]);
+        $user = User::factory()->create();
 
         $this->post(route('canvas.login.view'), [
             'email' => $user->email,
@@ -59,14 +58,18 @@ class AuthenticatedSessionControllerTest extends TestCase
 
     public function testAuthenticatedUserWillRedirectToCanvas(): void
     {
-        $this->actingAs($this->admin, 'canvas')
+        $user = User::factory()->create();
+
+        $this->actingAs($user, 'canvas')
              ->get(route('canvas.login.view'))
              ->assertRedirect(config('canvas.path'));
     }
 
     public function testSuccessfulLogout(): void
     {
-        $this->actingAs($this->admin, 'canvas')
+        $user = User::factory()->create();
+
+        $this->actingAs($user, 'canvas')
              ->post(route('canvas.logout'))
              ->assertRedirect(route('canvas.login.view'));
     }

@@ -13,27 +13,6 @@ abstract class TestCase extends OrchestraTestCase
     use RefreshDatabase;
 
     /**
-     * A test user with Contributor access.
-     *
-     * @var \Canvas\Models\User
-     */
-    protected $contributor;
-
-    /**
-     * A test user with Editor access.
-     *
-     * @var \Canvas\Models\User
-     */
-    protected $editor;
-
-    /**
-     * A test user with Admin access.
-     *
-     * @var \Canvas\Models\User
-     */
-    protected $admin;
-
-    /**
      * @return void
      *
      * @throws Exception
@@ -43,8 +22,6 @@ abstract class TestCase extends OrchestraTestCase
         parent::setUp();
 
         $this->setUpDatabase($this->app);
-
-        $this->createTestUsers();
     }
 
     /**
@@ -110,28 +87,7 @@ abstract class TestCase extends OrchestraTestCase
     {
         $this->loadLaravelMigrations();
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadFactoriesUsing($app, __DIR__.'/../database/factories');
 
         $this->artisan('migrate');
-    }
-
-    /**
-     * Create a test user for each role.
-     *
-     * @return void
-     */
-    protected function createTestUsers()
-    {
-        $this->contributor = factory(User::class)->create([
-            'role' => User::$contributor_id,
-        ]);
-
-        $this->editor = factory(User::class)->create([
-            'role' => User::$editor_id,
-        ]);
-
-        $this->admin = factory(User::class)->create([
-            'role' => User::$admin_id,
-        ]);
     }
 }

@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Canvas\Models;
 
 use Canvas\Canvas;
+use Canvas\Database\Factories\UserFactory;
 use Canvas\Traits\HasRole;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasRole, SoftDeletes;
+    use HasFactory, HasRole, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -163,5 +165,31 @@ class User extends Authenticatable
     public function getDefaultLocaleAttribute()
     {
         return config('app.locale');
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return UserFactory::new();
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function (self $user) {
+            $user->posts()->delete();
+            $user->tags()->delete();
+            $user->topics()->delete();
+        });
     }
 }

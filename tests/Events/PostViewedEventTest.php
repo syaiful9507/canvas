@@ -18,7 +18,7 @@ class PostViewedEventTest extends TestCase
 
     public function testInstantiation(): void
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->create();
 
         $event = new PostViewed($post);
 

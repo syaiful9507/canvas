@@ -19,7 +19,7 @@ class CaptureViewTest extends TestCase
 
     public function testInstantiation(): void
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->published()->create();
 
         $event = new PostViewed($post);
 
@@ -36,7 +36,7 @@ class CaptureViewTest extends TestCase
 
     public function testViewsAreCountedInSessionOncePerHour(): void
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->published()->create();
 
         $event = new PostViewed($post);
 

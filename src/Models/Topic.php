@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Canvas\Models;
 
+use Canvas\Database\Factories\TopicFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Topic extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -56,16 +58,11 @@ class Topic extends Model
     /**
      * Get the posts relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function posts()
     {
-        return $this->belongsToMany(
-            Post::class,
-            'canvas_posts_topics',
-            'topic_id',
-            'post_id'
-        );
+        return $this->hasMany(Post::class);
     }
 
     /**
@@ -79,6 +76,16 @@ class Topic extends Model
     }
 
     /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return TopicFactory::new();
+    }
+
+    /**
      * The "booting" method of the model.
      *
      * @return void
@@ -88,7 +95,10 @@ class Topic extends Model
         parent::boot();
 
         static::deleting(function (self $topic) {
-            $topic->posts()->detach();
+            $topic->posts()->each(function (Post $post, $key) {
+                $post->topic()->dissociate();
+                $post->save();
+            });
         });
     }
 }

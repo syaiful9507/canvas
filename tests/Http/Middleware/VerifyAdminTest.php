@@ -2,6 +2,7 @@
 
 namespace Canvas\Tests\Http\Middleware;
 
+use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -47,7 +48,7 @@ class VerifyAdminTest extends TestCase
      */
     public function testContributorAccessIsRestricted($method, $endpoint)
     {
-        $this->actingAs($this->contributor, 'canvas')
+        $this->actingAs(User::factory()->contributor()->create(), 'canvas')
              ->call($method, $endpoint)
              ->assertForbidden();
     }
@@ -60,7 +61,7 @@ class VerifyAdminTest extends TestCase
      */
     public function testEditorAccessIsRestricted($method, $endpoint)
     {
-        $this->actingAs($this->editor, 'canvas')
+        $this->actingAs(User::factory()->editor()->create(), 'canvas')
              ->call($method, $endpoint)
              ->assertForbidden();
     }
@@ -73,7 +74,7 @@ class VerifyAdminTest extends TestCase
      */
     public function testAdminAccessIsGranted($method, $endpoint)
     {
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs(User::factory()->admin()->create(), 'canvas')
              ->call($method, $endpoint)
              ->assertSuccessful();
     }
