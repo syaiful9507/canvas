@@ -27,7 +27,74 @@ php artisan canvas:publish
 
 > **Important:** The minimum required versions to support Canvas are PHP 8.0 and Laravel 9
 
-TK: Steps..
+### Database (Export)
+
+A few underlying changes to the database needed to be addressed, which is why we'll do an export/import of our data
+during the upgrade. In an effort to consolidate the migrations and not rely on database dependencies, we have
+some manual steps to take. Don't worry, they're simple and straightforward.
+
+> Note: The process for migrating data will be unique based on your choice of IDE and database.
+
+The first thing to do is export all data in your Canvas-related tables to a SQL dump. It's important that your export
+does **not include** the table structure. You only want INSERT statements in the actual export. *If you do include
+CREATE TABLE statements, it'll modify the new tables when importing later*.
+
+For example, I use [Table Plus](https://tableplus.com). When I exported my data, I made sure to un-check the
+_Include table structure_ and _Drop table if exists_ in the export selection screen.
+
+The following tables need to be included in the export:
+
+- `canvas_users`
+- `canvas_posts`
+- `canvas_posts_tags`
+- `canvas_tags`
+- `canvas_topics`
+- `canvas_views`
+- `canvas_visits`
+
+Once completed, you can drop those tables from your database.
+
+> Optional: To keep the `migrations` table as minimal as possible, you may delete all references to `_canvas` records.
+
+### Updating dependencies
+
+Update your `austintoddj/canvas` dependency to `^7.0` in your `composer.json` file. Upgrade the package to the latest
+version:
+
+```bash
+composer update
+```
+
+### Migrations
+
+Run the new migration using the `canvas:migrate` Artisan command:
+
+```bash
+php artisan canvas:migrate
+```
+
+### Database (Import)
+
+You may now import the SQL dump that you created above into your database. Remember, your database and IDE will
+determine if you should run into any errors while performing this action.
+
+Once the import is complete, you're almost done. A topic is now directly tied to the `canvas_posts` table via a foreign
+key. Because of that, none of the posts have a `topic_id` yet. You'll need to re-assign topics to your posts either
+manually or in the UI.
+
+### Assets
+
+Publish new assets using the `canvas:publish` Artisan command:
+
+```bash
+php artisan canvas:publish
+```
+
+Clear any cached views using the `view:clear` Artisan command:
+
+```bash
+php artisan view:clear
+```
 
 ## Upgrading to 6.0.0 from 5.4
 
