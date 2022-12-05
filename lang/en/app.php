@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'version' => 'Version',
     'system' => 'System',
     'light' => 'Light',
     'dark' => 'Dark',

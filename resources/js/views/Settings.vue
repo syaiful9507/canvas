@@ -24,7 +24,7 @@
         <div class="mt-6">
           <dl class="divide-y divide-gray-200 dark:divide-gray-700">
             <div class="flex items-center justify-between py-4">
-              <div class="text-sm font-medium text-gray-500">
+              <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
                 {{ trans.appearance }}
               </div>
               <Menu as="div" class="relative inline-block text-left">
@@ -148,7 +148,7 @@
             </div>
 
             <div class="flex items-center justify-between py-4">
-              <div class="text-sm font-medium text-gray-500">
+              <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
                 {{ trans.language }}
               </div>
               <Menu as="div" class="relative inline-block text-left">
@@ -209,6 +209,25 @@
                 </transition>
               </Menu>
             </div>
+
+
+
+
+              <div class="flex items-center justify-between py-4">
+                  <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                      {{ trans.version }}
+                  </div>
+                  <div class="relative inline-block text-left">
+                      <p class="text-sm text-gray-600 dark:text-gray-300 py-2">
+                          {{ config.version }}
+                      </p>
+                  </div>
+              </div>
+
+
+
+
+
           </dl>
         </div>
       </div>

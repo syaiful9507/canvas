@@ -20072,7 +20072,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                                   }, {
                                     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
                                       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", {
-                                        "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(['cursor-pointer select-none px-4 py-2 mx-1 my-1 rounded-md', active && 'bg-indigo-600 text-white'])
+                                        "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(['cursor-pointer select-none px-3 py-2 mx-2 my-1 rounded-md', active && 'bg-indigo-600 text-white'])
                                       }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.name), 3 /* TEXT, CLASS */)];
                                     }),
 
@@ -21385,7 +21385,7 @@ var _hoisted_12 = {
   "class": "flex items-center justify-between py-4"
 };
 var _hoisted_13 = {
-  "class": "text-sm font-medium text-gray-500"
+  "class": "text-sm font-medium text-gray-500 dark:text-gray-300"
 };
 var _hoisted_14 = {
   "class": "px-1 py-1"
@@ -21406,7 +21406,7 @@ var _hoisted_18 = {
   "class": "flex items-center justify-between py-4"
 };
 var _hoisted_19 = {
-  "class": "text-sm font-medium text-gray-500"
+  "class": "text-sm font-medium text-gray-500 dark:text-gray-300"
 };
 var _hoisted_20 = {
   "class": "px-1 py-1"
@@ -21417,23 +21417,35 @@ var _hoisted_22 = {
   "class": "ml-auto flex items-center pl-3 text-indigo-500 dark:text-white"
 };
 var _hoisted_23 = {
-  "class": "mx-auto mt-32 w-full max-w-container px-4 sm:px-6 lg:px-8"
+  "class": "flex items-center justify-between py-4"
 };
 var _hoisted_24 = {
+  "class": "text-sm font-medium text-gray-500 dark:text-gray-300"
+};
+var _hoisted_25 = {
+  "class": "relative inline-block text-left"
+};
+var _hoisted_26 = {
+  "class": "text-sm text-gray-600 dark:text-gray-300 py-2"
+};
+var _hoisted_27 = {
+  "class": "mx-auto mt-32 w-full max-w-container px-4 sm:px-6 lg:px-8"
+};
+var _hoisted_28 = {
   "class": "py-10"
 };
-var _hoisted_25 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+var _hoisted_29 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
   "class": "h-8 mx-auto",
   src: "https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600",
   alt: "Canvas"
 }, null, -1 /* HOISTED */);
-var _hoisted_26 = {
+var _hoisted_30 = {
   "class": "mt-5 text-center text-sm leading-6 text-gray-500 dark:text-gray-300"
 };
-var _hoisted_27 = {
+var _hoisted_31 = {
   "class": "mt-16 flex items-center justify-center space-x-4 text-sm font-semibold leading-6 text-gray-600 dark:text-gray-300"
 };
-var _hoisted_28 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_32 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "h-4 w-px bg-gray-500/20 dark:bg-gray-300/20"
 }, null, -1 /* HOISTED */);
 
@@ -21602,7 +21614,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
 
     _: 1 /* STABLE */
-  })])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("footer", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [_hoisted_25, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.canvas_is_open_sourced_software), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
+  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.version), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.config.version), 1 /* TEXT */)])])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("footer", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_28, [_hoisted_29, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_30, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.trans.canvas_is_open_sourced_software), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
     to: "https://github.com/austintoddj/canvas#introduction"
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
@@ -21610,7 +21622,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
 
     _: 1 /* STABLE */
-  }), _hoisted_28, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
+  }), _hoisted_32, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["AppLink"], {
     to: "https://github.com/austintoddj/canvas/releases"
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {

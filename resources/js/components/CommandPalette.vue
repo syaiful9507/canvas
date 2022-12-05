@@ -83,7 +83,7 @@
                       >
                         <li
                           :class="[
-                            'cursor-pointer select-none px-4 py-2 mx-1 my-1 rounded-md',
+                            'cursor-pointer select-none px-3 py-2 mx-2 my-1 rounded-md',
                             active && 'bg-indigo-600 text-white',
                           ]"
                         >
