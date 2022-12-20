@@ -30,20 +30,16 @@
           leave-to="opacity-0 scale-95"
         >
           <DialogPanel
-            class="mx-auto max-w-xl transform divide-y divide-gray-100 dark:divide-gray-500 dark:divide-opacity-20 dark:bg-gray-900 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
+            class="mx-auto max-w-2xl transform divide-y divide-gray-500 divide-opacity-10 overflow-hidden rounded-xl bg-white bg-opacity-80 shadow-2xl ring-1 ring-black ring-opacity-5 backdrop-blur backdrop-filter transition-all"
           >
-            <Combobox
-              as="div"
-              class="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white dark:bg-gray-900 dark:divide-gray-700 shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
-              @update:model-value="onSelect"
-            >
+            <Combobox @update:model-value="onSelect">
               <div class="relative">
                 <MagnifyingGlassIcon
-                  class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400 dark:text-gray-500"
+                  class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-900 text-opacity-40"
                   aria-hidden="true"
                 />
                 <ComboboxInput
-                  class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 dark:text-white dark:placeholder-gray-500 focus:ring-0 sm:text-sm"
+                  class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
                   :placeholder="trans.search_canvas"
                   @change="query = $event.target.value"
                 />
@@ -52,22 +48,14 @@
               <ComboboxOptions
                 v-if="filteredItems.length > 0"
                 static
-                class="max-h-80 scroll-pt-11 scroll-pb-2 space-y-2 overflow-y-auto pb-2"
+                class="max-h-80 scroll-py-2 divide-y divide-gray-500 divide-opacity-10 overflow-y-auto"
               >
                 <li
-                  v-for="([category, items], index) in Object.entries(groups)"
+                  v-for="[category, items] in Object.entries(groups)"
                   :key="category"
+                  class="p-2"
                 >
-                  <h2
-                    :class="[
-                      'mt-4 mb-2 px-3 text-xs font-semibold text-gray-500 dark:text-gray-300',
-                      index !== 0 &&
-                        'pt-4 border-t border-gray-200 dark:border-gray-700',
-                    ]"
-                  >
-                    {{ category }}
-                  </h2>
-                  <ul class="mt-2 text-sm text-gray-800 dark:text-white">
+                  <ul class="text-sm text-gray-800 dark:text-white">
                     <ComboboxOption
                       v-for="item in items"
                       :key="item.id"
@@ -83,11 +71,50 @@
                       >
                         <li
                           :class="[
-                            'cursor-pointer select-none px-3 py-2 mx-2 my-1 rounded-md',
-                            active && 'bg-indigo-600 text-white',
+                            'flex cursor-pointer select-none items-center rounded-md px-3 py-2',
+                            active && 'bg-gray-900 bg-opacity-5 text-gray-900',
                           ]"
                         >
-                          {{ item.name }}
+                          <UserIcon
+                            v-if="item.route === 'show-user'"
+                            :class="[
+                              'h-6 w-6 flex-none text-gray-900 text-opacity-40',
+                              active && 'text-opacity-100',
+                            ]"
+                            aria-hidden="true"
+                          />
+                          <BookmarkSquareIcon
+                            v-if="item.route === 'show-post'"
+                            :class="[
+                              'h-6 w-6 flex-none text-gray-900 text-opacity-40',
+                              active && 'text-opacity-100',
+                            ]"
+                            aria-hidden="true"
+                          />
+                          <TagIcon
+                            v-if="item.route === 'show-tag'"
+                            :class="[
+                              'h-6 w-6 flex-none text-gray-900 text-opacity-40',
+                              active && 'text-opacity-100',
+                            ]"
+                            aria-hidden="true"
+                          />
+                          <RectangleStackIcon
+                            v-if="item.route === 'show-topic'"
+                            :class="[
+                              'h-6 w-6 flex-none text-gray-900 text-opacity-40',
+                              active && 'text-opacity-100',
+                            ]"
+                            aria-hidden="true"
+                          />
+                          <span class="ml-3 flex-auto truncate">{{
+                            item.name
+                          }}</span>
+                          <span
+                            v-if="active"
+                            class="ml-3 flex-none text-gray-500"
+                            >{{ trans.jump_to }}</span
+                          >
                         </li>
                       </AppLink>
                     </ComboboxOption>
@@ -109,12 +136,6 @@
                   {{ trans.we_could_not_find_anything }}
                 </p>
               </div>
-
-              <div
-                class="flex flex-wrap items-right bg-gray-50 dark:bg-gray-700 dark:text-white py-2.5 px-4 text-xs text-gray-700"
-              >
-                {{ trans.open_with_control_k }}
-              </div>
             </Combobox>
           </DialogPanel>
         </TransitionChild>
@@ -128,7 +149,13 @@ import { computed, ref, onMounted, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
+import {
+  ExclamationTriangleIcon,
+  TagIcon,
+  BookmarkSquareIcon,
+  RectangleStackIcon,
+  UserIcon,
+} from '@heroicons/vue/24/outline'
 import AppLink from '@/components/AppLink'
 import {
   Combobox,

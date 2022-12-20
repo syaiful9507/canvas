@@ -25,7 +25,7 @@
 
     <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"></script>
 </head>
-<body class="h-full bg-white dark:bg-gray-800 ">
+<body class="h-full bg-white dark:bg-gray-800">
 
 <div id="app"></div>
 

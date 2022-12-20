@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'jump_to' => 'Jump to...',
     'version' => 'Version',
     'system' => 'System',
     'light' => 'Light',
@@ -29,7 +30,6 @@ return [
     'search_canvas' => 'Search Canvas',
     'no_results_found' => 'No results found',
     'we_could_not_find_anything' => 'We couldn\'t find anything with that term. Please try again.',
-    'open_with_control_k' => 'Open with Ctrl/⌘ + K',
     'users' => 'Users',
     'posts' => 'Posts',
     'tags' => 'Tags',

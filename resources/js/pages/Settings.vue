@@ -30,7 +30,7 @@
               <Menu as="div" class="relative inline-block text-left">
                 <div>
                   <MenuButton
-                    class="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+                    class="inline-flex w-full justify-center rounded-md bg-gray-50 dark:bg-black dark:text-white dark:hover:bg-opacity-30 px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
                   >
                     <SunIcon
                       v-if="store.getters['config/isLightAppearance']"
@@ -63,7 +63,7 @@
                   leave-to-class="transform opacity-0 scale-95"
                 >
                   <MenuItems
-                    class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md dark:bg-gray-900 dark:bg-opacity-80 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none backdrop-blur backdrop-filter"
+                    class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gray-900 dark:bg-opacity-80 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   >
                     <div class="px-1 py-1">
                       <MenuItem v-slot="{ active }">
@@ -210,24 +210,16 @@
               </Menu>
             </div>
 
-
-
-
-              <div class="flex items-center justify-between py-4">
-                  <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
-                      {{ trans.version }}
-                  </div>
-                  <div class="relative inline-block text-left">
-                      <p class="text-sm text-gray-600 dark:text-gray-300 py-2">
-                          {{ config.version }}
-                      </p>
-                  </div>
+            <div class="flex items-center justify-between py-4">
+              <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                {{ trans.version }}
               </div>
-
-
-
-
-
+              <div class="relative inline-block text-left">
+                <p class="text-sm text-gray-600 dark:text-gray-300 py-2">
+                  {{ config.version }}
+                </p>
+              </div>
+            </div>
           </dl>
         </div>
       </div>

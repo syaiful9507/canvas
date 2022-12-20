@@ -84,7 +84,7 @@
                   @click="closeSidebar"
                 >
                   <component
-                    :is="UserGroupIcon"
+                    :is="UsersIcon"
                     :class="[
                       ['users', 'create-user', 'show-user'].includes(route.name)
                         ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
@@ -251,7 +251,7 @@ import {
   BookmarkSquareIcon,
   HomeIcon,
   RectangleStackIcon,
-  UserGroupIcon,
+  UsersIcon,
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import { useStore } from 'vuex'
