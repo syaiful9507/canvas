@@ -1,5 +1,6 @@
 {
     "name": "austintoddj/canvas",
+    "type": "project",
     "description": "A Laravel publishing platform",
     "keywords": [
         "blog",
@@ -52,6 +53,8 @@
         }
     },
     "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
         "sort-packages": true
     },
     "minimum-stability": "dev",
