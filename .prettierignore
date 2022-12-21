@@ -1,6 +1,5 @@
-/node_modules
-/public
-/vendor
-/coverage
-/.idea
-/.vscode
+node_modules
+public
+vendor
+coverage
+.idea
