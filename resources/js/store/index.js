@@ -4,9 +4,9 @@ import user from '@/store/modules/user'
 import { createStore } from 'vuex'
 
 export const store = createStore({
-  modules: {
-    config,
-    search,
-    user,
-  },
+    modules: {
+        config,
+        search,
+        user
+    }
 })
