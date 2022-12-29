@@ -12,7 +12,6 @@ use Canvas\Tests\TestCase;
  */
 class ViewControllerTest extends TestCase
 {
-    /** @test */
     public function testScriptVariables(): void
     {
         $this->withoutMix();

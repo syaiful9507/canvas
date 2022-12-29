@@ -21,19 +21,24 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testDigestIsCastToBoolean(): void
-    {
-        $this->assertSame('boolean', User::factory()->create()->getCasts()['digest']);
-    }
-
     public function testDarkModeIsCastToBoolean(): void
     {
         $this->assertSame('boolean', User::factory()->create()->getCasts()['dark_mode']);
     }
 
+    public function testDigestIsCastToBoolean(): void
+    {
+        $this->assertSame('boolean', User::factory()->create()->getCasts()['digest']);
+    }
+
     public function testRoleIsCastToInteger(): void
     {
         $this->assertSame('int', User::factory()->create()->getCasts()['role']);
+    }
+
+    public function testMetaIsCastToArray(): void
+    {
+        $this->assertIsArray(User::factory()->create()->meta);
     }
 
     public function testDefaultAvatarAppendsToTheModel(): void

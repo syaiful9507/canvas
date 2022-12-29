@@ -19,6 +19,11 @@ class TagTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function testMetaIsCastToArray(): void
+    {
+        $this->assertIsArray(Tag::factory()->create()->meta);
+    }
+
     public function testTagsCanShareTheSameSlugWithUniqueUsers(): void
     {
         $data = [

@@ -65,9 +65,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'digest' => 'boolean',
         'dark_mode' => 'boolean',
+        'digest' => 'boolean',
         'role' => 'int',
+        'meta' => 'array',
     ];
 
     /**

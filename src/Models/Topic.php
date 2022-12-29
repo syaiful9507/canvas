@@ -56,6 +56,15 @@ class Topic extends Model
     protected $perPage = 10;
 
     /**
+     * The attributes that should be casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'meta' => 'array',
+    ];
+
+    /**
      * Get the posts relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

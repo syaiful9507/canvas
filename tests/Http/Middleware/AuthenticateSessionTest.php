@@ -83,7 +83,6 @@ class AuthenticateSessionTest extends TestCase
              ->assertRedirect(route('canvas.login'));
     }
 
-    /** @test */
     public function testAuthenticatedUsersAreRedirectedToCanvas()
     {
         $this->withoutMix();

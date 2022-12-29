@@ -74,6 +74,8 @@ return new class extends Migration
             $table->tinyInteger('digest')->nullable();
             $table->string('locale')->nullable();
             $table->tinyInteger('role')->nullable();
+            $table->string('cover_image')->nullable();
+            $table->json('meta')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
@@ -83,7 +85,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('slug');
             $table->string('name');
+            $table->string('featured_image')->nullable();
+            $table->string('featured_image_caption')->nullable();
             $table->foreignUuid('user_id')->index()->references('id')->on(self::USERS_TABLE);
+            $table->json('meta')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
@@ -95,7 +100,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('slug');
             $table->string('name');
+            $table->string('featured_image')->nullable();
+            $table->string('featured_image_caption')->nullable();
             $table->foreignUuid('user_id')->index()->references('id')->on(self::USERS_TABLE);
+            $table->json('meta')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

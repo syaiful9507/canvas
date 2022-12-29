@@ -28,7 +28,12 @@ class TagFactory extends Factory
             'id' => fake()->unique()->uuid,
             'slug' => fake()->unique()->slug,
             'name' => fake()->word,
+            'featured_image' => fake()->imageUrl,
             'user_id' => User::factory()->admin(),
+            'meta' => [
+                'title' => fake()->sentence,
+                'description' => fake()->sentence,
+            ],
         ];
     }
 }

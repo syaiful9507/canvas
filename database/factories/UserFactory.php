@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'id' => fake()->unique()->uuid,
             'name' => fake()->name,
             'email' => fake()->unique()->safeEmail,
-            'username' => fake()->slug(), // fake()->userName breaks alpha_dash validation
+            'username' => fake()->slug, // fake()->userName breaks alpha_dash validation
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'summary' => fake()->sentence,
             'avatar' => fake()->imageUrl,
@@ -35,6 +35,12 @@ class UserFactory extends Factory
             'digest' => null,
             'locale' => null,
             'role' => fake()->numberBetween(1, 3),
+            'cover_image' => fake()->imageUrl,
+            'meta' => [
+                'website' => fake()->url,
+                'location' => fake()->city,
+                'twitter' => fake()->userName,
+            ],
         ];
     }
 

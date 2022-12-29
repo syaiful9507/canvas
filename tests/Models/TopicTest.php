@@ -19,7 +19,11 @@ class TopicTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    public function testMetaIsCastToArray(): void
+    {
+        $this->assertIsArray(Topic::factory()->create()->meta);
+    }
+
     public function testTopicsCanShareTheSameSlugWithUniqueUsers(): void
     {
         $data = [
