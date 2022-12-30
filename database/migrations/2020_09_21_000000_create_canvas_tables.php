@@ -75,6 +75,9 @@ return new class extends Migration
             $table->string('locale')->nullable();
             $table->tinyInteger('role')->nullable();
             $table->string('cover_image')->nullable();
+            $table->string('location')->nullable();
+            $table->string('website')->nullable();
+            $table->json('social')->nullable();
             $table->json('meta')->nullable();
             $table->rememberToken();
             $table->timestamps();

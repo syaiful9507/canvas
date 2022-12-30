@@ -36,6 +36,11 @@ class UserTest extends TestCase
         $this->assertSame('int', User::factory()->create()->getCasts()['role']);
     }
 
+    public function testSocialIsCastToArray(): void
+    {
+        $this->assertIsArray(User::factory()->create()->social);
+    }
+
     public function testMetaIsCastToArray(): void
     {
         $this->assertIsArray(User::factory()->create()->meta);

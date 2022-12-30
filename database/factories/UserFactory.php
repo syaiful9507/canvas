@@ -31,15 +31,20 @@ class UserFactory extends Factory
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'summary' => fake()->sentence,
             'avatar' => fake()->imageUrl,
-            'dark_mode' => null,
-            'digest' => null,
-            'locale' => null,
+            'dark_mode' => fake()->numberBetween(1, 2),
+            'digest' => fake()->numberBetween(1, 2),
+            'locale' => fake()->locale,
             'role' => fake()->numberBetween(1, 3),
             'cover_image' => fake()->imageUrl,
-            'meta' => [
-                'website' => fake()->url,
-                'location' => fake()->city,
+            'location' => fake()->city,
+            'website' => fake()->url,
+            'social' => [
                 'twitter' => fake()->userName,
+                'github' => fake()->userName,
+            ],
+            'meta' => [
+                'title' => fake()->sentence,
+                'description' => fake()->sentence,
             ],
         ];
     }

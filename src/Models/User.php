@@ -68,6 +68,7 @@ class User extends Authenticatable
         'dark_mode' => 'boolean',
         'digest' => 'boolean',
         'role' => 'int',
+        'social' => 'array',
         'meta' => 'array',
     ];
 
