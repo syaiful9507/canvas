@@ -20,7 +20,7 @@
                 leave-to="opacity-0"
             >
                 <div
-                    class="fixed inset-0 bg-gray-500 bg-opacity-25 transition-opacity"
+                    class="fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-25 transition-opacity"
                 />
             </TransitionChild>
 
@@ -35,16 +35,16 @@
                     leave-to="opacity-0 scale-95"
                 >
                     <DialogPanel
-                        class="mx-auto max-w-2xl transform divide-y divide-gray-500 divide-opacity-10 overflow-hidden rounded-xl bg-white bg-opacity-80 shadow-2xl ring-1 ring-black ring-opacity-5 backdrop-blur backdrop-filter transition-all"
+                        class="mx-auto max-w-2xl transform divide-y divide-gray-500 divide-opacity-10 overflow-hidden rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
                     >
                         <Combobox @update:model-value="onSelect">
                             <div class="relative">
                                 <MagnifyingGlassIcon
-                                    class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-900 text-opacity-40"
+                                    class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400 dark:text-gray-500"
                                     aria-hidden="true"
                                 />
                                 <ComboboxInput
-                                    class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
+                                    class="h-12 w-full border-0 pl-11 pr-4 bg-transparent text-gray-800 placeholder-gray-400 dark:bg-gray-900 dark:text-white focus:ring-0 sm:text-sm"
                                     :placeholder="trans.search_canvas"
                                     @change="query = $event.target.value"
                                 />
@@ -53,7 +53,8 @@
                             <ComboboxOptions
                                 v-if="filteredItems.length > 0"
                                 static
-                                class="max-h-80 scroll-py-2 divide-y divide-gray-500 divide-opacity-10 overflow-y-auto"
+                                hold
+                                class="max-h-80 scroll-py-2 divide-y divide-gray-200 dark:divide-gray-500 overflow-y-auto"
                             >
                                 <li
                                     v-for="[category, items] in Object.entries(
@@ -62,9 +63,7 @@
                                     :key="category"
                                     class="p-2"
                                 >
-                                    <ul
-                                        class="text-sm text-gray-800 dark:text-white"
-                                    >
+                                    <ul class="text-sm dark:text-gray-400">
                                         <ComboboxOption
                                             v-for="item in items"
                                             :key="item.id"
@@ -82,7 +81,7 @@
                                                     :class="[
                                                         'flex cursor-pointer select-none items-center rounded-md px-3 py-2',
                                                         active &&
-                                                            'bg-gray-900 bg-opacity-5 text-gray-900'
+                                                            'bg-gray-100 text-gray-900 dark:text-white dark:bg-gray-800'
                                                     ]"
                                                 >
                                                     <UserIcon
@@ -91,9 +90,10 @@
                                                             'show-user'
                                                         "
                                                         :class="[
-                                                            'h-6 w-6 flex-none text-gray-900 text-opacity-40',
-                                                            active &&
-                                                                'text-opacity-100'
+                                                            'h-6 w-6 flex-none',
+                                                            active
+                                                                ? 'text-gray-800 dark:text-white'
+                                                                : 'text-gray-400'
                                                         ]"
                                                         aria-hidden="true"
                                                     />
@@ -103,9 +103,10 @@
                                                             'show-post'
                                                         "
                                                         :class="[
-                                                            'h-6 w-6 flex-none text-gray-900 text-opacity-40',
-                                                            active &&
-                                                                'text-opacity-100'
+                                                            'h-6 w-6 flex-none',
+                                                            active
+                                                                ? 'text-gray-800 dark:text-white'
+                                                                : 'text-gray-400'
                                                         ]"
                                                         aria-hidden="true"
                                                     />
@@ -115,9 +116,10 @@
                                                             'show-tag'
                                                         "
                                                         :class="[
-                                                            'h-6 w-6 flex-none text-gray-900 text-opacity-40',
-                                                            active &&
-                                                                'text-opacity-100'
+                                                            'h-6 w-6 flex-none',
+                                                            active
+                                                                ? 'text-gray-800 dark:text-white'
+                                                                : 'text-gray-400'
                                                         ]"
                                                         aria-hidden="true"
                                                     />
@@ -127,9 +129,10 @@
                                                             'show-topic'
                                                         "
                                                         :class="[
-                                                            'h-6 w-6 flex-none text-gray-900 text-opacity-40',
-                                                            active &&
-                                                                'text-opacity-100'
+                                                            'h-6 w-6 flex-none',
+                                                            active
+                                                                ? 'text-gray-800 dark:text-white'
+                                                                : 'text-gray-400'
                                                         ]"
                                                         aria-hidden="true"
                                                     />
@@ -139,7 +142,7 @@
                                                     >
                                                     <span
                                                         v-if="active"
-                                                        class="ml-3 flex-none text-gray-500"
+                                                        class="ml-3 flex-none text-gray-400 dark:text-gray-400"
                                                         >{{
                                                             trans.jump_to
                                                         }}</span
@@ -157,7 +160,7 @@
                                 class="py-14 px-6 text-center text-sm sm:px-14"
                             >
                                 <ExclamationTriangleIcon
-                                    class="mx-auto h-6 w-6 text-gray-400 dark:text-gray-300"
+                                    class="mx-auto h-6 w-6 text-gray-400 dark:text-gray-500"
                                     aria-hidden="true"
                                 />
                                 <p
@@ -166,7 +169,7 @@
                                     {{ trans.no_results_found }}
                                 </p>
                                 <p
-                                    class="mt-2 text-gray-500 dark:text-gray-300"
+                                    class="mt-2 text-gray-500 dark:text-gray-200"
                                 >
                                     {{ trans.we_could_not_find_anything }}
                                 </p>
