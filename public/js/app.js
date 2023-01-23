@@ -34143,7 +34143,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "VERSION": () => (/* binding */ VERSION)
 /* harmony export */ });
-const VERSION = "1.2.2";
+const VERSION = "1.2.3";
 
 /***/ }),
 
