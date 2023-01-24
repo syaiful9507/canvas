@@ -27,14 +27,14 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip
+          extensions: curl, dom, libxml, mbstring, zip
           ini-values: error_reporting=E_ALL
           tools: composer:v2
           coverage: none
 
       - name: Install PHP dependencies
         run: |
-          composer require "laravel/framework=${{ matrix.laravel }}" --no-update
+          composer require "laravel/framework=^${{ matrix.laravel }}" --no-update
           composer update --prefer-dist --no-interaction --no-progress
 
       - name: Run PHPUnit
