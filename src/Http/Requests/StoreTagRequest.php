@@ -27,7 +27,7 @@ class StoreTagRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required|string',
             'slug' => [
                 'required',
                 'alpha_dash',
@@ -46,10 +46,11 @@ class StoreTagRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => trans('canvas::app.name_is_required'),
-            'slug.required' => trans('canvas::app.slug_is_required'),
-            'slug.alpha_dash' => trans('canvas::app.slug_must_only_contain'),
-            'slug.unique' => trans('canvas::app.slug_has_already_been_taken'),
+            'name.required' => trans('canvas::app.name_required'),
+            'name.string' => trans('canvas::app.name_string'),
+            'slug.required' => trans('canvas::app.slug_required'),
+            'slug.alpha_dash' => trans('canvas::app.slug_alpha_dash'),
+            'slug.unique' => trans('canvas::app.slug_unique'),
         ];
     }
 }

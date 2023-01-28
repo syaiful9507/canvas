@@ -44,25 +44,37 @@ class TagController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param StoreTagRequest $request
+     * @return void
      */
-    public function create()
+    public function store(StoreTagRequest $request)
     {
-        return response()->json(Tag::query()->make([
-            'id' => Uuid::uuid4()->toString(),
-        ]));
+        //
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display the specified resource.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(string $id)
+    {
+        $tag = Tag::query()->findOrFail($id);
+
+        return response()->json($tag);
+    }
+
+    /**
+     * Update the specified resource in storage.
      *
      * @param  \Canvas\Http\Requests\StoreTagRequest  $request
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreTagRequest $request, string $id)
+    public function update(StoreTagRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -85,19 +97,6 @@ class TagController extends Controller
         $tag->save();
 
         return response()->json($tag->refresh(), 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show(string $id)
-    {
-        $tag = Tag::query()->findOrFail($id);
-
-        return response()->json($tag);
     }
 
     /**

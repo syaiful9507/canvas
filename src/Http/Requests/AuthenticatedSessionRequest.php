@@ -59,10 +59,10 @@ class AuthenticatedSessionRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => trans('canvas::app.email_is_required'),
-            'email.email' => trans('canvas::app.email_must_be_valid'),
-            'email.exists' => trans('canvas::app.email_is_invalid'),
-            'password.required' => trans('canvas::app.password_is_required'),
+            'email.required' => trans('canvas::app.email_required'),
+            'email.email' => trans('canvas::app.email_email'),
+            'email.exists' => trans('canvas::app.email_exists'),
+            'password.required' => trans('canvas::app.password_required'),
         ];
     }
 }

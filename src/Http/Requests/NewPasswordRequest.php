@@ -40,11 +40,11 @@ class NewPasswordRequest extends FormRequest
     public function messages()
     {
         return [
-            'token.required' => (trans('canvas::app.token_is_required')),
-            'email.required' => trans('canvas::app.email_is_required'),
-            'password.required' => trans('canvas::app.password_is_required'),
-            'password.confirmed' => trans('canvas::app.password_confirmation_does_not_match'),
-            'password.min' => trans('canvas::app.password_must_be_at_least_min_characters'),
+            'token.required' => (trans('canvas::app.token_required')),
+            'email.required' => trans('canvas::app.email_required'),
+            'password.required' => trans('canvas::app.password_required'),
+            'password.confirmed' => trans('canvas::app.password_confirmed'),
+            'password.min' => trans('canvas::app.password_min'),
         ];
     }
 }

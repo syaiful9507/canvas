@@ -79,15 +79,6 @@ class TagControllerTest extends TestCase
         $this->assertSame($response->getOriginalContent()->first()->id, $unpopularTag->id);
     }
 
-    public function testCreateDataForTag(): void
-    {
-        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
-                         ->getJson('canvas/api/tags/create')
-                         ->assertSuccessful();
-
-        $this->assertInstanceOf(Tag::class, $response->getOriginalContent());
-    }
-
     public function testExistingTagData(): void
     {
         $tag = Tag::factory()->create();

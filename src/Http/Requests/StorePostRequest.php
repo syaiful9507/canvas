@@ -17,7 +17,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize()
     {
-        $post = Post::query()->find($this->route('id'));
+        $post = Post::query()->find($this->route('post'));
 
         if ($post && request()->user('canvas')->isContributor) {
             return request()->user('canvas')->id === $post->user_id;
@@ -41,12 +41,14 @@ class StorePostRequest extends FormRequest
                     return $query->where('slug', request('slug'))->where('user_id', request()->user('canvas')->id);
                 })->ignore(request('id'))->whereNull('deleted_at'),
             ],
-            'title' => 'required',
+            'title' => 'required|string',
             'summary' => 'nullable|string',
             'body' => 'nullable|string',
             'published_at' => 'nullable|date',
             'featured_image' => 'nullable|string',
             'featured_image_caption' => 'nullable|string',
+            'user_id' => 'required|uuid',
+            'topic_id' => 'nullable|uuid',
             'meta' => 'nullable|array',
         ];
     }
@@ -59,16 +61,18 @@ class StorePostRequest extends FormRequest
     public function messages()
     {
         return [
-            'slug.required' => trans('canvas::app.slug_is_required'),
-            'slug.alpha_dash' => trans('canvas::app.slug_must_only_contain'),
-            'slug.unique' => trans('canvas::app.slug_has_already_been_taken'),
-            'title.required' => trans('canvas::app.title_is_required'),
-            'summary.string' => trans('canvas::app.summary_must_be_a_string'),
-            'body.string' => trans('canvas::app.body_must_be_a_string'),
-            'published_at.date' => trans('canvas::app.published_at_is_not_a_valid_date'),
-            'featured_image.string' => trans('canvas::app.featured_image_must_be_a_string'),
-            'featured_image_caption.string' => trans('canvas::app.featured_image_caption_must_be_a_string'),
-            'meta.array' => trans('canvas::app.meta_must_be_an_array'),
+            'slug.required' => trans('canvas::app.slug_required'),
+            'slug.alpha_dash' => trans('canvas::app.slug_alpha_dash'),
+            'slug.unique' => trans('canvas::app.slug_unique'),
+            'title.string' => trans('canvas::app.title_string'),
+            'summary.string' => trans('canvas::app.summary_string'),
+            'body.string' => trans('canvas::app.body_string'),
+            'published_at.date' => trans('canvas::app.published_at_date'),
+            'featured_image.string' => trans('canvas::app.featured_image_string'),
+            'featured_image_caption.string' => trans('canvas::app.featured_image_caption_string'),
+            'user_id.uuid' => trans('canvas::app.user_id_uuid'),
+            'topic_id.uuid' => trans('canvas::app.topic_id_uuid'),
+            'meta.array' => trans('canvas::app.meta_array'),
         ];
     }
 }

@@ -75,26 +75,88 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Store a newly created resource in storage.
      *
+     * @param StorePostRequest $request
+     * @return void
+     */
+    public function store(StorePostRequest $request)
+    {
+        // $post = StorePostAction::run($request->validated())->withTags(request()->input('tags', []))
+        // return response()->json($post->refresh(), 201)
+
+        $post = Post::query()->make([
+            'id' => Uuid::uuid4()->toString()
+        ]);
+
+        $post->fill($request->validated());
+
+        $post->user()->associate(request()->user('canvas'));
+
+        // TODO: Topics will exist on the post record now
+//        if ($incomingTopic = request()->input('topic')) {
+//            $existingTopic = Topic::query()->firstWhere('slug', $incomingTopic['slug']);
+//
+//            if (! $existingTopic) {
+//                $topic = Topic::query()->create([
+//                    'id' => Uuid::uuid4()->toString(),
+//                    'name' => $incomingTopic['name'],
+//                    'slug' => $incomingTopic['slug'],
+//                    'user_id' => request()->user('canvas')->id,
+//                ]);
+//
+//                $post->topic()->associate($topic);
+//            } else {
+//                $post->topic()->associate($existingTopic);
+//            }
+//        }
+
+        // TODO: Could be in a dedicated Service Class
+        $tags = Tag::query()->get(['id', 'name', 'slug']);
+        $tagsToSync = collect(request()->input('tags', []))->map(function ($item) use ($tags) {
+            $tag = $tags->firstWhere('slug', $item['slug']);
+
+            if (! $tag) {
+                $tag = Tag::query()->create([
+                    'id' => Uuid::uuid4()->toString(),
+                    'name' => $item['name'],
+                    'slug' => $item['slug'],
+                    'user_id' => request()->user('canvas')->id,
+                ]);
+            }
+
+            return (string) $tag->id;
+        })->toArray();
+        $post->tags()->sync($tagsToSync);
+
+        $post->save();
+
+        return response()->json($post->refresh(), 201);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create()
+    public function show(string $id)
     {
-        $uuid = Uuid::uuid4();
+        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })->with(['tags:name,slug', 'topic:name,slug'])->findOrFail($id);
 
         return response()->json([
-            'post' => Post::query()->make([
-                'id' => $uuid->toString(),
-                'slug' => "post-{$uuid->toString()}",
-            ]),
-            'tags' => Tag::get(['name', 'slug']),
-            'topics' => Topic::get(['name', 'slug']),
+            'post' => $post,
+            'tags' => Tag::query()->get(['name', 'slug']),
+            'topics' => Topic::query()->get(['name', 'slug']),
         ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Update the specified resource in storage.
      *
      * @param  \Canvas\Http\Requests\StorePostRequest  $request
      * @param  string  $id
@@ -102,7 +164,7 @@ class PostController extends Controller
      *
      * @throws Exception
      */
-    public function store(StorePostRequest $request, string $id)
+    public function update(StorePostRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -155,27 +217,6 @@ class PostController extends Controller
         $post->save();
 
         return response()->json($post->refresh(), 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show(string $id)
-    {
-        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
-            return $query->where('user_id', request()->user('canvas')->id);
-        }, function (Builder $query) {
-            return $query;
-        })->with(['tags:name,slug', 'topic:name,slug'])->findOrFail($id);
-
-        return response()->json([
-            'post' => $post,
-            'tags' => Tag::query()->get(['name', 'slug']),
-            'topics' => Topic::query()->get(['name', 'slug']),
-        ]);
     }
 
     /**

@@ -79,15 +79,6 @@ class TopicControllerTest extends TestCase
         $this->assertSame($response->getOriginalContent()->first()->id, $unpopularTopic->id);
     }
 
-    public function testCreateDataForTopic(): void
-    {
-        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
-                         ->getJson('canvas/api/topics/create')
-                         ->assertSuccessful();
-
-        $this->assertInstanceOf(Topic::class, $response->getOriginalContent());
-    }
-
     public function testExistingTopicData(): void
     {
         $topic = Topic::factory()->create();

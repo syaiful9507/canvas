@@ -7,25 +7,21 @@ use Canvas\Http\Controllers\Auth\NewPasswordController;
 use Canvas\Http\Controllers\Auth\PasswordResetLinkController;
 use Illuminate\Support\Facades\Route;
 
-Route::namespace('Auth')->group(function () {
-    // Login routes...
+Route::namespace('Auth')->as('canvas.')->group(function () {
     Route::prefix('login')->group(function () {
-        Route::get('/', [AuthenticatedSessionController::class, 'create'])->name('canvas.login.view');
-        Route::post('/', [AuthenticatedSessionController::class, 'store'])->name('canvas.login');
+        Route::get('/', [AuthenticatedSessionController::class, 'create'])->name('login.view');
+        Route::post('/', [AuthenticatedSessionController::class, 'store'])->name('login');
     });
 
-    // Forgot password routes...
     Route::prefix('forgot-password')->group(function () {
-        Route::get('/', [PasswordResetLinkController::class, 'create'])->name('canvas.forgot-password.view');
-        Route::post('/', [PasswordResetLinkController::class, 'store'])->name('canvas.forgot-password');
+        Route::get('/', [PasswordResetLinkController::class, 'create'])->name('forgot-password.view');
+        Route::post('/', [PasswordResetLinkController::class, 'store'])->name('forgot-password');
     });
 
-    // Reset password routes...
     Route::prefix('reset-password')->group(function () {
-        Route::get('{token}', [NewPasswordController::class, 'create'])->name('canvas.reset-password.view');
-        Route::post('/', [NewPasswordController::class, 'store'])->name('canvas.reset-password');
+        Route::get('{token}', [NewPasswordController::class, 'create'])->name('reset-password.view');
+        Route::post('/', [NewPasswordController::class, 'store'])->name('reset-password');
     });
 
-    // Logout route...
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('canvas.logout');
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });

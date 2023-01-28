@@ -128,15 +128,6 @@ class UserControllerTest extends TestCase
             ]);
     }
 
-    public function testCreateDataForUser(): void
-    {
-        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
-                         ->getJson('canvas/api/users/create')
-                         ->assertSuccessful();
-
-        $this->assertInstanceOf(User::class, $response->getOriginalContent());
-    }
-
     public function testExistingUserData(): void
     {
         $admin = User::factory()->admin()->create();

@@ -44,25 +44,37 @@ class TopicController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param StoreTopicRequest $request
+     * @return void
      */
-    public function create()
+    public function store(StoreTopicRequest $request)
     {
-        return response()->json(Topic::query()->make([
-            'id' => Uuid::uuid4()->toString(),
-        ]));
+        //
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display the specified resource.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(string $id)
+    {
+        $topic = Topic::query()->findOrFail($id);
+
+        return response()->json($topic);
+    }
+
+    /**
+     * Update the specified resource in storage.
      *
      * @param  \Canvas\Http\Requests\StoreTopicRequest  $request
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreTopicRequest $request, string $id)
+    public function update(StoreTopicRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -85,19 +97,6 @@ class TopicController extends Controller
         $topic->save();
 
         return response()->json($topic->refresh(), 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show(string $id)
-    {
-        $topic = Topic::query()->findOrFail($id);
-
-        return response()->json($topic);
     }
 
     /**

@@ -44,26 +44,37 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param StoreUserRequest $request
+     * @return void
      */
-    public function create()
+    public function store(StoreUserRequest $request)
     {
-        return response()->json(User::query()->make([
-            'id' => Uuid::uuid4()->toString(),
-            'role' => User::$contributor_id,
-        ]));
+        //
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display the specified resource.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(string $id)
+    {
+        $user = User::query()->withCount('posts')->findOrFail($id);
+
+        return response()->json($user);
+    }
+
+    /**
+     * Update the specified resource in storage.
      *
      * @param  \Canvas\Http\Requests\StoreUserRequest  $request
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreUserRequest $request, string $id)
+    public function update(StoreUserRequest $request, string $id)
     {
         $data = $request->validated();
 
@@ -100,19 +111,6 @@ class UserController extends Controller
             'user' => $user->refresh(),
             'i18n' => collect(trans('canvas::app', [], $user->locale))->toJson(),
         ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show(string $id)
-    {
-        $user = User::query()->withCount('posts')->findOrFail($id);
-
-        return response()->json($user);
     }
 
     /**

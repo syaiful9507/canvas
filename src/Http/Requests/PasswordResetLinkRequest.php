@@ -38,9 +38,9 @@ class PasswordResetLinkRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => trans('canvas::app.email_is_required'),
-            'email.email' => trans('canvas::app.email_must_be_valid'),
-            'email.exists' => trans('canvas::app.email_is_invalid'),
+            'email.required' => trans('canvas::app.email_required'),
+            'email.email' => trans('canvas::app.email_email'),
+            'email.exists' => trans('canvas::app.email_exists'),
         ];
     }
 }
