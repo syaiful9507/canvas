@@ -26,14 +26,14 @@ class TagTest extends TestCase
 
     public function testTagsCanShareTheSameSlugWithUniqueUsers(): void
     {
-        $data = [
-            'name' => 'A new tag',
-            'slug' => 'a-new-tag',
-        ];
+        $primaryAdmin = User::factory()->admin()->create();
 
-        $primaryAdmin = User::factory()->admin()->has(Tag::factory())->create();
-
-        $response = $this->actingAs($primaryAdmin, 'canvas')->postJson("/canvas/api/tags/{$primaryAdmin->tags()->first()->id}", $data);
+        $response = $this->actingAs($primaryAdmin, 'canvas')
+            ->postJson(route('canvas.tags.store'), [
+                'name' => 'A new tag',
+                'slug' => 'a-new-tag',
+                'user_id' => $primaryAdmin->id
+            ]);
 
         $this->assertDatabaseHas('canvas_tags', [
             'id' => $response->original['id'],
@@ -41,9 +41,14 @@ class TagTest extends TestCase
             'user_id' => $response->original['user_id'],
         ]);
 
-        $secondaryAdmin = User::factory()->admin()->has(Tag::factory())->create();
+        $secondaryAdmin = User::factory()->admin()->create();
 
-        $response = $this->actingAs($secondaryAdmin, 'canvas')->postJson("/canvas/api/tags/{$secondaryAdmin->tags()->first()->id}", $data);
+        $response = $this->actingAs($secondaryAdmin, 'canvas')
+            ->postJson(route('canvas.tags.store'), [
+                'name' => 'A new tag',
+                'slug' => 'a-new-tag',
+                'user_id' => $secondaryAdmin->id
+            ]);
 
         $this->assertDatabaseHas('canvas_tags', [
             'id' => $response->original['id'],

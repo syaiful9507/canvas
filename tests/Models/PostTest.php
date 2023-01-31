@@ -42,14 +42,14 @@ class PostTest extends TestCase
 
     public function testPostsCanShareTheSameSlugWithUniqueUsers(): void
     {
-        $data = [
-            'slug' => 'a-new-post',
-            'title' => 'A new post',
-        ];
+        $admin = User::factory()->admin()->create();
 
-        $admin = User::factory()->admin()->has(Post::factory())->create();
-
-        $response = $this->actingAs($admin, 'canvas')->postJson("/canvas/api/posts/{$admin->posts()->first()->id}", $data);
+        $response = $this->actingAs($admin, 'canvas')
+            ->postJson(route('canvas.posts.store'), [
+                'slug' => 'a-new-post',
+                'title' => 'A new post',
+                'user_id' => $admin->id
+            ]);
 
         $this->assertDatabaseHas('canvas_posts', [
             'id' => $response->original['id'],
@@ -57,9 +57,14 @@ class PostTest extends TestCase
             'user_id' => $response->original['user_id'],
         ]);
 
-        $editor = User::factory()->editor()->has(Post::factory())->create();
+        $editor = User::factory()->editor()->create();
 
-        $response = $this->actingAs($editor, 'canvas')->postJson("/canvas/api/posts/{$editor->posts()->first()->id}", $data);
+        $response = $this->actingAs($editor, 'canvas')
+            ->postJson(route('canvas.posts.store'), [
+                'slug' => 'a-new-post',
+                'title' => 'A new post',
+                'user_id' => $editor->id
+            ]);
 
         $this->assertDatabaseHas('canvas_posts', [
             'id' => $response->original['id'],

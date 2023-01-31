@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Ramsey\Uuid\Uuid;
 
 class UserController extends Controller
 {
@@ -46,11 +47,16 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  StoreUserRequest  $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreUserRequest $request)
     {
-        //
+        $user = User::query()->create([
+            'id' => Uuid::uuid4()->toString(),
+            ...$request->validated()
+        ]);
+
+        return response()->json($user->refresh());
     }
 
     /**
@@ -77,39 +83,17 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::query()->find($id);
+        $user = User::withTrashed()->find($id);
 
-        if (! $user) {
-            if ($user = User::onlyTrashed()->firstWhere('email', $data['email'])) {
-                $user->restore();
+        if ($user->trashed()) {
+            $user->restore();
 
-                return response()->json([
-                    'user' => $user->refresh(),
-                    'i18n' => collect(trans('canvas::app', [], $user->locale))->toJson(),
-                ], 201);
-            } else {
-                $user = new User([
-                    'id' => $id,
-                ]);
-            }
+            return response()->json($user->refresh());
         }
 
-        if (! Arr::has($data, 'locale') || ! in_array($data['locale'], Canvas::availableLanguageCodes())) {
-            $data['locale'] = config('app.fallback_locale');
-        }
+        $user->update($data);
 
-        $user->fill($data);
-
-        if (Arr::has($data, 'password')) {
-            $user->password = Hash::make($data['password']);
-        }
-
-        $user->save();
-
-        return response()->json([
-            'user' => $user->refresh(),
-            'i18n' => collect(trans('canvas::app', [], $user->locale))->toJson(),
-        ], 201);
+        return response()->json($user->refresh());
     }
 
     /**

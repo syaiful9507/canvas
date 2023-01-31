@@ -26,7 +26,7 @@ Route::middleware([AuthenticateSession::class])->group(function () {
             Route::get('tags/{tag}/posts', [TagController::class, 'posts'])->name('tags.posts');
 
             Route::apiResource('topics', TopicController::class);
-            Route::get('topics/{topic}/posts', [TagController::class, 'posts'])->name('tags.posts');
+            Route::get('topics/{topic}/posts', [TopicController::class, 'posts'])->name('topics.posts');
 
             Route::apiResource('users', UserController::class);
             Route::get('users/{user}/posts', [UserController::class, 'posts'])->name('users.posts');

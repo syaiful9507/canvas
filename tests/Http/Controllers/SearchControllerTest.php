@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  * Class SearchControllerTest.
  *
  * @covers \Canvas\Http\Controllers\SearchController
+ * @covers \Canvas\Http\Middleware\VerifyAdmin
  */
 class SearchControllerTest extends TestCase
 {

@@ -9,6 +9,7 @@ use Canvas\Models\Tag;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
+use Ramsey\Uuid\Uuid;
 
 class TagController extends Controller
 {
@@ -46,11 +47,16 @@ class TagController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  StoreTagRequest  $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreTagRequest $request)
     {
-        //
+        $tag = Tag::query()->create([
+            'id' => Uuid::uuid4()->toString(),
+            ...$request->validated()
+        ]);
+
+        return response()->json($tag->refresh());
     }
 
     /**
@@ -77,25 +83,17 @@ class TagController extends Controller
     {
         $data = $request->validated();
 
-        $tag = Tag::query()->find($id);
+        $tag = Tag::withTrashed()->find($id);
 
-        if (! $tag) {
-            if ($tag = Tag::onlyTrashed()->firstWhere('slug', $data['slug'])) {
-                $tag->restore();
+        if ($tag->trashed()) {
+            $tag->restore();
 
-                return response()->json($tag->refresh(), 201);
-            } else {
-                $tag = new Tag(['id' => $id]);
-            }
+            return response()->json($tag->refresh());
         }
 
-        $tag->fill($data);
+        $tag->update($data);
 
-        $tag->user_id = $tag->user_id ?? request()->user('canvas')->id;
-
-        $tag->save();
-
-        return response()->json($tag->refresh(), 201);
+        return response()->json($tag->refresh());
     }
 
     /**

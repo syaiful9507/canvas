@@ -14,6 +14,7 @@ use Ramsey\Uuid\Uuid;
  *
  * @covers \Canvas\Http\Controllers\UserController
  * @covers \Canvas\Http\Requests\StoreUserRequest
+ * @covers \Canvas\Http\Middleware\VerifyAdmin
  */
 class UserControllerTest extends TestCase
 {
@@ -28,7 +29,7 @@ class UserControllerTest extends TestCase
         $contributor = User::factory()->contributor()->create();
 
         $response = $this->actingAs($admin, 'canvas')
-            ->getJson('canvas/api/users')
+            ->getJson(route('canvas.users.index'))
             ->assertJsonFragment([
                 'id' => $admin->id,
                 'id' => $editor->id,
@@ -135,7 +136,7 @@ class UserControllerTest extends TestCase
         $contributor = User::factory()->contributor()->create();
 
         $response = $this->actingAs($admin, 'canvas')
-                         ->getJson("canvas/api/users/{$contributor->id}")
+                         ->getJson(route('canvas.users.show', ['user' => $contributor->id]))
                          ->assertSuccessful();
 
         $this->assertTrue($contributor->is($response->getOriginalContent()));
@@ -143,10 +144,10 @@ class UserControllerTest extends TestCase
 
     public function testListPostsForUser(): void
     {
-        $user = User::factory()->has(Post::factory())->create();
+        $user = User::factory()->admin()->has(Post::factory())->create();
 
         $response = $this->actingAs($user, 'canvas')
-                         ->getJson("canvas/api/users/{$user->id}/posts")
+                         ->getJson(route('canvas.users.posts', ['user' => $user->id]))
                          ->assertSuccessful();
 
         $this->assertInstanceOf(Post::class, $response->getOriginalContent()->first());
@@ -159,14 +160,13 @@ class UserControllerTest extends TestCase
     public function testUserNotFound(): void
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
-             ->getJson('canvas/api/users/not-a-user')
+             ->getJson(route('canvas.users.show', ['user' => 'not-a-user']))
              ->assertNotFound();
     }
 
     public function testStoreNewUser(): void
     {
         $data = [
-            'id' => Uuid::uuid4()->toString(),
             'name' => 'Name',
             'email' => 'email@example.com',
             'password' => 'password',
@@ -174,12 +174,12 @@ class UserControllerTest extends TestCase
         ];
 
         $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
-                         ->postJson("canvas/api/users/{$data['id']}", $data)
+                         ->postJson(route('canvas.users.store'), $data)
                          ->assertSuccessful();
 
-        $this->assertInstanceOf(User::class, $response->getOriginalContent()['user']);
+        $this->assertInstanceOf(User::class, $response->getOriginalContent());
 
-        $this->assertSame($data['id'], $response->getOriginalContent()['user']->id);
+        $this->assertSame($data['email'], $response->getOriginalContent()->email);
     }
 
     public function testDeletedUsersCanBeRefreshed(): void
@@ -195,17 +195,22 @@ class UserControllerTest extends TestCase
         ];
 
         $response = $this->actingAs($admin, 'canvas')
-                         ->postJson("canvas/api/users/{$data['id']}", $data)
+                         ->putJson(route('canvas.users.update', ['user' => $deletedUser->id]), $data)
                          ->assertSuccessful();
 
-        $this->assertInstanceOf(User::class, $response->getOriginalContent()['user']);
+        $this->assertInstanceOf(User::class, $response->getOriginalContent());
 
-        $this->assertSame($deletedUser['id'], $response->getOriginalContent()['user']->id);
+        $this->assertNotSoftDeleted('canvas_users', [
+            'id' => $deletedUser->id,
+            'email' => $deletedUser->email,
+        ]);
     }
 
     public function testUpdateExistingUser(): void
     {
         $admin = User::factory()->admin()->create();
+
+        $contributor = User::factory()->contributor()->create();
 
         $data = [
             'name' => 'New name',
@@ -213,17 +218,17 @@ class UserControllerTest extends TestCase
         ];
 
         $response = $this->actingAs($admin, 'canvas')
-                         ->postJson("canvas/api/users/{$admin->id}", $data)
+                ->putJson(route('canvas.users.update', ['user' => $contributor->id]), $data)
                          ->assertSuccessful()
                          ->assertJsonFragment([
-                             'id' => $admin->id,
+                             'id' => $contributor->id,
                              'name' => $data['name'],
                              'email' => $data['email'],
                          ]);
 
-        $this->assertInstanceOf(User::class, $response->getOriginalContent()['user']);
+        $this->assertInstanceOf(User::class, $response->getOriginalContent());
 
-        $this->assertSame($data['email'], $response->getOriginalContent()['user']->email);
+        $this->assertSame($data['email'], $response->getOriginalContent()->email);
     }
 
     public function testInvalidPasswordCombinationsAreValidated(): void
@@ -237,7 +242,7 @@ class UserControllerTest extends TestCase
         ];
 
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
-             ->postJson("canvas/api/users/{$data['id']}", $data)
+            ->postJson(route('canvas.users.store'), $data)
              ->assertStatus(422)
              ->assertJsonStructure([
                  'errors' => [
@@ -257,7 +262,7 @@ class UserControllerTest extends TestCase
         ];
 
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
-             ->postJson("canvas/api/users/{$data['id']}", $data)
+            ->postJson(route('canvas.users.store'), $data)
              ->assertStatus(422)
              ->assertJsonStructure([
                  'errors' => [
@@ -273,7 +278,7 @@ class UserControllerTest extends TestCase
         $editor = User::factory()->editor()->create();
 
         $this->actingAs($admin, 'canvas')
-             ->postJson("canvas/api/users/{$admin->id}", [
+             ->postJson(route('canvas.users.store'), [
                  'name' => $admin->name,
                  'email' => $admin->email,
                  'username' => $editor->username,
@@ -293,7 +298,7 @@ class UserControllerTest extends TestCase
         $editor = User::factory()->editor()->create();
 
         $this->actingAs($admin, 'canvas')
-             ->postJson("canvas/api/users/{$admin->id}", [
+            ->postJson(route('canvas.users.store'), [
                  'name' => $admin->name,
                  'email' => $editor->email,
              ])
@@ -310,7 +315,7 @@ class UserControllerTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin, 'canvas')
-             ->postJson("canvas/api/users/{$admin->id}", [
+            ->postJson(route('canvas.users.store'), [
                  'name' => $admin->name,
                  'email' => 'not-an-email',
              ])
@@ -327,7 +332,7 @@ class UserControllerTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin, 'canvas')
-             ->deleteJson("canvas/api/users/{$admin->id}")
+             ->deleteJson(route('canvas.users.destroy', ['user' => $admin]))
              ->assertForbidden();
     }
 
@@ -338,11 +343,11 @@ class UserControllerTest extends TestCase
         $editor = User::factory()->editor()->create();
 
         $this->actingAs($admin, 'canvas')
-             ->deleteJson('canvas/api/users/not-a-user')
+             ->deleteJson(route('canvas.users.destroy', ['user' => 'not-a-user']))
              ->assertNotFound();
 
         $this->actingAs($admin, 'canvas')
-             ->deleteJson("canvas/api/users/{$editor->id}")
+            ->deleteJson(route('canvas.users.destroy', ['user' => $editor->id]))
              ->assertSuccessful()
              ->assertNoContent();
 

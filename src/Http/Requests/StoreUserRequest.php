@@ -33,9 +33,9 @@ class StoreUserRequest extends FormRequest
                 'email:filter',
                 Rule::unique('canvas_users')->where(function ($query) {
                     return $query->where('email', request('email'));
-                })->ignore(request('id'))->whereNull('deleted_at'),
+                })->ignore(request('user'))->whereNull('deleted_at'),
             ],
-            'username' => 'nullable|alpha_dash|unique:canvas_users,username,'.request('id'),
+            'username' => 'nullable|alpha_dash|unique:canvas_users,username,'.request('user'),
             'password' => 'sometimes|required|min:8|confirmed',
             'summary' => 'nullable|string',
             'avatar' => 'nullable|string',

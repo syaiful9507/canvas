@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
  * Class UserTest.
  *
  * @covers \Canvas\Models\User
+ * @covers \Canvas\Traits\HasRole
  */
 class UserTest extends TestCase
 {

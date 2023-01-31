@@ -362,12 +362,14 @@ class PostControllerTest extends TestCase
         $user = User::factory()->has(Post::factory())->create();
 
         $data = [
-            'title' => 'Updated Title',
+            'id' => $user->posts()->first()->id,
             'slug' => 'updated-slug',
+            'title' => 'Updated Title',
+            'user_id' => $user->id
         ];
 
         $this->actingAs($user, 'canvas')
-             ->postJson(route('canvas.posts.store', ['post' => $user->posts()->first()->id]), $data)
+             ->putJson(route('canvas.posts.update', ['post' => $user->posts()->first()->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $user->posts()->first()->id,
@@ -381,12 +383,14 @@ class PostControllerTest extends TestCase
         $post = Post::factory()->for(User::factory()->contributor())->create();
 
         $data = [
-            'title' => 'Updated Title',
-            'slug' => 'updated-slug',
+            'id' => $post->id,
+            'slug' => $post->slug,
+            'title' => $post->title,
+            'user_id' => $post->user_id,
         ];
 
         $this->actingAs($post->user, 'canvas')
-             ->postJson(route('canvas.posts.store', ['post' => $post->id]), $data)
+             ->putJson(route('canvas.posts.update', ['post' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $post->id,
@@ -402,12 +406,14 @@ class PostControllerTest extends TestCase
         $post = Post::factory()->for(User::factory()->editor())->create();
 
         $data = [
-            'title' => 'Updated Title',
-            'slug' => 'updated-slug',
+            'id' => $post->id,
+            'slug' => $post->slug,
+            'title' => $post->title,
+            'user_id' => $post->user_id,
         ];
 
         $this->actingAs($contributor, 'canvas')
-             ->postJson(route('canvas.posts.store', ['post' => $post->id]), $data)
+             ->putJson(route('canvas.posts.update', ['post' => $post->id]), $data)
              ->assertForbidden();
     }
 
@@ -416,8 +422,10 @@ class PostControllerTest extends TestCase
         $post = Post::factory()->for(User::factory())->create();
 
         $data = [
-            'title' => $post->title,
+            'id' => $post->id,
             'slug' => $post->slug,
+            'title' => $post->title,
+            'user_id' => $post->user_id,
             'tags' => [
                 [
                     'name' => 'A new tag',
@@ -431,7 +439,7 @@ class PostControllerTest extends TestCase
         ];
 
         $this->actingAs($post->user, 'canvas')
-             ->postJson(route('canvas.posts.store', ['post' => $post->id]), $data)
+             ->putJson(route('canvas.posts.update', ['post' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $post->id,
@@ -452,8 +460,10 @@ class PostControllerTest extends TestCase
         $tag = Tag::factory()->create();
 
         $data = [
-            'title' => $post->title,
+            'id' => $post->id,
             'slug' => $post->slug,
+            'title' => $post->title,
+            'user_id' => $post->user_id,
             'tags' => [
                 [
                     'name' => $tag->name,
@@ -463,7 +473,7 @@ class PostControllerTest extends TestCase
         ];
 
         $this->actingAs($post->user, 'canvas')
-             ->postJson(route('canvas.posts.store', ['post' => $post->id]), $data)
+             ->putJson(route('canvas.posts.update', ['post' => $post->id]), $data)
              ->assertSuccessful()
              ->assertJsonFragment([
                  'id' => $post->id,
@@ -476,59 +486,6 @@ class PostControllerTest extends TestCase
             'post_id' => $post->id,
             'tag_id' => $tag->id,
         ]);
-    }
-
-    public function testAssociateNewTopic(): void
-    {
-        $post = Post::factory()->for(User::factory())->create();
-
-        $data = [
-            'title' => $post->title,
-            'slug' => $post->slug,
-            'topic' => [
-                'name' => 'A new topic',
-                'slug' => 'a-new-topic',
-            ],
-        ];
-
-        $response = $this->actingAs($post->user, 'canvas')
-             ->postJson(route('canvas.posts.store', ['post' => $post->id]), $data)
-             ->assertSuccessful()
-             ->assertJsonFragment([
-                 'id' => $post->id,
-                 'title' => $data['title'],
-                 'slug' => $data['slug'],
-             ]);
-
-        $this->assertModelExists($response->getOriginalContent()->topic);
-        $this->assertSame($data['topic']['slug'], $response->getOriginalContent()->topic->slug);
-    }
-
-    public function testAssociateExistingTopic(): void
-    {
-        $post = Post::factory()->for(User::factory())->create();
-        $topic = Topic::factory()->create();
-
-        $data = [
-            'title' => $post->title,
-            'slug' => $post->slug,
-            'topic' => [
-                'name' => $topic->name,
-                'slug' => $topic->slug,
-            ],
-        ];
-
-        $response = $this->actingAs($post->user, 'canvas')
-             ->postJson(route('canvas.posts.store', ['post' => $post->id]), $data)
-             ->assertSuccessful()
-             ->assertJsonFragment([
-                 'id' => $post->id,
-                 'title' => $data['title'],
-                 'slug' => $data['slug'],
-             ]);
-
-        $this->assertModelExists($response->getOriginalContent()->topic);
-        $this->assertSame($data['topic']['slug'], $response->getOriginalContent()->topic->slug);
     }
 
     public function testInvalidSlugsAreValidated(): void
@@ -554,15 +511,15 @@ class PostControllerTest extends TestCase
         $post = Post::factory()->for(User::factory()->editor())->create();
 
         $this->actingAs($contributor, 'canvas')
-             ->deleteJson(route('canvas.posts.store', ['post' => $post->id]))
+             ->deleteJson(route('canvas.posts.destroy', ['post' => $post->id]))
              ->assertNotFound();
 
         $this->actingAs($post->user, 'canvas')
-             ->deleteJson(route('canvas.posts.store', ['post' => 'not-a-post']))
+             ->deleteJson(route('canvas.posts.destroy', ['post' => 'not-a-post']))
              ->assertNotFound();
 
         $this->actingAs($post->user, 'canvas')
-             ->deleteJson(route('canvas.posts.store', ['post' => $post->id]))
+             ->deleteJson(route('canvas.posts.destroy', ['post' => $post->id]))
              ->assertSuccessful()
              ->assertNoContent();
 

@@ -15,6 +15,7 @@ use Ramsey\Uuid\Uuid;
  *
  * @covers \Canvas\Http\Controllers\TopicController
  * @covers \Canvas\Http\Requests\StoreTopicRequest
+ * @covers \Canvas\Http\Middleware\VerifyAdmin
  */
 class TopicControllerTest extends TestCase
 {
@@ -25,7 +26,7 @@ class TopicControllerTest extends TestCase
         $topic = Topic::factory(2)->create();
 
         $response = $this->actingAs($topic->first()->user, 'canvas')
-                         ->getJson('canvas/api/topics')
+                         ->getJson(route('canvas.topics.index'))
                          ->assertSuccessful();
 
         $this->assertInstanceOf(Topic::class, $response->getOriginalContent()->first());
@@ -114,19 +115,21 @@ class TopicControllerTest extends TestCase
 
     public function testStoreNewTopic(): void
     {
+        $user = User::factory()->admin()->create();
+
         $data = [
-            'id' => Uuid::uuid4()->toString(),
             'name' => 'A new topic',
             'slug' => 'a-new-topic',
+            'user_id' => $user->id
         ];
 
-        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
-                         ->postJson("canvas/api/topics/{$data['id']}", $data)
+        $response = $this->actingAs($user, 'canvas')
+            ->postJson(route('canvas.topics.store', $data))
                          ->assertSuccessful();
 
         $this->assertInstanceOf(Topic::class, $response->getOriginalContent()->first());
 
-        $this->assertSame($data['id'], $response->getOriginalContent()->id);
+        $this->assertSame($data['slug'], $response->getOriginalContent()->slug);
     }
 
     public function testDeletedTopicsCanBeRefreshed(): void
@@ -134,18 +137,21 @@ class TopicControllerTest extends TestCase
         $deletedTopic = Topic::factory()->create(['deleted_at' => now()]);
 
         $data = [
-            'id' => Uuid::uuid4()->toString(),
             'name' => $deletedTopic->name,
             'slug' => $deletedTopic->slug,
+            'user_id' => $deletedTopic->user_id
         ];
 
         $response = $this->actingAs($deletedTopic->user, 'canvas')
-                         ->postJson("canvas/api/topics/{$data['id']}", $data)
+            ->putJson(route('canvas.topics.update', ['topic' => $deletedTopic->id]), $data)
                          ->assertSuccessful();
 
         $this->assertInstanceOf(Topic::class, $response->getOriginalContent()->first());
 
-        $this->assertSame($deletedTopic['id'], $response->getOriginalContent()->id);
+        $this->assertNotSoftDeleted('canvas_topics', [
+            'id' => $deletedTopic->id,
+            'slug' => $deletedTopic->slug,
+        ]);
     }
 
     public function testUpdateExistingTopic(): void
@@ -155,10 +161,11 @@ class TopicControllerTest extends TestCase
         $data = [
             'name' => 'An updated topic',
             'slug' => 'an-updated-topic',
+            'user_id' => $topic->user_id
         ];
 
         $response = $this->actingAs($topic->user, 'canvas')
-                         ->postJson("canvas/api/topics/{$topic->id}", $data)
+            ->putJson(route('canvas.topics.update', ['topic' => $topic->id]), $data)
                          ->assertSuccessful();
 
         $this->assertInstanceOf(Topic::class, $response->getOriginalContent()->first());
@@ -168,13 +175,12 @@ class TopicControllerTest extends TestCase
 
     public function testInvalidSlugsAreValidated(): void
     {
-        $topic = Topic::factory()->create();
-
-        $this->actingAs($topic->user, 'canvas')
-             ->postJson("canvas/api/topics/{$topic->id}", [
-                 'name' => 'A new topic',
-                 'slug' => 'a new.slug',
-             ])
+        $this->actingAs($user = User::factory()->admin()->create(), 'canvas')
+            ->postJson(route('canvas.topics.store'), [
+                'name' => 'A new topic',
+                'slug' => 'a new.slug',
+                'user_id' => $user->id
+            ])
              ->assertStatus(422)
              ->assertJsonStructure([
                  'errors' => [
@@ -188,13 +194,13 @@ class TopicControllerTest extends TestCase
         $topic = Topic::factory()->create();
 
         $this->actingAs($topic->user, 'canvas')
-             ->deleteJson('canvas/api/topics/not-a-topic')
-             ->assertNotFound();
+            ->deleteJson(route('canvas.topics.destroy', ['topic' => 'not-a-topic']))
+            ->assertNotFound();
 
         $this->actingAs($topic->user, 'canvas')
-             ->deleteJson("canvas/api/topics/{$topic->id}")
-             ->assertSuccessful()
-             ->assertNoContent();
+            ->deleteJson(route('canvas.topics.destroy', ['topic' => $topic->id]))
+            ->assertSuccessful()
+            ->assertNoContent();
 
         $this->assertSoftDeleted('canvas_topics', [
             'id' => $topic->id,

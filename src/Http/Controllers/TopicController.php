@@ -9,6 +9,7 @@ use Canvas\Models\Topic;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
+use Ramsey\Uuid\Uuid;
 
 class TopicController extends Controller
 {
@@ -46,11 +47,16 @@ class TopicController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  StoreTopicRequest  $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreTopicRequest $request)
     {
-        //
+        $topic = Topic::query()->create([
+            'id' => Uuid::uuid4()->toString(),
+            ...$request->validated()
+        ]);
+
+        return response()->json($topic->refresh());
     }
 
     /**
@@ -77,25 +83,17 @@ class TopicController extends Controller
     {
         $data = $request->validated();
 
-        $topic = Topic::query()->find($id);
+        $topic = Topic::withTrashed()->find($id);
 
-        if (! $topic) {
-            if ($topic = Topic::onlyTrashed()->firstWhere('slug', $data['slug'])) {
-                $topic->restore();
+        if ($topic->trashed()) {
+            $topic->restore();
 
-                return response()->json($topic->refresh(), 201);
-            } else {
-                $topic = new Topic(['id' => $id]);
-            }
+            return response()->json($topic->refresh());
         }
 
-        $topic->fill($data);
+        $topic->update($data);
 
-        $topic->user_id = $topic->user_id ?? request()->user('canvas')->id;
-
-        $topic->save();
-
-        return response()->json($topic->refresh(), 201);
+        return response()->json($topic->refresh());
     }
 
     /**

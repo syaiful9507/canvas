@@ -26,14 +26,14 @@ class TopicTest extends TestCase
 
     public function testTopicsCanShareTheSameSlugWithUniqueUsers(): void
     {
-        $data = [
-            'name' => 'A new topic',
-            'slug' => 'a-new-topic',
-        ];
+        $primaryAdmin = User::factory()->admin()->create();
 
-        $primaryAdmin = User::factory()->admin()->has(Topic::factory())->create();
-
-        $response = $this->actingAs($primaryAdmin, 'canvas')->postJson("/canvas/api/topics/{$primaryAdmin->topics()->first()->id}", $data);
+        $response = $this->actingAs($primaryAdmin, 'canvas')
+            ->postJson(route('canvas.topics.store'), [
+                'name' => 'A new topic',
+                'slug' => 'a-new-topic',
+                'user_id' => $primaryAdmin->id
+            ]);
 
         $this->assertDatabaseHas('canvas_topics', [
             'id' => $response->original['id'],
@@ -41,9 +41,14 @@ class TopicTest extends TestCase
             'user_id' => $response->original['user_id'],
         ]);
 
-        $secondaryAdmin = User::factory()->admin()->has(Topic::factory())->create();
+        $secondaryAdmin = User::factory()->admin()->create();
 
-        $response = $this->actingAs($secondaryAdmin, 'canvas')->postJson("/canvas/api/topics/{$secondaryAdmin->topics()->first()->id}", $data);
+        $response = $this->actingAs($secondaryAdmin, 'canvas')
+            ->postJson(route('canvas.topics.store'), [
+                'name' => 'A new topic',
+                'slug' => 'a-new-topic',
+                'user_id' => $secondaryAdmin->id
+            ]);
 
         $this->assertDatabaseHas('canvas_topics', [
             'id' => $response->original['id'],

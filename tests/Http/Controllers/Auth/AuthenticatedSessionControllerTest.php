@@ -16,8 +16,6 @@ class AuthenticatedSessionControllerTest extends TestCase
 {
     public function testTheLoginPage(): void
     {
-        $this->withoutMix();
-
         $this->get(route('canvas.login.view'))
              ->assertSuccessful()
              ->assertViewIs('canvas::auth.login')
