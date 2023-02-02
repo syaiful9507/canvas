@@ -4,31 +4,44 @@ declare(strict_types=1);
 
 namespace Canvas\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Canvas\Http\Requests\StoreUserRequest;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show()
     {
-        //
+        return response()->json(request()->user('canvas'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  StoreUserRequest  $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(StoreUserRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $user = $request->user('canvas');
+
+        if (Arr::has($data, 'password')) {
+            $user->password = Hash::make($data['password']);
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'user' => $user->refresh(),
+            'i18n' => collect(trans('canvas::app', [], $user->locale))->toJson(),
+        ]);
     }
 }
