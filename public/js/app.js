@@ -851,7 +851,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "isStaticProperty": () => (/* binding */ isStaticProperty),
 /* harmony export */   "isStaticPropertyKey": () => (/* binding */ isStaticPropertyKey),
 /* harmony export */   "isTemplateNode": () => (/* binding */ isTemplateNode),
-/* harmony export */   "isText": () => (/* binding */ isText),
+/* harmony export */   "isText": () => (/* binding */ isText$1),
 /* harmony export */   "isVSlot": () => (/* binding */ isVSlot),
 /* harmony export */   "locStub": () => (/* binding */ locStub),
 /* harmony export */   "makeBlock": () => (/* binding */ makeBlock),
@@ -939,7 +939,7 @@ const errorMessages = {
     [34 /* ErrorCodes.X_V_BIND_NO_EXPRESSION */]: `v-bind is missing expression.`,
     [35 /* ErrorCodes.X_V_ON_NO_EXPRESSION */]: `v-on is missing expression.`,
     [36 /* ErrorCodes.X_V_SLOT_UNEXPECTED_DIRECTIVE_ON_SLOT_OUTLET */]: `Unexpected custom directive on <slot> outlet.`,
-    [37 /* ErrorCodes.X_V_SLOT_MIXED_SLOT_USAGE */]: `Mixed v-slot usage on both the component and nested <template>.` +
+    [37 /* ErrorCodes.X_V_SLOT_MIXED_SLOT_USAGE */]: `Mixed v-slot usage on both the component and nested <template>. ` +
         `When there are multiple named slots, all slots should use <template> ` +
         `syntax to avoid scope ambiguity.`,
     [38 /* ErrorCodes.X_V_SLOT_DUPLICATE_SLOT_NAMES */]: `Duplicate slot names found. `,
@@ -1062,7 +1062,7 @@ function createRoot(children, loc = locStub) {
     return {
         type: 0 /* NodeTypes.ROOT */,
         children,
-        helpers: [],
+        helpers: new Set(),
         components: [],
         directives: [],
         hoists: [],
@@ -1409,7 +1409,7 @@ function hasDynamicKeyVBind(node) {
             !p.arg.isStatic) // v-bind:[foo]
     );
 }
-function isText(node) {
+function isText$1(node) {
     return node.type === 5 /* NodeTypes.INTERPOLATION */ || node.type === 2 /* NodeTypes.TEXT */;
 }
 function isVSlot(p) {
@@ -2939,7 +2939,7 @@ function transform(root, options) {
         createRootCodegen(root, context);
     }
     // finalize meta information
-    root.helpers = [...context.helpers.keys()];
+    root.helpers = new Set([...context.helpers.keys()]);
     root.components = [...context.components];
     root.directives = [...context.directives];
     root.imports = context.imports;
@@ -3146,12 +3146,16 @@ function generate(ast, options = {}) {
     if (options.onContextCreated)
         options.onContextCreated(context);
     const { mode, push, prefixIdentifiers, indent, deindent, newline, scopeId, ssr } = context;
-    const hasHelpers = ast.helpers.length > 0;
+    const helpers = Array.from(ast.helpers);
+    const hasHelpers = helpers.length > 0;
     const useWithBlock = !prefixIdentifiers && mode !== 'module';
+    const isSetupInlined = !true ;
     // preambles
     // in setup() inline mode, the preamble is generated in a sub context
     // and returned separately.
-    const preambleContext = context;
+    const preambleContext = isSetupInlined
+        ? createCodegenContext(ast, options)
+        : context;
     {
         genFunctionPreamble(ast, preambleContext);
     }
@@ -3169,7 +3173,7 @@ function generate(ast, options = {}) {
         // function mode const declarations should be inside with block
         // also they should be renamed to avoid collision with user properties
         if (hasHelpers) {
-            push(`const { ${ast.helpers.map(aliasHelper).join(', ')} } = _Vue`);
+            push(`const { ${helpers.map(aliasHelper).join(', ')} } = _Vue`);
             push(`\n`);
             newline();
         }
@@ -3221,7 +3225,7 @@ function generate(ast, options = {}) {
     return {
         ast,
         code: context.code,
-        preamble: ``,
+        preamble: isSetupInlined ? preambleContext.code : ``,
         // SourceMapGenerator does have toJSON() method but it's not in the types
         map: context.map ? context.map.toJSON() : undefined
     };
@@ -3233,7 +3237,8 @@ function genFunctionPreamble(ast, context) {
     // In prefix mode, we place the const declaration at top so it's done
     // only once; But if we not prefixing, we place the declaration inside the
     // with block so it doesn't incur the `in` check cost for every helper access.
-    if (ast.helpers.length > 0) {
+    const helpers = Array.from(ast.helpers);
+    if (helpers.length > 0) {
         {
             // "with" mode.
             // save Vue in a separate variable to avoid collision
@@ -3249,7 +3254,7 @@ function genFunctionPreamble(ast, context) {
                     CREATE_TEXT,
                     CREATE_STATIC
                 ]
-                    .filter(helper => ast.helpers.includes(helper))
+                    .filter(helper => helpers.includes(helper))
                     .map(aliasHelper)
                     .join(', ');
                 push(`const { ${staticHelpers} } = _Vue\n`);
@@ -3296,7 +3301,7 @@ function genHoists(hoists, context) {
     }
     context.pure = false;
 }
-function isText$1(n) {
+function isText(n) {
     return ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isString)(n) ||
         n.type === 4 /* NodeTypes.SIMPLE_EXPRESSION */ ||
         n.type === 2 /* NodeTypes.TEXT */ ||
@@ -3305,7 +3310,7 @@ function isText$1(n) {
 }
 function genNodeListAsArray(nodes, context) {
     const multilines = nodes.length > 3 ||
-        ((( true)) && nodes.some(n => (0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isArray)(n) || !isText$1(n)));
+        ((( true)) && nodes.some(n => (0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isArray)(n) || !isText(n)));
     context.push(`[`);
     multilines && context.indent();
     genNodeList(nodes, context, multilines);
@@ -3744,11 +3749,11 @@ const isStaticProperty = (node) => node &&
 const isStaticPropertyKey = (node, parent) => isStaticProperty(parent) && parent.key === node;
 
 // these keywords should not appear inside expressions, but operators like
-// typeof, instanceof and in are allowed
+// 'typeof', 'instanceof', and 'in' are allowed
 const prohibitedKeywordRE = new RegExp('\\b' +
-    ('do,if,for,let,new,try,var,case,else,with,await,break,catch,class,const,' +
-        'super,throw,while,yield,delete,export,import,return,switch,default,' +
-        'extends,finally,continue,debugger,function,arguments,typeof,void')
+    ('arguments,await,break,case,catch,class,const,continue,debugger,default,' +
+        'delete,do,else,export,extends,finally,for,function,if,import,let,new,' +
+        'return,super,switch,throw,try,var,void,while,with,yield')
         .split(',')
         .join('\\b|\\b') +
     '\\b');
@@ -5386,11 +5391,11 @@ const transformText = (node, context) => {
             let hasText = false;
             for (let i = 0; i < children.length; i++) {
                 const child = children[i];
-                if (isText(child)) {
+                if (isText$1(child)) {
                     hasText = true;
                     for (let j = i + 1; j < children.length; j++) {
                         const next = children[j];
-                        if (isText(next)) {
+                        if (isText$1(next)) {
                             if (!currentContainer) {
                                 currentContainer = children[i] = createCompoundExpression([child], child.loc);
                             }
@@ -5432,7 +5437,7 @@ const transformText = (node, context) => {
             // runtime normalization.
             for (let i = 0; i < children.length; i++) {
                 const child = children[i];
-                if (isText(child) || child.type === 8 /* NodeTypes.COMPOUND_EXPRESSION */) {
+                if (isText$1(child) || child.type === 8 /* NodeTypes.COMPOUND_EXPRESSION */) {
                     const callArgs = [];
                     // createTextVNode defaults to single whitespace, so if it is a
                     // single space the code could be an empty call to save bytes.
@@ -5457,13 +5462,13 @@ const transformText = (node, context) => {
     }
 };
 
-const seen = new WeakSet();
+const seen$1 = new WeakSet();
 const transformOnce = (node, context) => {
     if (node.type === 1 /* NodeTypes.ELEMENT */ && findDir(node, 'once', true)) {
-        if (seen.has(node) || context.inVOnce) {
+        if (seen$1.has(node) || context.inVOnce) {
             return;
         }
-        seen.add(node);
+        seen$1.add(node);
         context.inVOnce = true;
         context.helper(SET_BLOCK_TRACKING);
         return () => {
@@ -5502,7 +5507,7 @@ const transformModel = (dir, node, context) => {
     const propName = arg ? arg : createSimpleExpression('modelValue', true);
     const eventName = arg
         ? isStaticExp(arg)
-            ? `onUpdate:${arg.content}`
+            ? `onUpdate:${(0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.camelize)(arg.content)}`
             : createCompoundExpression(['"onUpdate:" + ', arg])
         : `onUpdate:modelValue`;
     let assignmentExp;
@@ -5704,14 +5709,14 @@ function wrapFilter(exp, filter, context) {
     }
 }
 
-const seen$1 = new WeakSet();
+const seen = new WeakSet();
 const transformMemo = (node, context) => {
     if (node.type === 1 /* NodeTypes.ELEMENT */) {
         const dir = findDir(node, 'memo');
-        if (!dir || seen$1.has(node)) {
+        if (!dir || seen.has(node)) {
             return;
         }
-        seen$1.add(node);
+        seen.add(node);
         return () => {
             const codegenNode = node.codegenNode ||
                 context.currentNode.codegenNode;
@@ -6755,7 +6760,7 @@ class EffectScope {
         /**
          * @internal
          */
-        this.active = true;
+        this._active = true;
         /**
          * @internal
          */
@@ -6770,8 +6775,11 @@ class EffectScope {
                 (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(this) - 1;
         }
     }
+    get active() {
+        return this._active;
+    }
     run(fn) {
-        if (this.active) {
+        if (this._active) {
             const currentEffectScope = activeEffectScope;
             try {
                 activeEffectScope = this;
@@ -6800,7 +6808,7 @@ class EffectScope {
         activeEffectScope = this.parent;
     }
     stop(fromParent) {
-        if (this.active) {
+        if (this._active) {
             let i, l;
             for (i = 0, l = this.effects.length; i < l; i++) {
                 this.effects[i].stop();
@@ -6823,7 +6831,7 @@ class EffectScope {
                 }
             }
             this.parent = undefined;
-            this.active = false;
+            this._active = false;
         }
     }
 }
@@ -7049,7 +7057,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         deps = [...depsMap.values()];
     }
     else if (key === 'length' && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isArray)(target)) {
-        const newLength = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.toNumber)(newValue);
+        const newLength = Number(newValue);
         depsMap.forEach((dep, key) => {
             if (key === 'length' || key >= newLength) {
                 deps.push(dep);
@@ -7141,6 +7149,10 @@ function triggerEffect(effect, debuggerEventExtraInfo) {
         }
     }
 }
+function getDepFromReactive(object, key) {
+    var _a;
+    return (_a = targetMap.get(object)) === null || _a === void 0 ? void 0 : _a.get(key);
+}
 
 const isNonTrackableKeys = /*#__PURE__*/ (0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.makeMap)(`__proto__,__v_isRef,__isVue`);
 const builtInSymbols = new Set(
@@ -7152,7 +7164,7 @@ Object.getOwnPropertyNames(Symbol)
     .filter(key => key !== 'arguments' && key !== 'caller')
     .map(key => Symbol[key])
     .filter(_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isSymbol));
-const get = /*#__PURE__*/ createGetter();
+const get$1 = /*#__PURE__*/ createGetter();
 const shallowGet = /*#__PURE__*/ createGetter(false, true);
 const readonlyGet = /*#__PURE__*/ createGetter(true);
 const shallowReadonlyGet = /*#__PURE__*/ createGetter(true, true);
@@ -7186,6 +7198,11 @@ function createArrayInstrumentations() {
     });
     return instrumentations;
 }
+function hasOwnProperty(key) {
+    const obj = toRaw(this);
+    track(obj, "has" /* TrackOpTypes.HAS */, key);
+    return obj.hasOwnProperty(key);
+}
 function createGetter(isReadonly = false, shallow = false) {
     return function get(target, key, receiver) {
         if (key === "__v_isReactive" /* ReactiveFlags.IS_REACTIVE */) {
@@ -7209,8 +7226,13 @@ function createGetter(isReadonly = false, shallow = false) {
             return target;
         }
         const targetIsArray = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isArray)(target);
-        if (!isReadonly && targetIsArray && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.hasOwn)(arrayInstrumentations, key)) {
-            return Reflect.get(arrayInstrumentations, key, receiver);
+        if (!isReadonly) {
+            if (targetIsArray && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.hasOwn)(arrayInstrumentations, key)) {
+                return Reflect.get(arrayInstrumentations, key, receiver);
+            }
+            if (key === 'hasOwnProperty') {
+                return hasOwnProperty;
+            }
         }
         const res = Reflect.get(target, key, receiver);
         if ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isSymbol)(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
@@ -7235,7 +7257,7 @@ function createGetter(isReadonly = false, shallow = false) {
         return res;
     };
 }
-const set = /*#__PURE__*/ createSetter();
+const set$1 = /*#__PURE__*/ createSetter();
 const shallowSet = /*#__PURE__*/ createSetter(true);
 function createSetter(shallow = false) {
     return function set(target, key, value, receiver) {
@@ -7278,7 +7300,7 @@ function deleteProperty(target, key) {
     }
     return result;
 }
-function has(target, key) {
+function has$1(target, key) {
     const result = Reflect.has(target, key);
     if (!(0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isSymbol)(key) || !builtInSymbols.has(key)) {
         track(target, "has" /* TrackOpTypes.HAS */, key);
@@ -7290,10 +7312,10 @@ function ownKeys(target) {
     return Reflect.ownKeys(target);
 }
 const mutableHandlers = {
-    get,
-    set,
+    get: get$1,
+    set: set$1,
     deleteProperty,
-    has,
+    has: has$1,
     ownKeys
 };
 const readonlyHandlers = {
@@ -7324,7 +7346,7 @@ const shallowReadonlyHandlers = /*#__PURE__*/ (0,_vue_shared__WEBPACK_IMPORTED_M
 
 const toShallow = (value) => value;
 const getProto = (v) => Reflect.getPrototypeOf(v);
-function get$1(target, key, isReadonly = false, isShallow = false) {
+function get(target, key, isReadonly = false, isShallow = false) {
     // #1772: readonly(reactive(Map)) should return readonly + reactive version
     // of the value
     target = target["__v_raw" /* ReactiveFlags.RAW */];
@@ -7350,7 +7372,7 @@ function get$1(target, key, isReadonly = false, isShallow = false) {
         target.get(key);
     }
 }
-function has$1(key, isReadonly = false) {
+function has(key, isReadonly = false) {
     const target = this["__v_raw" /* ReactiveFlags.RAW */];
     const rawTarget = toRaw(target);
     const rawKey = toRaw(key);
@@ -7380,7 +7402,7 @@ function add(value) {
     }
     return this;
 }
-function set$1(key, value) {
+function set(key, value) {
     value = toRaw(value);
     const target = toRaw(this);
     const { has, get } = getProto(target);
@@ -7494,41 +7516,41 @@ function createReadonlyMethod(type) {
 function createInstrumentations() {
     const mutableInstrumentations = {
         get(key) {
-            return get$1(this, key);
+            return get(this, key);
         },
         get size() {
             return size(this);
         },
-        has: has$1,
+        has,
         add,
-        set: set$1,
+        set,
         delete: deleteEntry,
         clear,
         forEach: createForEach(false, false)
     };
     const shallowInstrumentations = {
         get(key) {
-            return get$1(this, key, false, true);
+            return get(this, key, false, true);
         },
         get size() {
             return size(this);
         },
-        has: has$1,
+        has,
         add,
-        set: set$1,
+        set,
         delete: deleteEntry,
         clear,
         forEach: createForEach(false, true)
     };
     const readonlyInstrumentations = {
         get(key) {
-            return get$1(this, key, true);
+            return get(this, key, true);
         },
         get size() {
             return size(this, true);
         },
         has(key) {
-            return has$1.call(this, key, true);
+            return has.call(this, key, true);
         },
         add: createReadonlyMethod("add" /* TriggerOpTypes.ADD */),
         set: createReadonlyMethod("set" /* TriggerOpTypes.SET */),
@@ -7538,13 +7560,13 @@ function createInstrumentations() {
     };
     const shallowReadonlyInstrumentations = {
         get(key) {
-            return get$1(this, key, true, true);
+            return get(this, key, true, true);
         },
         get size() {
             return size(this, true);
         },
         has(key) {
-            return has$1.call(this, key, true);
+            return has.call(this, key, true);
         },
         add: createReadonlyMethod("add" /* TriggerOpTypes.ADD */),
         set: createReadonlyMethod("set" /* TriggerOpTypes.SET */),
@@ -7736,9 +7758,10 @@ function trackRefValue(ref) {
 }
 function triggerRefValue(ref, newVal) {
     ref = toRaw(ref);
-    if (ref.dep) {
+    const dep = ref.dep;
+    if (dep) {
         if ((true)) {
-            triggerEffects(ref.dep, {
+            triggerEffects(dep, {
                 target: ref,
                 type: "set" /* TriggerOpTypes.SET */,
                 key: 'value',
@@ -7851,6 +7874,9 @@ class ObjectRefImpl {
     set value(newVal) {
         this._object[this._key] = newVal;
     }
+    get dep() {
+        return getDepFromReactive(toRaw(this._object), this._key);
+    }
 }
 function toRef(object, key, defaultValue) {
     const val = object[key];
@@ -7859,13 +7885,13 @@ function toRef(object, key, defaultValue) {
         : new ObjectRefImpl(object, key, defaultValue);
 }
 
-var _a;
+var _a$1;
 class ComputedRefImpl {
     constructor(getter, _setter, isReadonly, isSSR) {
         this._setter = _setter;
         this.dep = undefined;
         this.__v_isRef = true;
-        this[_a] = false;
+        this[_a$1] = false;
         this._dirty = true;
         this.effect = new ReactiveEffect(getter, () => {
             if (!this._dirty) {
@@ -7891,7 +7917,7 @@ class ComputedRefImpl {
         this._setter(newValue);
     }
 }
-_a = "__v_isReadonly" /* ReactiveFlags.IS_READONLY */;
+_a$1 = "__v_isReadonly" /* ReactiveFlags.IS_READONLY */;
 function computed(getterOrOptions, debugOptions, isSSR = false) {
     let getter;
     let setter;
@@ -7916,7 +7942,7 @@ function computed(getterOrOptions, debugOptions, isSSR = false) {
     return cRef;
 }
 
-var _a$1;
+var _a;
 const tick = /*#__PURE__*/ Promise.resolve();
 const queue = [];
 let queued = false;
@@ -7939,7 +7965,7 @@ class DeferredComputedRefImpl {
         this.dep = undefined;
         this._dirty = true;
         this.__v_isRef = true;
-        this[_a$1] = true;
+        this[_a] = true;
         let compareTarget;
         let hasCompareTarget = false;
         let scheduled = false;
@@ -7986,7 +8012,7 @@ class DeferredComputedRefImpl {
         return toRaw(this)._get();
     }
 }
-_a$1 = "__v_isReadonly" /* ReactiveFlags.IS_READONLY */;
+_a = "__v_isReadonly" /* ReactiveFlags.IS_READONLY */;
 function deferredComputed(getter) {
     return new DeferredComputedRefImpl(getter);
 }
@@ -8015,6 +8041,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Suspense": () => (/* binding */ Suspense),
 /* harmony export */   "Teleport": () => (/* binding */ Teleport),
 /* harmony export */   "Text": () => (/* binding */ Text),
+/* harmony export */   "assertNumber": () => (/* binding */ assertNumber),
 /* harmony export */   "callWithAsyncErrorHandling": () => (/* binding */ callWithAsyncErrorHandling),
 /* harmony export */   "callWithErrorHandling": () => (/* binding */ callWithErrorHandling),
 /* harmony export */   "camelize": () => (/* reexport safe */ _vue_shared__WEBPACK_IMPORTED_MODULE_1__.camelize),
@@ -8250,6 +8277,22 @@ function formatProp(key, value, raw) {
     else {
         value = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_0__.toRaw)(value);
         return raw ? value : [`${key}=`, value];
+    }
+}
+/**
+ * @internal
+ */
+function assertNumber(val, type) {
+    if (false)
+        {}
+    if (val === undefined) {
+        return;
+    }
+    else if (typeof val !== 'number') {
+        warn(`${type} is not a valid number - ` + `got ${JSON.stringify(val)}.`);
+    }
+    else if (isNaN(val)) {
+        warn(`${type} is NaN - ` + 'the duration expression might be incorrect.');
     }
 }
 
@@ -8695,7 +8738,7 @@ function tryWrap(fn) {
 let devtools;
 let buffer = [];
 let devtoolsNotInstalled = false;
-function emit(event, ...args) {
+function emit$1(event, ...args) {
     if (devtools) {
         devtools.emit(event, ...args);
     }
@@ -8742,7 +8785,7 @@ function setDevtoolsHook(hook, target) {
     }
 }
 function devtoolsInitApp(app, version) {
-    emit("app:init" /* DevtoolsHooks.APP_INIT */, app, version, {
+    emit$1("app:init" /* DevtoolsHooks.APP_INIT */, app, version, {
         Fragment,
         Text,
         Comment,
@@ -8750,7 +8793,7 @@ function devtoolsInitApp(app, version) {
     });
 }
 function devtoolsUnmountApp(app) {
-    emit("app:unmount" /* DevtoolsHooks.APP_UNMOUNT */, app);
+    emit$1("app:unmount" /* DevtoolsHooks.APP_UNMOUNT */, app);
 }
 const devtoolsComponentAdded = /*#__PURE__*/ createDevtoolsComponentHook("component:added" /* DevtoolsHooks.COMPONENT_ADDED */);
 const devtoolsComponentUpdated = 
@@ -8766,21 +8809,21 @@ const devtoolsComponentRemoved = (component) => {
 };
 function createDevtoolsComponentHook(hook) {
     return (component) => {
-        emit(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined, component);
+        emit$1(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined, component);
     };
 }
 const devtoolsPerfStart = /*#__PURE__*/ createDevtoolsPerformanceHook("perf:start" /* DevtoolsHooks.PERFORMANCE_START */);
 const devtoolsPerfEnd = /*#__PURE__*/ createDevtoolsPerformanceHook("perf:end" /* DevtoolsHooks.PERFORMANCE_END */);
 function createDevtoolsPerformanceHook(hook) {
     return (component, type, time) => {
-        emit(hook, component.appContext.app, component.uid, component, type, time);
+        emit$1(hook, component.appContext.app, component.uid, component, type, time);
     };
 }
 function devtoolsComponentEmit(component, event, params) {
-    emit("component:emit" /* DevtoolsHooks.COMPONENT_EMIT */, component.appContext.app, component, event, params);
+    emit$1("component:emit" /* DevtoolsHooks.COMPONENT_EMIT */, component.appContext.app, component, event, params);
 }
 
-function emit$1(instance, event, ...rawArgs) {
+function emit(instance, event, ...rawArgs) {
     if (instance.isUnmounted)
         return;
     const props = instance.vnode.props || _vue_shared__WEBPACK_IMPORTED_MODULE_1__.EMPTY_OBJ;
@@ -8816,7 +8859,7 @@ function emit$1(instance, event, ...rawArgs) {
             args = rawArgs.map(a => ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isString)(a) ? a.trim() : a));
         }
         if (number) {
-            args = rawArgs.map(_vue_shared__WEBPACK_IMPORTED_MODULE_1__.toNumber);
+            args = rawArgs.map(_vue_shared__WEBPACK_IMPORTED_MODULE_1__.looseToNumber);
         }
     }
     if (true) {
@@ -9465,7 +9508,10 @@ function createSuspenseBoundary(vnode, parent, parentComponent, container, hidde
         console[console.info ? 'info' : 'log'](`<Suspense> is an experimental feature and its API will likely change.`);
     }
     const { p: patch, m: move, um: unmount, n: next, o: { parentNode, remove } } = rendererInternals;
-    const timeout = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.toNumber)(vnode.props && vnode.props.timeout);
+    const timeout = vnode.props ? (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.toNumber)(vnode.props.timeout) : undefined;
+    if ((true)) {
+        assertNumber(timeout, `Suspense timeout`);
+    }
     const suspense = {
         vnode,
         parent,
@@ -9783,12 +9829,10 @@ function watchEffect(effect, options) {
     return doWatch(effect, null, options);
 }
 function watchPostEffect(effect, options) {
-    return doWatch(effect, null, (( true)
-        ? Object.assign(Object.assign({}, options), { flush: 'post' }) : 0));
+    return doWatch(effect, null, ( true) ? Object.assign(Object.assign({}, options), { flush: 'post' }) : 0);
 }
 function watchSyncEffect(effect, options) {
-    return doWatch(effect, null, (( true)
-        ? Object.assign(Object.assign({}, options), { flush: 'sync' }) : 0));
+    return doWatch(effect, null, ( true) ? Object.assign(Object.assign({}, options), { flush: 'sync' }) : 0);
 }
 // initial value for watchers to trigger on undefined initial values
 const INITIAL_WATCHER_VALUE = {};
@@ -9816,7 +9860,8 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = _v
         warn(`Invalid watch source: `, s, `A watch source can only be a getter/effect function, a ref, ` +
             `a reactive object, or an array of these types.`);
     };
-    const instance = currentInstance;
+    const instance = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_0__.getCurrentScope)() === (currentInstance === null || currentInstance === void 0 ? void 0 : currentInstance.scope) ? currentInstance : null;
+    // const instance = currentInstance
     let getter;
     let forceTrigger = false;
     let isMultiSource = false;
@@ -9927,7 +9972,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = _v
                     // pass undefined as the old value when it's changed for the first time
                     oldValue === INITIAL_WATCHER_VALUE
                         ? undefined
-                        : (isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE)
+                        : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE
                             ? []
                             : oldValue,
                     onCleanup
@@ -10633,7 +10678,7 @@ const KeepAliveImpl = {
         }
         function pruneCacheEntry(key) {
             const cached = cache.get(key);
-            if (!current || cached.type !== current.type) {
+            if (!current || !isSameVNodeType(cached, current)) {
                 unmount(cached);
             }
             else if (current) {
@@ -10665,7 +10710,7 @@ const KeepAliveImpl = {
             cache.forEach(cached => {
                 const { subTree, suspense } = instance;
                 const vnode = getInnerChild(subTree);
-                if (cached.type === vnode.type) {
+                if (cached.type === vnode.type && cached.key === vnode.key) {
                     // current instance will be unmounted as part of keep-alive's unmount
                     resetShapeFlag(vnode);
                     // but invoke its deactivated hook here
@@ -10762,7 +10807,7 @@ function matches(pattern, name) {
     else if ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isString)(pattern)) {
         return pattern.split(',').includes(name);
     }
-    else if (pattern.test) {
+    else if ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isRegExp)(pattern)) {
         return pattern.test(name);
     }
     /* istanbul ignore next */
@@ -12181,8 +12226,8 @@ function validatePropName(key) {
 // use function string name to check type constructors
 // so that it works across vms / iframes.
 function getType(ctor) {
-    const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
-    return match ? match[1] : ctor === null ? 'null' : '';
+    const match = ctor && ctor.toString().match(/^\s*(function|class) (\w+)/);
+    return match ? match[2] : ctor === null ? 'null' : '';
 }
 function isSameType(a, b) {
     return getType(a) === getType(b);
@@ -12471,7 +12516,7 @@ function createAppContext() {
         emitsCache: new WeakMap()
     };
 }
-let uid = 0;
+let uid$1 = 0;
 function createAppAPI(render, hydrate) {
     return function createApp(rootComponent, rootProps = null) {
         if (!(0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isFunction)(rootComponent)) {
@@ -12485,7 +12530,7 @@ function createAppAPI(render, hydrate) {
         const installedPlugins = new Set();
         let isMounted = false;
         const app = (context.app = {
-            _uid: uid++,
+            _uid: uid$1++,
             _component: rootComponent,
             _props: rootProps,
             _container: null,
@@ -13317,6 +13362,8 @@ function baseCreateRenderer(options, createHydrationFns) {
         if (dirs) {
             invokeDirectiveHook(vnode, null, parentComponent, 'created');
         }
+        // scopeId
+        setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
         // props
         if (props) {
             for (const key in props) {
@@ -13340,8 +13387,6 @@ function baseCreateRenderer(options, createHydrationFns) {
                 invokeVNodeHook(vnodeHook, parentComponent, vnode);
             }
         }
-        // scopeId
-        setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
         if (true) {
             Object.defineProperty(el, '__vnode', {
                 value: vnode,
@@ -15037,7 +15082,8 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
         ssFallback: vnode.ssFallback && cloneVNode(vnode.ssFallback),
         el: vnode.el,
         anchor: vnode.anchor,
-        ctx: vnode.ctx
+        ctx: vnode.ctx,
+        ce: vnode.ce
     };
     return cloned;
 }
@@ -15204,13 +15250,13 @@ function invokeVNodeHook(hook, instance, vnode, prevVNode = null) {
 }
 
 const emptyAppContext = createAppContext();
-let uid$1 = 0;
+let uid = 0;
 function createComponentInstance(vnode, parent, suspense) {
     const type = vnode.type;
     // inherit parent app context - or - if root, adopt from root vnode
     const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
     const instance = {
-        uid: uid$1++,
+        uid: uid++,
         vnode,
         type,
         parent,
@@ -15281,7 +15327,7 @@ function createComponentInstance(vnode, parent, suspense) {
     }
     else {}
     instance.root = parent ? parent.root : instance;
-    instance.emit = emit$1.bind(null, instance);
+    instance.emit = emit.bind(null, instance);
     // apply custom element special handling
     if (vnode.ce) {
         vnode.ce(instance);
@@ -15523,8 +15569,24 @@ function createAttrsProxy(instance) {
 }
 function createSetupContext(instance) {
     const expose = exposed => {
-        if (( true) && instance.exposed) {
-            warn(`expose() should be called only once per setup().`);
+        if ((true)) {
+            if (instance.exposed) {
+                warn(`expose() should be called only once per setup().`);
+            }
+            if (exposed != null) {
+                let exposedType = typeof exposed;
+                if (exposedType === 'object') {
+                    if ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isArray)(exposed)) {
+                        exposedType = 'array';
+                    }
+                    else if ((0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_0__.isRef)(exposed)) {
+                        exposedType = 'ref';
+                    }
+                }
+                if (exposedType !== 'object') {
+                    warn(`expose() should be passed a plain object, received ${exposedType}.`);
+                }
+            }
         }
         instance.exposed = exposed || {};
     };
@@ -16019,7 +16081,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.45";
+const version = "3.2.47";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -16069,6 +16131,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Transition": () => (/* binding */ Transition),
 /* harmony export */   "TransitionGroup": () => (/* binding */ TransitionGroup),
 /* harmony export */   "VueElement": () => (/* binding */ VueElement),
+/* harmony export */   "assertNumber": () => (/* reexport safe */ _vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.assertNumber),
 /* harmony export */   "callWithAsyncErrorHandling": () => (/* reexport safe */ _vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.callWithAsyncErrorHandling),
 /* harmony export */   "callWithErrorHandling": () => (/* reexport safe */ _vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.callWithErrorHandling),
 /* harmony export */   "camelize": () => (/* reexport safe */ _vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.camelize),
@@ -16310,15 +16373,15 @@ function patchStyle(el, prev, next) {
     const style = el.style;
     const isCssString = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isString)(next);
     if (next && !isCssString) {
-        for (const key in next) {
-            setStyle(style, key, next[key]);
-        }
         if (prev && !(0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isString)(prev)) {
             for (const key in prev) {
                 if (next[key] == null) {
                     setStyle(style, key, '');
                 }
             }
+        }
+        for (const key in next) {
+            setStyle(style, key, next[key]);
         }
     }
     else {
@@ -17120,19 +17183,10 @@ function normalizeDuration(duration) {
 }
 function NumberOf(val) {
     const res = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.toNumber)(val);
-    if ((true))
-        validateDuration(res);
+    if ((true)) {
+        (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.assertNumber)(res, '<transition> explicit duration');
+    }
     return res;
-}
-function validateDuration(val) {
-    if (typeof val !== 'number') {
-        (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.warn)(`<transition> explicit duration is not a valid number - ` +
-            `got ${JSON.stringify(val)}.`);
-    }
-    else if (isNaN(val)) {
-        (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.warn)(`<transition> explicit duration is NaN - ` +
-            'the duration expression might be incorrect.');
-    }
 }
 function addTransitionClass(el, cls) {
     cls.split(/\s+/).forEach(c => c && el.classList.add(c));
@@ -17329,6 +17383,14 @@ const TransitionGroupImpl = {
         };
     }
 };
+/**
+ * TransitionGroup does not support "mode" so we need to remove it from the
+ * props declarations, but direct delete operation is considered a side effect
+ * and will make the entire transition feature non-tree-shakeable, so we do it
+ * in a function and mark the function's invocation as pure.
+ */
+const removeMode = (props) => delete props.mode;
+/*#__PURE__*/ removeMode(TransitionGroupImpl.props);
 const TransitionGroup = TransitionGroupImpl;
 function callPendingCbs(c) {
     const el = c.el;
@@ -17404,7 +17466,7 @@ const vModelText = {
                 domValue = domValue.trim();
             }
             if (castToNumber) {
-                domValue = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.toNumber)(domValue);
+                domValue = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.looseToNumber)(domValue);
             }
             el._assign(domValue);
         });
@@ -17439,7 +17501,8 @@ const vModelText = {
             if (trim && el.value.trim() === value) {
                 return;
             }
-            if ((number || el.type === 'number') && (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.toNumber)(el.value) === value) {
+            if ((number || el.type === 'number') &&
+                (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.looseToNumber)(el.value) === value) {
                 return;
             }
         }
@@ -17528,7 +17591,7 @@ const vModelSelect = {
         addEventListener(el, 'change', () => {
             const selectedVal = Array.prototype.filter
                 .call(el.options, (o) => o.selected)
-                .map((o) => number ? (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.toNumber)(getValue(o)) : getValue(o));
+                .map((o) => number ? (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.looseToNumber)(getValue(o)) : getValue(o));
             el._assign(el.multiple
                 ? isSetModel
                     ? new Set(selectedVal)
@@ -17952,6 +18015,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "isOn": () => (/* binding */ isOn),
 /* harmony export */   "isPlainObject": () => (/* binding */ isPlainObject),
 /* harmony export */   "isPromise": () => (/* binding */ isPromise),
+/* harmony export */   "isRegExp": () => (/* binding */ isRegExp),
 /* harmony export */   "isReservedProp": () => (/* binding */ isReservedProp),
 /* harmony export */   "isSSRSafeAttrName": () => (/* binding */ isSSRSafeAttrName),
 /* harmony export */   "isSVGTag": () => (/* binding */ isSVGTag),
@@ -17962,6 +18026,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "isVoidTag": () => (/* binding */ isVoidTag),
 /* harmony export */   "looseEqual": () => (/* binding */ looseEqual),
 /* harmony export */   "looseIndexOf": () => (/* binding */ looseIndexOf),
+/* harmony export */   "looseToNumber": () => (/* binding */ looseToNumber),
 /* harmony export */   "makeMap": () => (/* binding */ makeMap),
 /* harmony export */   "normalizeClass": () => (/* binding */ normalizeClass),
 /* harmony export */   "normalizeProps": () => (/* binding */ normalizeProps),
@@ -18164,7 +18229,7 @@ function normalizeProps(props) {
 // These tag configs are shared between compiler-dom and runtime-dom, so they
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element
 const HTML_TAGS = 'html,body,base,head,link,meta,style,title,address,article,aside,footer,' +
-    'header,h1,h2,h3,h4,h5,h6,nav,section,div,dd,dl,dt,figcaption,' +
+    'header,hgroup,h1,h2,h3,h4,h5,h6,nav,section,div,dd,dl,dt,figcaption,' +
     'figure,picture,hr,img,li,main,ol,p,pre,ul,a,b,abbr,bdi,bdo,br,cite,code,' +
     'data,dfn,em,i,kbd,mark,q,rp,rt,ruby,s,samp,small,span,strong,sub,sup,' +
     'time,u,var,wbr,area,audio,map,track,video,embed,object,param,source,' +
@@ -18176,7 +18241,7 @@ const HTML_TAGS = 'html,body,base,head,link,meta,style,title,address,article,asi
 const SVG_TAGS = 'svg,animate,animateMotion,animateTransform,circle,clipPath,color-profile,' +
     'defs,desc,discard,ellipse,feBlend,feColorMatrix,feComponentTransfer,' +
     'feComposite,feConvolveMatrix,feDiffuseLighting,feDisplacementMap,' +
-    'feDistanceLight,feDropShadow,feFlood,feFuncA,feFuncB,feFuncG,feFuncR,' +
+    'feDistantLight,feDropShadow,feFlood,feFuncA,feFuncB,feFuncG,feFuncR,' +
     'feGaussianBlur,feImage,feMerge,feMergeNode,feMorphology,feOffset,' +
     'fePointLight,feSpecularLighting,feSpotLight,feTile,feTurbulence,filter,' +
     'foreignObject,g,hatch,hatchpath,image,line,linearGradient,marker,mask,' +
@@ -18473,6 +18538,7 @@ const isArray = Array.isArray;
 const isMap = (val) => toTypeString(val) === '[object Map]';
 const isSet = (val) => toTypeString(val) === '[object Set]';
 const isDate = (val) => toTypeString(val) === '[object Date]';
+const isRegExp = (val) => toTypeString(val) === '[object RegExp]';
 const isFunction = (val) => typeof val === 'function';
 const isString = (val) => typeof val === 'string';
 const isSymbol = (val) => typeof val === 'symbol';
@@ -18539,8 +18605,20 @@ const def = (obj, key, value) => {
         value
     });
 };
-const toNumber = (val) => {
+/**
+ * "123-foo" will be parsed to 123
+ * This is used for the .number modifier in v-model
+ */
+const looseToNumber = (val) => {
     const n = parseFloat(val);
+    return isNaN(n) ? val : n;
+};
+/**
+ * Only conerces number-like strings
+ * "123-foo" will be returned as-is
+ */
+const toNumber = (val) => {
+    const n = isString(val) ? Number(val) : NaN;
     return isNaN(n) ? val : n;
 };
 let _globalThis;
@@ -28470,18 +28548,6 @@ webpackContext.id = "./node_modules/dayjs/locale sync recursive ^\\.\\/.*\\.js$"
 
 /***/ }),
 
-/***/ "./node_modules/form-data/lib/browser.js":
-/*!***********************************************!*\
-  !*** ./node_modules/form-data/lib/browser.js ***!
-  \***********************************************/
-/***/ ((module) => {
-
-/* eslint-env browser */
-module.exports = typeof self == 'object' ? self.FormData : window.FormData;
-
-
-/***/ }),
-
 /***/ "./node_modules/ieee754/index.js":
 /*!***************************************!*\
   !*** ./node_modules/ieee754/index.js ***!
@@ -29609,6 +29675,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Transition": () => (/* reexport safe */ _vue_runtime_dom__WEBPACK_IMPORTED_MODULE_0__.Transition),
 /* harmony export */   "TransitionGroup": () => (/* reexport safe */ _vue_runtime_dom__WEBPACK_IMPORTED_MODULE_0__.TransitionGroup),
 /* harmony export */   "VueElement": () => (/* reexport safe */ _vue_runtime_dom__WEBPACK_IMPORTED_MODULE_0__.VueElement),
+/* harmony export */   "assertNumber": () => (/* reexport safe */ _vue_runtime_dom__WEBPACK_IMPORTED_MODULE_0__.assertNumber),
 /* harmony export */   "callWithAsyncErrorHandling": () => (/* reexport safe */ _vue_runtime_dom__WEBPACK_IMPORTED_MODULE_0__.callWithAsyncErrorHandling),
 /* harmony export */   "callWithErrorHandling": () => (/* reexport safe */ _vue_runtime_dom__WEBPACK_IMPORTED_MODULE_0__.callWithErrorHandling),
 /* harmony export */   "camelize": () => (/* reexport safe */ _vue_runtime_dom__WEBPACK_IMPORTED_MODULE_0__.camelize),
@@ -33223,7 +33290,7 @@ class AxiosHeaders {
     if (header) {
       const key = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].findKey(this, header);
 
-      return !!(key && (!matcher || matchHeaderValue(this, this[key], key, matcher)));
+      return !!(key && this[key] !== undefined && (!matcher || matchHeaderValue(this, this[key], key, matcher)));
     }
 
     return false;
@@ -33256,8 +33323,20 @@ class AxiosHeaders {
     return deleted;
   }
 
-  clear() {
-    return Object.keys(this).forEach(this.delete.bind(this));
+  clear(matcher) {
+    const keys = Object.keys(this);
+    let i = keys.length;
+    let deleted = false;
+
+    while (i--) {
+      const key = keys[i];
+      if(!matcher || matchHeaderValue(this, this[key], key, matcher)) {
+        delete this[key];
+        deleted = true;
+      }
+    }
+
+    return deleted;
   }
 
   normalize(format) {
@@ -34006,24 +34085,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/axios/lib/env/classes/FormData.js":
-/*!********************************************************!*\
-  !*** ./node_modules/axios/lib/env/classes/FormData.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var form_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! form-data */ "./node_modules/form-data/lib/browser.js");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (form_data__WEBPACK_IMPORTED_MODULE_0__);
-
-
-/***/ }),
-
 /***/ "./node_modules/axios/lib/env/data.js":
 /*!********************************************!*\
   !*** ./node_modules/axios/lib/env/data.js ***!
@@ -34035,7 +34096,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "VERSION": () => (/* binding */ VERSION)
 /* harmony export */ });
-const VERSION = "1.2.6";
+const VERSION = "1.3.1";
 
 /***/ }),
 
@@ -34887,12 +34948,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
 /* harmony import */ var _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/AxiosError.js */ "./node_modules/axios/lib/core/AxiosError.js");
-/* harmony import */ var _env_classes_FormData_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../env/classes/FormData.js */ "./node_modules/axios/lib/env/classes/FormData.js");
+/* harmony import */ var _platform_node_classes_FormData_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../platform/node/classes/FormData.js */ "./node_modules/axios/lib/helpers/null.js");
 /* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
 
 
 
 
+// temporary hotfix to avoid circular references until AxiosURLSearchParams is refactored
 
 
 /**
@@ -34951,17 +35013,6 @@ const predicates = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toFlatObjec
 });
 
 /**
- * If the thing is a FormData object, return true, otherwise return false.
- *
- * @param {unknown} thing - The thing to check.
- *
- * @returns {boolean}
- */
-function isSpecCompliant(thing) {
-  return thing && _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFunction(thing.append) && thing[Symbol.toStringTag] === 'FormData' && thing[Symbol.iterator];
-}
-
-/**
  * Convert a data object to FormData
  *
  * @param {Object} obj
@@ -34990,7 +35041,7 @@ function toFormData(obj, formData, options) {
   }
 
   // eslint-disable-next-line no-param-reassign
-  formData = formData || new (_env_classes_FormData_js__WEBPACK_IMPORTED_MODULE_1__["default"] || FormData)();
+  formData = formData || new (_platform_node_classes_FormData_js__WEBPACK_IMPORTED_MODULE_1__["default"] || FormData)();
 
   // eslint-disable-next-line no-param-reassign
   options = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toFlatObject(options, {
@@ -35008,7 +35059,7 @@ function toFormData(obj, formData, options) {
   const dots = options.dots;
   const indexes = options.indexes;
   const _Blob = options.Blob || typeof Blob !== 'undefined' && Blob;
-  const useBlob = _Blob && isSpecCompliant(formData);
+  const useBlob = _Blob && _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isSpecCompliantForm(formData);
 
   if (!_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFunction(visitor)) {
     throw new TypeError('visitor must be a function');
@@ -35053,7 +35104,7 @@ function toFormData(obj, formData, options) {
         value = JSON.stringify(value);
       } else if (
         (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArray(value) && isFlatArray(value)) ||
-        (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFileList(value) || _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].endsWith(key, '[]') && (arr = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toArray(value))
+        ((_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFileList(value) || _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].endsWith(key, '[]')) && (arr = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toArray(value))
         )) {
         // eslint-disable-next-line no-param-reassign
         key = removeBrackets(key);
@@ -35910,7 +35961,7 @@ const matchAll = (regExp, str) => {
 const isHTMLForm = kindOfTest('HTMLFormElement');
 
 const toCamelCase = str => {
-  return str.toLowerCase().replace(/[_-\s]([a-z\d])(\w*)/g,
+  return str.toLowerCase().replace(/[-_\s]([a-z\d])(\w*)/g,
     function replacer(m, p1, p2) {
       return p1.toUpperCase() + p2;
     }
@@ -35994,6 +36045,37 @@ const toFiniteNumber = (value, defaultValue) => {
   return Number.isFinite(value) ? value : defaultValue;
 }
 
+const ALPHA = 'abcdefghijklmnopqrstuvwxyz'
+
+const DIGIT = '0123456789';
+
+const ALPHABET = {
+  DIGIT,
+  ALPHA,
+  ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
+}
+
+const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
+  let str = '';
+  const {length} = alphabet;
+  while (size--) {
+    str += alphabet[Math.random() * length|0]
+  }
+
+  return str;
+}
+
+/**
+ * If the thing is a FormData object, return true, otherwise return false.
+ *
+ * @param {unknown} thing - The thing to check.
+ *
+ * @returns {boolean}
+ */
+function isSpecCompliantForm(thing) {
+  return !!(thing && isFunction(thing.append) && thing[Symbol.toStringTag] === 'FormData' && thing[Symbol.iterator]);
+}
+
 const toJSONObject = (obj) => {
   const stack = new Array(10);
 
@@ -36071,6 +36153,9 @@ const toJSONObject = (obj) => {
   findKey,
   global: _global,
   isContextDefined,
+  ALPHABET,
+  generateString,
+  isSpecCompliantForm,
   toJSONObject
 });
 
