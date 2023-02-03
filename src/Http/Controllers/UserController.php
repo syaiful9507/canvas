@@ -48,10 +48,9 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::query()->create([
-            'id' => Uuid::uuid4()->toString(),
-            ...$request->validated(),
-        ]);
+        $user = User::query()->make(['id' => Uuid::uuid4()->toString()]);
+
+        $user->update($request->validated());
 
         return response()->json($user->refresh());
     }

@@ -82,10 +82,9 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $post = Post::query()->create([
-            'id' => Uuid::uuid4()->toString(),
-            ...$request->validated(),
-        ]);
+        $post = Post::query()->make(['id' => Uuid::uuid4()->toString()]);
+
+        $post->update($request->validated());
 
         $post->user()->associate($request->user('canvas'));
 

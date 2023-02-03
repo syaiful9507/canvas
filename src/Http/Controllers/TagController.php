@@ -51,10 +51,9 @@ class TagController extends Controller
      */
     public function store(StoreTagRequest $request)
     {
-        $tag = Tag::query()->create([
-            'id' => Uuid::uuid4()->toString(),
-            ...$request->validated(),
-        ]);
+        $tag = Tag::query()->make(['id' => Uuid::uuid4()->toString()]);
+
+        $tag->update($request->validated());
 
         return response()->json($tag->refresh());
     }

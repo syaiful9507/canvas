@@ -51,10 +51,9 @@ class TopicController extends Controller
      */
     public function store(StoreTopicRequest $request)
     {
-        $topic = Topic::query()->create([
-            'id' => Uuid::uuid4()->toString(),
-            ...$request->validated(),
-        ]);
+        $topic = Topic::query()->make(['id' => Uuid::uuid4()->toString()]);
+
+        $topic->update($request->validated());
 
         return response()->json($topic->refresh());
     }
