@@ -53,7 +53,9 @@ class TopicController extends Controller
     {
         $topic = Topic::query()->make(['id' => Uuid::uuid4()->toString()]);
 
-        $topic->update($request->validated());
+        $topic->fill($request->validated());
+
+        $topic->save();
 
         return response()->json($topic->refresh());
     }

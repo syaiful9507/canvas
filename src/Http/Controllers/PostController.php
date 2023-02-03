@@ -84,7 +84,9 @@ class PostController extends Controller
     {
         $post = Post::query()->make(['id' => Uuid::uuid4()->toString()]);
 
-        $post->update($request->validated());
+        $post->fill($request->validated());
+
+        $post->save();
 
         $post->user()->associate($request->user('canvas'));
 

@@ -53,7 +53,9 @@ class TagController extends Controller
     {
         $tag = Tag::query()->make(['id' => Uuid::uuid4()->toString()]);
 
-        $tag->update($request->validated());
+        $tag->fill($request->validated());
+
+        $tag->save();
 
         return response()->json($tag->refresh());
     }

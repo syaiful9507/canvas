@@ -50,7 +50,9 @@ class UserController extends Controller
     {
         $user = User::query()->make(['id' => Uuid::uuid4()->toString()]);
 
-        $user->update($request->validated());
+        $user->fill($request->validated());
+
+        $user->save();
 
         return response()->json($user->refresh());
     }
