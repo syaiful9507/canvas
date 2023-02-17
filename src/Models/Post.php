@@ -57,15 +57,6 @@ class Post extends Model
     protected $perPage = 10;
 
     /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'published_at',
-    ];
-
-    /**
      * The accessors to append to the model's array form.
      *
      * @var array
@@ -80,6 +71,7 @@ class Post extends Model
      * @var array
      */
     protected $casts = [
+        'published_at' => 'datetime:Y-m-d',
         'meta' => 'array',
     ];
 
