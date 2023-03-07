@@ -25,5 +25,7 @@ class InstallCommandTest extends TestCase
             'email' => 'email@example.com',
             'role' => User::$admin_id,
         ]);
+
+        $this->assertFileExists(config_path('canvas.php'));
     }
 }

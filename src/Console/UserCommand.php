@@ -33,7 +33,7 @@ class UserCommand extends Command
      */
     public function handle()
     {
-        $email = $this->ask('What email should be attached to the user?');
+        $email = $this->ask('What email do you want to assign to this user?');
         $password = 'password';
 
         if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {

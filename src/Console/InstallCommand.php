@@ -56,29 +56,17 @@ class InstallCommand extends Command
             $this->installCanvasServiceProvider();
         }
 
-        $this->createDefaultUser($email = 'email@example.com', $password = 'password');
-
-        $this->info('Installation complete.');
-        $this->table(['Default Email', 'Default Password'], [[$email, $password]]);
-        $this->info('First things first, head to <comment>'.route('canvas.login').'</comment> and update your credentials.');
-    }
-
-    /**
-     * Create a new default user.
-     *
-     * @param  string  $email
-     * @param  string  $password
-     * @return void
-     */
-    protected function createDefaultUser(string $email, string $password)
-    {
-        User::query()->create([
+        $user = User::query()->create([
             'id' => Uuid::uuid4()->toString(),
             'name' => 'Example User',
-            'email' => $email,
-            'password' => Hash::make($password),
+            'email' => 'email@example.com',
+            'password' => Hash::make('password'),
             'role' => User::$admin_id,
         ]);
+
+        $this->info('Installation complete.');
+        $this->table(['Default Email', 'Default Password'], [[$user->email, $user->password]]);
+        $this->info('First things first, head to <comment>'.route('canvas.login').'</comment> and update your credentials.');
     }
 
     /**
