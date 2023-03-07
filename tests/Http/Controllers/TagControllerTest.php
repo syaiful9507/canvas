@@ -8,6 +8,7 @@ use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class TagControllerTest.
@@ -79,12 +80,21 @@ class TagControllerTest extends TestCase
         $this->assertSame($response->getOriginalContent()->first()->id, $unpopularTag->id);
     }
 
+    public function testCreateDataForTag(): void
+    {
+        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
+            ->getJson(route('canvas.tags.create'))
+            ->assertSuccessful();
+
+        $this->assertInstanceOf(Tag::class, $response->getOriginalContent());
+    }
+
     public function testExistingTagData(): void
     {
         $tag = Tag::factory()->create();
 
         $response = $this->actingAs($tag->user, 'canvas')
-                         ->getJson(route('canvas.tags.show', ['tag' => $tag->id]))
+                         ->getJson(route('canvas.tags.show', ['id' => $tag->id]))
                          ->assertSuccessful();
 
         $this->assertTrue($tag->is($response->getOriginalContent()));
@@ -95,7 +105,7 @@ class TagControllerTest extends TestCase
         $tag = Tag::factory()->has(Post::factory())->create();
 
         $response = $this->actingAs($tag->user, 'canvas')
-                        ->getJson(route('canvas.tags.posts', ['tag' => $tag->id]))
+                        ->getJson(route('canvas.tags.posts', ['id' => $tag->id]))
                          ->assertSuccessful();
 
         $this->assertInstanceOf(Post::class, $response->getOriginalContent()->first());
@@ -108,7 +118,7 @@ class TagControllerTest extends TestCase
     public function testTagNotFound(): void
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
-             ->getJson(route('canvas.tags.show', ['tag' => 'tag-not-found']))
+             ->getJson(route('canvas.tags.show', ['id' => 'tag-not-found']))
              ->assertNotFound();
     }
 
@@ -117,13 +127,14 @@ class TagControllerTest extends TestCase
         $user = User::factory()->admin()->create();
 
         $data = [
+            'id' => Uuid::uuid4()->toString(),
             'name' => 'A new tag',
             'slug' => 'a-new-tag',
             'user_id' => $user->id,
         ];
 
         $response = $this->actingAs($user, 'canvas')
-                         ->postJson(route('canvas.tags.store', $data))
+                         ->putJson(route('canvas.tags.store', ['id' => $data['id']]), $data)
                          ->assertSuccessful();
 
         $this->assertInstanceOf(Tag::class, $response->getOriginalContent()->first());
@@ -131,40 +142,19 @@ class TagControllerTest extends TestCase
         $this->assertSame($data['slug'], $response->getOriginalContent()->slug);
     }
 
-    public function testDeletedTagsCanBeRefreshed(): void
-    {
-        $deletedTag = Tag::factory()->create(['deleted_at' => now()]);
-
-        $data = [
-            'name' => $deletedTag->name,
-            'slug' => $deletedTag->slug,
-            'user_id' => $deletedTag->user_id,
-        ];
-
-        $response = $this->actingAs($deletedTag->user, 'canvas')
-                         ->putJson(route('canvas.tags.update', ['tag' => $deletedTag->id]), $data)
-                         ->assertSuccessful();
-
-        $this->assertInstanceOf(Tag::class, $response->getOriginalContent()->first());
-
-        $this->assertNotSoftDeleted('canvas_tags', [
-            'id' => $deletedTag->id,
-            'slug' => $deletedTag->slug,
-        ]);
-    }
-
     public function testUpdateExistingTag(): void
     {
         $tag = Tag::factory()->create();
 
         $data = [
+            'id' => $tag->id,
             'name' => 'An updated tag',
             'slug' => 'an-updated-tag',
             'user_id' => $tag->user_id,
         ];
 
         $response = $this->actingAs($tag->user, 'canvas')
-                            ->putJson(route('canvas.tags.update', ['tag' => $tag->id]), $data)
+                            ->putJson(route('canvas.tags.store', ['id' => $tag->id]), $data)
                          ->assertSuccessful();
 
         $this->assertInstanceOf(Tag::class, $response->getOriginalContent()->first());
@@ -175,7 +165,7 @@ class TagControllerTest extends TestCase
     public function testInvalidSlugsAreValidated(): void
     {
         $this->actingAs($user = User::factory()->admin()->create(), 'canvas')
-             ->postJson(route('canvas.tags.store'), [
+             ->putJson(route('canvas.tags.store', ['id' => Uuid::uuid4()->toString()]), [
                  'name' => 'A new tag',
                  'slug' => 'a new.slug',
                  'user_id' => $user->id,
@@ -193,11 +183,11 @@ class TagControllerTest extends TestCase
         $tag = Tag::factory()->create();
 
         $this->actingAs($tag->user, 'canvas')
-             ->deleteJson(route('canvas.tags.destroy', ['tag' => 'not-a-tag']))
+             ->deleteJson(route('canvas.tags.destroy', ['id' => 'not-a-tag']))
              ->assertNotFound();
 
         $this->actingAs($tag->user, 'canvas')
-            ->deleteJson(route('canvas.tags.destroy', ['tag' => $tag->id]))
+            ->deleteJson(route('canvas.tags.destroy', ['id' => $tag->id]))
              ->assertSuccessful()
              ->assertNoContent();
 

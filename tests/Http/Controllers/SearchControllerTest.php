@@ -28,7 +28,7 @@ class SearchControllerTest extends TestCase
         Post::factory()->for(User::factory()->admin())->create();
 
         $response = $this->actingAs($contributor, 'canvas')
-                         ->getJson('canvas/api/search/posts')
+                         ->getJson(route('canvas.search.posts'))
                          ->assertSuccessful()
                          ->assertJsonCount(2);
 
@@ -50,7 +50,7 @@ class SearchControllerTest extends TestCase
         Post::factory()->for(User::factory()->contributor())->create();
 
         $response = $this->actingAs($editor, 'canvas')
-                         ->getJson('canvas/api/search/posts')
+            ->getJson(route('canvas.search.posts'))
                          ->assertSuccessful()
                          ->assertJsonCount(3);
 
@@ -72,7 +72,7 @@ class SearchControllerTest extends TestCase
         Post::factory()->for(User::factory()->contributor())->create();
 
         $response = $this->actingAs($admin, 'canvas')
-                         ->getJson('canvas/api/search/posts')
+            ->getJson(route('canvas.search.posts'))
                          ->assertSuccessful()
                          ->assertJsonCount(3);
 
@@ -90,7 +90,7 @@ class SearchControllerTest extends TestCase
         $user = User::factory()->admin()->has(Tag::factory(2))->create();
 
         $response = $this->actingAs($user, 'canvas')
-                         ->getJson('canvas/api/search/tags')
+            ->getJson(route('canvas.search.tags'))
                          ->assertSuccessful()
                          ->assertJsonCount(2);
 
@@ -107,7 +107,7 @@ class SearchControllerTest extends TestCase
         $user = User::factory()->admin()->has(Topic::factory(2))->create();
 
         $response = $this->actingAs($user, 'canvas')
-                         ->getJson('canvas/api/search/topics')
+            ->getJson(route('canvas.search.topics'))
                          ->assertSuccessful()
                          ->assertJsonCount(2);
 
@@ -128,7 +128,7 @@ class SearchControllerTest extends TestCase
         User::factory()->contributor()->create();
 
         $response = $this->actingAs($admin, 'canvas')
-                         ->getJson('canvas/api/search/users')
+            ->getJson(route('canvas.search.users'))
                          ->assertSuccessful()
                          ->assertJsonCount(3);
 

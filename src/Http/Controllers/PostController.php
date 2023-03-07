@@ -75,20 +75,65 @@ class PostController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Show the form for creating a new resource.
      *
-     * @param  StorePostRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StorePostRequest $request)
+    public function create()
     {
-        $post = Post::query()->make(['id' => Uuid::uuid4()->toString()]);
+        $uuid = Uuid::uuid4();
 
-        $post->fill($request->validated());
+        return response()->json([
+            'post' => Post::query()->make([
+                'id' => $uuid->toString(),
+                'slug' => "post-{$uuid->toString()}",
+            ]),
+            'tags' => Tag::query()->get(['name', 'slug'])->toArray(),
+            'topics' => Topic::query()->get(['name', 'slug'])->toArray(),
+        ]);
+    }
 
-        $post->save();
+    /**
+     * Display the specified resource.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(string $id)
+    {
+        abort_unless(Uuid::isValid($id), 400);
 
-        $post->user()->associate($request->user('canvas'));
+        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })->with(['tags:name,slug', 'topic:name,slug'])->findOrFail($id);
+
+        return response()->json([
+            'post' => $post,
+            'tags' => Tag::query()->get(['name', 'slug'])->toArray(),
+            'topics' => Topic::query()->get(['name', 'slug'])->toArray(),
+        ]);
+    }
+
+    /**
+     * Store or update the specified resource in storage.
+     *
+     * @param  \Canvas\Http\Requests\StorePostRequest  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws Exception
+     */
+    public function store(StorePostRequest $request, string $id)
+    {
+        abort_unless(Uuid::isValid($id), 400);
+
+        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })->with(['tags', 'topic'])->updateOrCreate(['id' => $id], $request->validated());
 
         $post->tags()->sync($this->tagsToSync($request->input('tags', [])));
 
@@ -101,47 +146,9 @@ class PostController extends Controller
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function stats(string $id)
     {
-        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
-            return $query->where('user_id', request()->user('canvas')->id);
-        }, function (Builder $query) {
-            return $query;
-        })->with(['tags:name,slug', 'topic:name,slug'])->findOrFail($id);
-
-        return response()->json([
-            'post' => $post,
-            'tags' => Tag::query()->get(['name', 'slug']),
-            'topics' => Topic::query()->get(['name', 'slug']),
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Canvas\Http\Requests\StorePostRequest  $request
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws Exception
-     */
-    public function update(StorePostRequest $request, string $id)
-    {
-        $data = $request->validated();
-
-        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
-            return $query->where('user_id', request()->user('canvas')->id);
-        }, function (Builder $query) {
-            return $query;
-        })->with(['tags', 'topic'])->findOrFail($id);
-
-        $post->update($data);
-
-        $post->user()->associate($post->user ?? $request->user('canvas'));
-
-        $post->tags()->sync($this->tagsToSync($request->input('tags', [])));
-
-        return response()->json($post->refresh());
+         abort_unless(Uuid::isValid($id), 400);
     }
 
     /**
@@ -154,6 +161,8 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_unless(Uuid::isValid($id), 400);
+
         $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
             return $query->where('user_id', request()->user('canvas')->id);
         }, function (Builder $query) {

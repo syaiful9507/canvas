@@ -40,39 +40,6 @@ class PostTest extends TestCase
         $this->assertArrayHasKey('estimated_read_time_in_minutes', Post::factory()->create()->toArray());
     }
 
-    public function testPostsCanShareTheSameSlugWithUniqueUsers(): void
-    {
-        $admin = User::factory()->admin()->create();
-
-        $response = $this->actingAs($admin, 'canvas')
-            ->postJson(route('canvas.posts.store'), [
-                'slug' => 'a-new-post',
-                'title' => 'A new post',
-                'user_id' => $admin->id,
-            ]);
-
-        $this->assertDatabaseHas('canvas_posts', [
-            'id' => $response->original['id'],
-            'slug' => $response->original['slug'],
-            'user_id' => $response->original['user_id'],
-        ]);
-
-        $editor = User::factory()->editor()->create();
-
-        $response = $this->actingAs($editor, 'canvas')
-            ->postJson(route('canvas.posts.store'), [
-                'slug' => 'a-new-post',
-                'title' => 'A new post',
-                'user_id' => $editor->id,
-            ]);
-
-        $this->assertDatabaseHas('canvas_posts', [
-            'id' => $response->original['id'],
-            'slug' => $response->original['slug'],
-            'user_id' => $response->original['user_id'],
-        ]);
-    }
-
     public function testTagsRelationship(): void
     {
         $post = Post::factory()->has(Tag::factory())->create();

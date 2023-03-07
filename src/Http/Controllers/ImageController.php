@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Canvas\Http\Controllers;
 
 use Canvas\Canvas;
+use Canvas\Http\Requests\StoreUploadRequest;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage;
 
-class UploadsController extends Controller
+class ImageController extends Controller
 {
     /**
      * Store a newly created resource in storage.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store()
+    public function store(StoreUploadRequest $request)
     {
         $payload = request()->file();
 
@@ -28,7 +29,7 @@ class UploadsController extends Controller
         // TODO: What does that comment even mean?
         $file = reset($payload);
 
-        $path = $file->storePublicly(Canvas::baseStoragePath(), [
+        $path = $file->storePublicly(Canvas::baseStoragePathForImages(), [
             'disk' => config('canvas.storage_disk'),
         ]);
 
@@ -42,13 +43,15 @@ class UploadsController extends Controller
      */
     public function destroy()
     {
+        dd(request()->getContent());
         if (empty(request()->getContent())) {
             return response()->json(null, 400);
         }
-
+//dd(request()->getContent());
         $file = pathinfo(request()->getContent());
-
-        $storagePath = Canvas::baseStoragePath();
+        dd($file);
+//dd('here');
+        $storagePath = Canvas::baseStoragePathForImages();
 
         $path = "{$storagePath}/{$file['basename']}";
 

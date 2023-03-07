@@ -1,37 +1,46 @@
 <?php
 
-namespace Canvas\Services;
+declare(strict_types=1);
 
-use Canvas\Canvas;
-use Canvas\Models\Post;
-use Canvas\Models\User;
-use Canvas\Models\View;
-use Canvas\Models\Visit;
-use Carbon\CarbonInterval;
-use DateInterval;
-use DatePeriod;
-use DateTimeInterface;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Str;
+namespace Canvas\Http\Controllers;
 
-class StatsAggregator
+use Illuminate\Routing\Controller;
+
+class StatController extends Controller
 {
-    /**
-     * The authenticated user instance.
-     *
-     * @var User
-     */
-    protected $user;
-
-    /**
-     * Create a new service instance.
-     *
-     * @param  User  $user
-     */
-    public function __construct(User $user)
+    public function views()
     {
-        $this->user = $user;
+        //
+    }
+
+    public function visits()
+    {
+        //
+    }
+
+    public function chart()
+    {
+        //
+    }
+
+    public function sources()
+    {
+        //
+    }
+
+    public function pages()
+    {
+        //
+    }
+
+    public function countries()
+    {
+        //
+    }
+
+    public function devices()
+    {
+        //
     }
 
     /**
@@ -44,20 +53,20 @@ class StatsAggregator
     public function getStatsForPosts(Collection $posts, int $days = 30): array
     {
         $views = View::query()
-                     ->select('created_at')
-                     ->whereIn('post_id', $posts->pluck('id'))
-                     ->whereBetween('created_at', [
-                         today()->subDays($days)->startOfDay()->toDateTimeString(),
-                         today()->endOfDay()->toDateTimeString(),
-                     ])->get();
+            ->select('created_at')
+            ->whereIn('post_id', $posts->pluck('id'))
+            ->whereBetween('created_at', [
+                today()->subDays($days)->startOfDay()->toDateTimeString(),
+                today()->endOfDay()->toDateTimeString(),
+            ])->get();
 
         $visits = Visit::query()
-                       ->select('created_at')
-                       ->whereIn('post_id', $posts->pluck('id'))
-                       ->whereBetween('created_at', [
-                           today()->subDays($days)->startOfDay()->toDateTimeString(),
-                           today()->endOfDay()->toDateTimeString(),
-                       ])->get();
+            ->select('created_at')
+            ->whereIn('post_id', $posts->pluck('id'))
+            ->whereBetween('created_at', [
+                today()->subDays($days)->startOfDay()->toDateTimeString(),
+                today()->endOfDay()->toDateTimeString(),
+            ])->get();
 
         return [
             'views' => $views->count(),

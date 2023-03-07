@@ -41,20 +41,15 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Show the form for creating a new resource.
      *
-     * @param  StoreUserRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreUserRequest $request)
+    public function create()
     {
-        $user = User::query()->make(['id' => Uuid::uuid4()->toString()]);
-
-        $user->fill($request->validated());
-
-        $user->save();
-
-        return response()->json($user->refresh());
+        return response()->json(User::query()->make([
+            'id' => Uuid::uuid4()->toString(),
+        ]));
     }
 
     /**
@@ -65,6 +60,8 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
+        abort_unless(Uuid::isValid($id), 400);
+
         $user = User::query()->withCount('posts')->findOrFail($id);
 
         return response()->json($user);
@@ -77,19 +74,11 @@ class UserController extends Controller
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(StoreUserRequest $request, string $id)
+    public function store(StoreUserRequest $request, string $id)
     {
-        $data = $request->validated();
+        abort_unless(Uuid::isValid($id), 400);
 
-        $user = User::withTrashed()->find($id);
-
-        if ($user->trashed()) {
-            $user->restore();
-
-            return response()->json($user->refresh());
-        }
-
-        $user->update($data);
+        $user = User::query()->updateOrCreate(['id' => $id], $request->validated());
 
         return response()->json($user->refresh());
     }
@@ -102,6 +91,8 @@ class UserController extends Controller
      */
     public function posts(string $id)
     {
+        abort_unless(Uuid::isValid($id), 400);
+
         $user = User::query()->with('posts')->findOrFail($id);
 
         return response()->json($user->posts()->withCount('views')->paginate());
@@ -115,6 +106,8 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_unless(Uuid::isValid($id), 400);
+
         // Prevent a user from deleting their own account
         if (request()->user('canvas')->id === $id) {
             return response()->json(null, 403);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Canvas\Http\Requests;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -31,9 +32,9 @@ class StoreTagRequest extends FormRequest
             'slug' => [
                 'required',
                 'alpha_dash',
-                Rule::unique('canvas_tags')->where(function ($query) {
+                Rule::unique('canvas_tags')->where(function (Builder $query) {
                     return $query->where('slug', request('slug'))->where('user_id', request()->user('canvas')->id);
-                })->ignore(request('tag'))->whereNull('deleted_at'),
+                })->ignore($this->route('id'))->whereNull('deleted_at'),
             ],
             'user_id' => 'required|uuid',
         ];

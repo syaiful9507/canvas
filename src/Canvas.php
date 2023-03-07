@@ -93,11 +93,11 @@ class Canvas
     }
 
     /**
-     * Return the configured storage path url.
+     * Return the configured storage path url for images.
      *
      * @return string
      */
-    public static function baseStoragePath()
+    public static function baseStoragePathForImages()
     {
         return sprintf('%s/images', config('canvas.storage_path'));
     }

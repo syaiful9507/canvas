@@ -29,18 +29,23 @@ class ProfileControllerTest extends TestCase
 
     public function testItCanUpdateTheCurrentProfile(): void
     {
-        $data = [
-            'name' => 'New name',
-            'email' => 'new-email@example.com',
-        ];
+        $admin = User::factory()->admin()->create();
 
-        $response = $this->actingAs($user = User::factory()->admin()->create(), 'canvas')
-            ->putJson(route('canvas.profile.update'), $data)
+        $newName = 'New name';
+
+        $newEmail = 'new-email@example.com';
+
+        $response = $this->actingAs($admin, 'canvas')
+            ->putJson(route('canvas.profile.update', ['id' => $admin->id]), [
+                'id' => $admin->id,
+                'name' => $newName,
+                'email' => $newEmail,
+            ])
             ->assertSuccessful()
             ->assertJsonFragment([
-                'id' => $user->id,
-                'name' => $data['name'],
-                'email' => $data['email'],
+                'id' => $admin->id,
+                'name' => $newName,
+                'email' => $newEmail,
             ]);
 
         $this->assertArrayHasKey('i18n', $response);
@@ -49,6 +54,6 @@ class ProfileControllerTest extends TestCase
 
         $this->assertInstanceOf(User::class, $response->getOriginalContent()['user']);
 
-        $this->assertSame($data['email'], $response->getOriginalContent()['user']->email);
+        $this->assertSame($newEmail, $response->getOriginalContent()['user']->email);
     }
 }

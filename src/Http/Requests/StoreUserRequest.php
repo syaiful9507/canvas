@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Canvas\Http\Requests;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,7 +17,7 @@ class StoreUserRequest extends FormRequest
      */
     public function authorize()
     {
-        return request()->user('canvas')->isAdmin || request()->user('canvas')->id === $this->route('user');
+        return request()->user('canvas')->isAdmin || request()->user('canvas')->id === $this->route('id');
     }
 
     /**
@@ -31,11 +32,17 @@ class StoreUserRequest extends FormRequest
             'email' => [
                 'required',
                 'email:filter',
-                Rule::unique('canvas_users')->where(function ($query) {
+                Rule::unique('canvas_users')->where(function (Builder $query) {
                     return $query->where('email', request('email'));
-                })->ignore(request('user'))->whereNull('deleted_at'),
+                })->ignore($this->route('id'))->whereNull('deleted_at'),
             ],
-            'username' => 'nullable|alpha_dash|unique:canvas_users,username,'.request('user'),
+            'username' => [
+                'nullable',
+                'alpha_dash',
+                Rule::unique('canvas_users')->where(function (Builder $query) {
+                    return $query->where('username', request('username'));
+                })->ignore($this->route('id'))->whereNull('deleted_at'),
+            ],
             'password' => 'sometimes|required|min:8|confirmed',
             'summary' => 'nullable|string',
             'avatar' => 'nullable|string',

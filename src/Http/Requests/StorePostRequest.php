@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Canvas\Http\Requests;
 
 use Canvas\Models\Post;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,7 +18,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize()
     {
-        $post = Post::query()->find($this->route('post'));
+        $post = Post::query()->find($this->route('id'));
 
         if ($post && request()->user('canvas')->isContributor) {
             return request()->user('canvas')->id === $post->user_id;
@@ -37,9 +38,9 @@ class StorePostRequest extends FormRequest
             'slug' => [
                 'required',
                 'alpha_dash',
-                Rule::unique('canvas_posts')->where(function ($query) {
+                Rule::unique('canvas_posts')->where(function (Builder $query) {
                     return $query->where('slug', request('slug'))->where('user_id', request()->user('canvas')->id);
-                })->ignore(request('post'))->whereNull('deleted_at'),
+                })->ignore($this->route('id'))->whereNull('deleted_at'),
             ],
             'title' => 'required|string',
             'summary' => 'nullable|string',

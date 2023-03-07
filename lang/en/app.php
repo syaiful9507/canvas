@@ -106,6 +106,8 @@ return [
     'we_have_emailed_your_password_reset_link' => 'We have emailed your password reset link!',
 
     // VALIDATION
+    'id_required' => 'The id field is required.',
+    'id_uuid' => 'The id must be a valid UUID.',
     'password_required' => 'The password field is required.',
     'password_confirmed' => 'The password confirmation does not match.',
     'password_min' => 'The password must be at least 8 characters.',

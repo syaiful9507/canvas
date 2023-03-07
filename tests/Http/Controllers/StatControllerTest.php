@@ -8,9 +8,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * Class TrafficControllerTest.
  *
- * @covers \Canvas\Http\Controllers\TrafficController
+ * @covers \Canvas\Http\Controllers\StatController
  */
-class TrafficControllerTest extends TestCase
+class StatControllerTest extends TestCase
 {
     use RefreshDatabase;
 }

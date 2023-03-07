@@ -44,20 +44,15 @@ class TagController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Show the form for creating a new resource.
      *
-     * @param  StoreTagRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreTagRequest $request)
+    public function create()
     {
-        $tag = Tag::query()->make(['id' => Uuid::uuid4()->toString()]);
-
-        $tag->fill($request->validated());
-
-        $tag->save();
-
-        return response()->json($tag->refresh());
+        return response()->json(Tag::query()->make([
+            'id' => Uuid::uuid4()->toString(),
+        ]));
     }
 
     /**
@@ -68,6 +63,8 @@ class TagController extends Controller
      */
     public function show(string $id)
     {
+        abort_unless(Uuid::isValid($id), 400);
+
         $tag = Tag::query()->findOrFail($id);
 
         return response()->json($tag);
@@ -80,19 +77,11 @@ class TagController extends Controller
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(StoreTagRequest $request, string $id)
+    public function store(StoreTagRequest $request, string $id)
     {
-        $data = $request->validated();
+        abort_unless(Uuid::isValid($id), 400);
 
-        $tag = Tag::withTrashed()->find($id);
-
-        if ($tag->trashed()) {
-            $tag->restore();
-
-            return response()->json($tag->refresh());
-        }
-
-        $tag->update($data);
+        $tag = Tag::query()->updateOrCreate(['id' => $id], $request->validated());
 
         return response()->json($tag->refresh());
     }
@@ -105,6 +94,8 @@ class TagController extends Controller
      */
     public function posts(string $id)
     {
+        abort_unless(Uuid::isValid($id), 400);
+
         $tag = Tag::query()->with('posts')->findOrFail($id);
 
         return response()->json($tag->posts()->withCount('views')->paginate());
@@ -120,6 +111,8 @@ class TagController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_unless(Uuid::isValid($id), 400);
+
         $tag = Tag::query()->findOrFail($id);
 
         $tag->delete();

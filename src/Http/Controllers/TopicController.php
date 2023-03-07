@@ -44,20 +44,15 @@ class TopicController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Show the form for creating a new resource.
      *
-     * @param  StoreTopicRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreTopicRequest $request)
+    public function create()
     {
-        $topic = Topic::query()->make(['id' => Uuid::uuid4()->toString()]);
-
-        $topic->fill($request->validated());
-
-        $topic->save();
-
-        return response()->json($topic->refresh());
+        return response()->json(Topic::query()->make([
+            'id' => Uuid::uuid4()->toString(),
+        ]));
     }
 
     /**
@@ -68,6 +63,8 @@ class TopicController extends Controller
      */
     public function show(string $id)
     {
+        abort_unless(Uuid::isValid($id), 400);
+
         $topic = Topic::query()->findOrFail($id);
 
         return response()->json($topic);
@@ -80,19 +77,11 @@ class TopicController extends Controller
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(StoreTopicRequest $request, string $id)
+    public function store(StoreTopicRequest $request, string $id)
     {
-        $data = $request->validated();
+        abort_unless(Uuid::isValid($id), 400);
 
-        $topic = Topic::withTrashed()->find($id);
-
-        if ($topic->trashed()) {
-            $topic->restore();
-
-            return response()->json($topic->refresh());
-        }
-
-        $topic->update($data);
+        $topic = Topic::query()->updateOrCreate(['id' => $id], $request->validated());
 
         return response()->json($topic->refresh());
     }
@@ -105,6 +94,8 @@ class TopicController extends Controller
      */
     public function posts(string $id)
     {
+        abort_unless(Uuid::isValid($id), 400);
+
         $topic = Topic::query()->with('posts')->findOrFail($id);
 
         return response()->json($topic->posts()->withCount('views')->paginate());
@@ -120,6 +111,8 @@ class TopicController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_unless(Uuid::isValid($id), 400);
+
         $topic = Topic::query()->findOrFail($id);
 
         $topic->delete();
