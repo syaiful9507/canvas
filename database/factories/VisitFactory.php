@@ -26,9 +26,9 @@ class VisitFactory extends Factory
     {
         return [
             'post_id' => Post::factory(),
-            'ip' => fake()->ipv4,
-            'agent' => fake()->userAgent,
-            'referer' => fake()->url,
+            'ip' => $this->faker->ipv4,
+            'agent' => $this->faker->userAgent,
+            'referer' => $this->faker->url,
         ];
     }
 }

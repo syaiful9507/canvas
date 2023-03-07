@@ -24,27 +24,27 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'id' => fake()->unique()->uuid,
-            'name' => fake()->name,
-            'email' => fake()->unique()->safeEmail,
-            'username' => fake()->slug, // fake()->userName breaks alpha_dash validation
+            'id' => $this->faker->unique()->uuid,
+            'name' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
+            'username' => $this->faker->slug, // $this->faker->userName breaks alpha_dash validation
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'summary' => fake()->sentence,
-            'avatar' => fake()->imageUrl,
-            'dark_mode' => fake()->numberBetween(1, 2),
-            'digest' => fake()->numberBetween(1, 2),
-            'locale' => fake()->locale,
-            'role' => fake()->numberBetween(1, 3),
-            'cover_image' => fake()->imageUrl,
-            'location' => fake()->city,
-            'website' => fake()->url,
+            'summary' => $this->faker->sentence,
+            'avatar' => $this->faker->imageUrl,
+            'dark_mode' => $this->faker->numberBetween(1, 2),
+            'digest' => $this->faker->numberBetween(1, 2),
+            'locale' => $this->faker->locale,
+            'role' => $this->faker->numberBetween(1, 3),
+            'cover_image' => $this->faker->imageUrl,
+            'location' => $this->faker->city,
+            'website' => $this->faker->url,
             'social' => [
-                'twitter' => fake()->userName,
-                'github' => fake()->userName,
+                'twitter' => $this->faker->userName,
+                'github' => $this->faker->userName,
             ],
             'meta' => [
-                'title' => fake()->sentence,
-                'description' => fake()->sentence,
+                'title' => $this->faker->sentence,
+                'description' => $this->faker->sentence,
             ],
         ];
     }
