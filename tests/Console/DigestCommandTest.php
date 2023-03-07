@@ -61,8 +61,8 @@ class DigestCommandTest extends TestCase
 
         Post::factory(2)
             ->for($user)
-            ->hasViews(2)
-            ->hasVisits(2)
+            ->has(View::factory(2), 'views')
+            ->has(Visit::factory(1), 'visits')
             ->create();
 
         $this->artisan('canvas:digest');
