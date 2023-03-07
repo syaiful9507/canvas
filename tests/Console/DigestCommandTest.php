@@ -24,17 +24,18 @@ class DigestCommandTest extends TestCase
     {
         Mail::fake();
 
-        $user = User::factory()
-            ->has(Post::factory(2)
-                ->published()
-                ->has(View::factory(2))
-                ->has(Visit::factory(1)))
-            ->enabledDigest()
+        $post = Post::factory()
+            ->forUser([
+                'digest' => 1,
+            ])
+            ->published()
+            ->hasViews(2)
+            ->hasVisits(1)
             ->create();
 
         $this->artisan('canvas:digest');
 
-        Mail::assertSent(WeeklyDigest::class, function ($mail) use ($user) {
+        Mail::assertSent(WeeklyDigest::class, function ($mail) use ($post) {
             $this->assertArrayHasKey('posts', $mail->data);
             $this->assertIsArray($mail->data['posts']);
 
@@ -42,14 +43,14 @@ class DigestCommandTest extends TestCase
             $this->assertArrayHasKey('visits_count', $mail->data['posts'][0]);
 
             $this->assertArrayHasKey('totals', $mail->data);
-            $this->assertSame(4, $mail->data['totals']['views']);
-            $this->assertSame(2, $mail->data['totals']['visits']);
+            $this->assertSame(2, $mail->data['totals']['views']);
+            $this->assertSame(1, $mail->data['totals']['visits']);
 
             $this->assertArrayHasKey('startDate', $mail->data);
             $this->assertArrayHasKey('endDate', $mail->data);
             $this->assertArrayHasKey('locale', $mail->data);
 
-            return $mail->hasTo($user->email);
+            return $mail->hasTo($post->user->email);
         });
     }
 
@@ -57,12 +58,13 @@ class DigestCommandTest extends TestCase
     {
         Mail::fake();
 
-        $user = User::factory()->disabledDigest()->create();
-
-        Post::factory(2)
-            ->for($user)
-            ->has(View::factory(2), 'views')
-            ->has(Visit::factory(1), 'visits')
+        $post = Post::factory()
+            ->forUser([
+                'digest' => 0,
+            ])
+            ->published()
+            ->hasViews(2)
+            ->hasVisits(1)
             ->create();
 
         $this->artisan('canvas:digest');
