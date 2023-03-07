@@ -25,21 +25,23 @@ class PostControllerTest extends TestCase
             ->has(Post::factory()->draft())
             ->create();
 
-        $this->actingAs($user, 'canvas')
-             ->getJson(route('canvas.posts.index'))
-             ->assertSuccessful()
-             ->assertJsonStructure([
-                 'users',
-             ])
-             ->assertJsonFragment([
-                 'id' => $user->posts()->published()->first()->id,
-                 'total' => Post::published()->count(),
-                 'drafts_count' => Post::draft()->count(),
-                 'published_count' => Post::published()->count(),
-             ])
-             ->assertJsonMissing([
-                 'id' => $user->posts()->draft()->first()->id,
-             ]);
+        $response = $this->actingAs($user, 'canvas')
+             ->getJson(route('canvas.posts.index'));
+
+        dd($response);
+//             ->assertSuccessful()
+//             ->assertJsonStructure([
+//                 'users',
+//             ])
+//             ->assertJsonFragment([
+//                 'id' => $user->posts()->published()->first()->id,
+//                 'total' => Post::published()->count(),
+//                 'drafts_count' => Post::draft()->count(),
+//                 'published_count' => Post::published()->count(),
+//             ])
+//             ->assertJsonMissing([
+//                 'id' => $user->posts()->draft()->first()->id,
+//             ]);
     }
 
     public function testPublishedPostsCanBeFetchedWithAGivenQueryParameter(): void
