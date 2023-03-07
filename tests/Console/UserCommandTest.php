@@ -18,7 +18,7 @@ class UserCommandTest extends TestCase
     public function testCanvasUserCommandWillValidateAnEmptyEmail(): void
     {
         $this->artisan('canvas:user')
-             ->expectsQuestion('What email should be attached to the user?', '')
+             ->expectsQuestion('What email do you want to assign to this user?', '')
              ->assertExitCode(0)
              ->expectsOutput('Please enter a valid email.');
     }
@@ -26,7 +26,7 @@ class UserCommandTest extends TestCase
     public function testCanvasUserCommandWillValidateAnInvalidEmail(): void
     {
         $this->artisan('canvas:user')
-             ->expectsQuestion('What email should be attached to the user?', 'bad.email')
+             ->expectsQuestion('What email do you want to assign to this user?', 'bad.email')
              ->assertExitCode(0)
              ->expectsOutput('Please enter a valid email.');
     }
@@ -36,7 +36,7 @@ class UserCommandTest extends TestCase
         $user = User::factory()->contributor()->create();
 
         $this->artisan('canvas:user')
-             ->expectsQuestion('What email should be attached to the user?', $user->email)
+             ->expectsQuestion('What email do you want to assign to this user?', $user->email)
              ->assertExitCode(0)
              ->expectsOutput('That email already exists in the system.');
     }
@@ -44,7 +44,7 @@ class UserCommandTest extends TestCase
     public function testCanvasUserCommandCanCreateANewContributor(): void
     {
         $this->artisan('canvas:user')
-             ->expectsQuestion('What email should be attached to the user?', 'contributor@example.com')
+             ->expectsQuestion('What email do you want to assign to this user?', 'contributor@example.com')
              ->expectsChoice('What role should the user have?', trans('canvas::app.contributor'), User::roles())
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
@@ -58,7 +58,7 @@ class UserCommandTest extends TestCase
     public function testCanvasUserCommandCanCreateANewEditor(): void
     {
         $this->artisan('canvas:user')
-             ->expectsQuestion('What email should be attached to the user?', 'editor@example.com')
+             ->expectsQuestion('What email do you want to assign to this user?', 'editor@example.com')
             ->expectsChoice('What role should the user have?', trans('canvas::app.editor'), User::roles())
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
@@ -72,7 +72,7 @@ class UserCommandTest extends TestCase
     public function testCanvasUserCommandCanCreateANewAdmin(): void
     {
         $this->artisan('canvas:user')
-             ->expectsQuestion('What email should be attached to the user?', 'admin@example.com')
+             ->expectsQuestion('What email do you want to assign to this user?', 'admin@example.com')
             ->expectsChoice('What role should the user have?', trans('canvas::app.admin'), User::roles())
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
