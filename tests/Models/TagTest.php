@@ -24,42 +24,9 @@ class TagTest extends TestCase
         $this->assertIsArray(Tag::factory()->create()->meta);
     }
 
-    public function testTagsCanShareTheSameSlugWithUniqueUsers(): void
-    {
-        $primaryAdmin = User::factory()->admin()->create();
-
-        $response = $this->actingAs($primaryAdmin, 'canvas')
-            ->postJson(route('canvas.tags.store'), [
-                'name' => 'A new tag',
-                'slug' => 'a-new-tag',
-                'user_id' => $primaryAdmin->id,
-            ]);
-
-        $this->assertDatabaseHas('canvas_tags', [
-            'id' => $response->original['id'],
-            'slug' => $response->original['slug'],
-            'user_id' => $response->original['user_id'],
-        ]);
-
-        $secondaryAdmin = User::factory()->admin()->create();
-
-        $response = $this->actingAs($secondaryAdmin, 'canvas')
-            ->postJson(route('canvas.tags.store'), [
-                'name' => 'A new tag',
-                'slug' => 'a-new-tag',
-                'user_id' => $secondaryAdmin->id,
-            ]);
-
-        $this->assertDatabaseHas('canvas_tags', [
-            'id' => $response->original['id'],
-            'slug' => $response->original['slug'],
-            'user_id' => $response->original['user_id'],
-        ]);
-    }
-
     public function testPostsRelationship(): void
     {
-        $tag = Tag::factory()->has(Post::factory())->create();
+        $tag = Tag::factory()->hasPosts(1)->create();
 
         $this->assertInstanceOf(BelongsToMany::class, $tag->posts());
         $this->assertInstanceOf(Post::class, $tag->posts()->first());
@@ -67,7 +34,7 @@ class TagTest extends TestCase
 
     public function testUserRelationship(): void
     {
-        $tag = Tag::factory()->for(User::factory())->create();
+        $tag = Tag::factory()->hasUser()->create();
 
         $this->assertInstanceOf(BelongsTo::class, $tag->user());
         $this->assertInstanceOf(User::class, $tag->user);
@@ -75,7 +42,7 @@ class TagTest extends TestCase
 
     public function testDetachPostsOnDelete(): void
     {
-        $tag = Tag::factory()->has(Post::factory())->create();
+        $tag = Tag::factory()->hasPosts(1)->create();
 
         $post = $tag->posts()->first();
 

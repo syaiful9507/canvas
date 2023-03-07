@@ -21,17 +21,17 @@ class TagController extends Controller
     public function index()
     {
         $sortAscending = request()->query('sort', 'desc') === 'asc';
-        $filterByPopular = request()->query('usage') === 'popular';
-        $filterByUnpopular = request()->query('usage') === 'unpopular';
+        $sortByPopular = request()->query('usage') === 'popular';
+        $sortByUnpopular = request()->query('usage') === 'unpopular';
 
         return response()->json(
             Tag::query()
                 ->select('id', 'name', 'created_at')
                 ->withCount('posts')
-                ->when($filterByPopular, function (Builder $query) {
+                ->when($sortByPopular, function (Builder $query) {
                     return $query->orderBy('posts_count', 'desc');
                 })
-                ->when($filterByUnpopular, function (Builder $query) {
+                ->when($sortByUnpopular, function (Builder $query) {
                     return $query->orderBy('posts_count', 'asc');
                 })
                 ->when($sortAscending, function (Builder $query) {

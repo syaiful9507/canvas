@@ -14,18 +14,16 @@ use Ramsey\Uuid\Uuid;
  * Class TagControllerTest.
  *
  * @covers \Canvas\Http\Controllers\TagController
- * @covers \Canvas\Http\Requests\StoreTagRequest
- * @covers \Canvas\Http\Middleware\VerifyAdmin
  */
 class TagControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testListAllTags(): void
+    public function testAllTagsAreFetchedByDefault(): void
     {
-        $tag = Tag::factory(2)->create();
+        Tag::factory(2)->create();
 
-        $response = $this->actingAs($tag->first()->user, 'canvas')
+        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
                          ->getJson(route('canvas.tags.index'))
                          ->assertSuccessful();
 
@@ -63,9 +61,9 @@ class TagControllerTest extends TestCase
 
     public function testTagsCanBeFilteredByUsageWithAGivenQueryParameter(): void
     {
-        $popularTag = Tag::factory()->has(Post::factory(2))->create();
+        $popularTag = Tag::factory()->hasPosts(2)->create();
 
-        $unpopularTag = Tag::factory()->has(Post::factory())->create();
+        $unpopularTag = Tag::factory()->hasPosts(1)->create();
 
         $response = $this->actingAs($popularTag->user, 'canvas')
             ->getJson(route('canvas.tags.index', ['usage' => 'popular']))
@@ -102,7 +100,7 @@ class TagControllerTest extends TestCase
 
     public function testListPostsForTag(): void
     {
-        $tag = Tag::factory()->has(Post::factory())->create();
+        $tag = Tag::factory()->hasPosts(1)->create();
 
         $response = $this->actingAs($tag->user, 'canvas')
                         ->getJson(route('canvas.tags.posts', ['id' => $tag->id]))
@@ -118,7 +116,7 @@ class TagControllerTest extends TestCase
     public function testTagNotFound(): void
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
-             ->getJson(route('canvas.tags.show', ['id' => 'tag-not-found']))
+             ->getJson(route('canvas.tags.show', ['id' => Uuid::uuid4()->toString()]))
              ->assertNotFound();
     }
 
@@ -127,14 +125,13 @@ class TagControllerTest extends TestCase
         $user = User::factory()->admin()->create();
 
         $data = [
-            'id' => Uuid::uuid4()->toString(),
             'name' => 'A new tag',
             'slug' => 'a-new-tag',
             'user_id' => $user->id,
         ];
 
         $response = $this->actingAs($user, 'canvas')
-                         ->putJson(route('canvas.tags.store', ['id' => $data['id']]), $data)
+                         ->putJson(route('canvas.tags.store', ['id' => Uuid::uuid4()->toString()]), $data)
                          ->assertSuccessful();
 
         $this->assertInstanceOf(Tag::class, $response->getOriginalContent()->first());
@@ -147,7 +144,6 @@ class TagControllerTest extends TestCase
         $tag = Tag::factory()->create();
 
         $data = [
-            'id' => $tag->id,
             'name' => 'An updated tag',
             'slug' => 'an-updated-tag',
             'user_id' => $tag->user_id,
@@ -162,29 +158,9 @@ class TagControllerTest extends TestCase
         $this->assertSame($data['slug'], $response->getOriginalContent()->slug);
     }
 
-    public function testInvalidSlugsAreValidated(): void
-    {
-        $this->actingAs($user = User::factory()->admin()->create(), 'canvas')
-             ->putJson(route('canvas.tags.store', ['id' => Uuid::uuid4()->toString()]), [
-                 'name' => 'A new tag',
-                 'slug' => 'a new.slug',
-                 'user_id' => $user->id,
-             ])
-             ->assertStatus(422)
-             ->assertJsonStructure([
-                 'errors' => [
-                     'slug',
-                 ],
-             ]);
-    }
-
     public function testDeleteExistingTag(): void
     {
         $tag = Tag::factory()->create();
-
-        $this->actingAs($tag->user, 'canvas')
-             ->deleteJson(route('canvas.tags.destroy', ['id' => 'not-a-tag']))
-             ->assertNotFound();
 
         $this->actingAs($tag->user, 'canvas')
             ->deleteJson(route('canvas.tags.destroy', ['id' => $tag->id]))
@@ -195,5 +171,37 @@ class TagControllerTest extends TestCase
             'id' => $tag->id,
             'slug' => $tag->slug,
         ]);
+    }
+
+    public function testShowTagMethodValidatesUuidParameter(): void
+    {
+        $this->actingAs(User::factory()->admin()->create(), 'canvas')
+            ->getJson(route('canvas.tags.show', ['id' => 'not-a-tag']))
+            ->assertBadRequest();
+    }
+
+    public function testStoreTagMethodValidatesUuidParameter(): void
+    {
+        $this->actingAs($user = User::factory()->admin()->create(), 'canvas')
+            ->putJson(route('canvas.tags.store', ['id' => 'not-a-tag']), [
+                'slug' => 'a-new-tag',
+                'name' => 'A new tag',
+                'user_id' => $user->id,
+            ])
+            ->assertBadRequest();
+    }
+
+    public function testGetPostsForTagMethodValidatesUuidParameter(): void
+    {
+        $this->actingAs(User::factory()->admin()->create(), 'canvas')
+            ->getJson(route('canvas.tags.posts', ['id' => 'not-a-tag']))
+            ->assertBadRequest();
+    }
+
+    public function testDestroyTagMethodValidatesUuidParameter(): void
+    {
+        $this->actingAs(User::factory()->admin()->create(), 'canvas')
+            ->getJson(route('canvas.tags.destroy', ['id' => 'not-a-tag']))
+            ->assertBadRequest();
     }
 }

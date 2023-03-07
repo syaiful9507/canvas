@@ -340,7 +340,7 @@ class PostControllerTest extends TestCase
 
     public function testContributorAccessRestricted(): void
     {
-        $adminPost = Post::factory()->for(User::factory()->admin())->create();
+        $adminPost = Post::factory()->for(User::factory()->admin()->create())->create();
 
         $this->actingAs(User::factory()->contributor()->create(), 'canvas')
              ->getJson(route('canvas.posts.show', ['id' => $adminPost->id]))

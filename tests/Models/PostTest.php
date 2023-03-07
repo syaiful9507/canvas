@@ -42,7 +42,7 @@ class PostTest extends TestCase
 
     public function testTagsRelationship(): void
     {
-        $post = Post::factory()->has(Tag::factory())->create();
+        $post = Post::factory()->hasTags(1)->create();
 
         $this->assertInstanceOf(BelongsToMany::class, $post->tags());
         $this->assertInstanceOf(Tag::class, $post->tags->first());
@@ -66,7 +66,7 @@ class PostTest extends TestCase
 
     public function testViewsRelationship(): void
     {
-        $post = Post::factory()->has(View::factory())->create();
+        $post = Post::factory()->hasViews()->create();
 
         $this->assertInstanceOf(HasMany::class, $post->views());
         $this->assertInstanceOf(View::class, $post->views->first());
@@ -74,7 +74,7 @@ class PostTest extends TestCase
 
     public function testVisitsRelationship(): void
     {
-        $post = Post::factory()->has(Visit::factory())->create();
+        $post = Post::factory()->hasVisits()->create();
 
         $this->assertInstanceOf(HasMany::class, $post->visits());
         $this->assertInstanceOf(Visit::class, $post->visits->first());
@@ -123,7 +123,7 @@ class PostTest extends TestCase
 
     public function testDetachTagsOnDelete(): void
     {
-        $post = Post::factory()->has(Tag::factory())->create();
+        $post = Post::factory()->hasTags(1)->create();
 
         $tag = $post->tags()->first();
 

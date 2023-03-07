@@ -53,6 +53,7 @@ class StoreTopicRequest extends FormRequest
             'slug.required' => trans('canvas::app.slug_required'),
             'slug.alpha_dash' => trans('canvas::app.slug_alpha_dash'),
             'slug.unique' => trans('canvas::app.slug_unique'),
+            'user_id.required' => trans('canvas::app.user_id_required'),
             'user_id.uuid' => trans('canvas::app.user_id_uuid'),
         ];
     }

@@ -122,6 +122,7 @@ return [
     'slug_required' => 'The slug field is required.',
     'slug_alpha_dash' => 'The slug must only contain letters, numbers, dashes and underscores.',
     'slug_unique' => 'The slug has already been taken.',
+    'title_required' => 'The title field is required.',
     'title_string' => 'The title must be a string.',
     'summary_string' => 'The summary must be a string.',
     'body_string' => 'The body must be a string.',

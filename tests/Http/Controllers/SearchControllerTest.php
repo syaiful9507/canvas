@@ -21,13 +21,9 @@ class SearchControllerTest extends TestCase
 
     public function testAContributorCanOnlySearchTheirOwnPosts(): void
     {
-        $contributor = User::factory()->contributor()->create();
+        Post::factory(2)->create();
 
-        Post::factory(2)->for($contributor)->create();
-
-        Post::factory()->for(User::factory()->admin())->create();
-
-        $response = $this->actingAs($contributor, 'canvas')
+        $response = $this->actingAs(User::factory()->hasPosts(2)->contributor()->create(), 'canvas')
                          ->getJson(route('canvas.search.posts'))
                          ->assertSuccessful()
                          ->assertJsonCount(2);
@@ -43,16 +39,12 @@ class SearchControllerTest extends TestCase
 
     public function testAnEditorCanSearchAllPosts(): void
     {
-        $editor = User::factory()->editor()->create();
+        Post::factory(2)->create();
 
-        Post::factory(2)->for($editor)->create();
-
-        Post::factory()->for(User::factory()->contributor())->create();
-
-        $response = $this->actingAs($editor, 'canvas')
+        $response = $this->actingAs(User::factory()->editor()->create(), 'canvas')
             ->getJson(route('canvas.search.posts'))
                          ->assertSuccessful()
-                         ->assertJsonCount(3);
+                         ->assertJsonCount(2);
 
         $this->assertArrayHasKey('id', $response[0]);
         $this->assertArrayHasKey('title', $response[0]);
@@ -65,16 +57,12 @@ class SearchControllerTest extends TestCase
 
     public function testAnAdminCanSearchAllPosts(): void
     {
-        $admin = User::factory()->admin()->create();
+        Post::factory(2)->create();
 
-        Post::factory(2)->for(User::factory()->editor())->create();
-
-        Post::factory()->for(User::factory()->contributor())->create();
-
-        $response = $this->actingAs($admin, 'canvas')
+        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.search.posts'))
                          ->assertSuccessful()
-                         ->assertJsonCount(3);
+                         ->assertJsonCount(2);
 
         $this->assertArrayHasKey('id', $response[0]);
         $this->assertArrayHasKey('title', $response[0]);
@@ -87,9 +75,9 @@ class SearchControllerTest extends TestCase
 
     public function testAnAdminCanSearchAllTags(): void
     {
-        $user = User::factory()->admin()->has(Tag::factory(2))->create();
+        Tag::factory(2)->create();
 
-        $response = $this->actingAs($user, 'canvas')
+        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.search.tags'))
                          ->assertSuccessful()
                          ->assertJsonCount(2);
@@ -104,9 +92,9 @@ class SearchControllerTest extends TestCase
 
     public function testAnAdminCanSearchAllTopics(): void
     {
-        $user = User::factory()->admin()->has(Topic::factory(2))->create();
+        Topic::factory(2)->create();
 
-        $response = $this->actingAs($user, 'canvas')
+        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.search.topics'))
                          ->assertSuccessful()
                          ->assertJsonCount(2);
@@ -121,13 +109,9 @@ class SearchControllerTest extends TestCase
 
     public function testAnAdminCanSearchAllUsers(): void
     {
-        $admin = User::factory()->admin()->create();
+        User::factory(2)->create();
 
-        User::factory()->editor()->create();
-
-        User::factory()->contributor()->create();
-
-        $response = $this->actingAs($admin, 'canvas')
+        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.search.users'))
                          ->assertSuccessful()
                          ->assertJsonCount(3);

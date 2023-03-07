@@ -14,18 +14,16 @@ use Ramsey\Uuid\Uuid;
  * Class TopicControllerTest.
  *
  * @covers \Canvas\Http\Controllers\TopicController
- * @covers \Canvas\Http\Requests\StoreTopicRequest
- * @covers \Canvas\Http\Middleware\VerifyAdmin
  */
 class TopicControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testListAllTopics(): void
+    public function testAllTopicsAreFetchedByDefault(): void
     {
-        $topic = Topic::factory(2)->create();
+        Topic::factory(2)->create();
 
-        $response = $this->actingAs($topic->first()->user, 'canvas')
+        $response = $this->actingAs(User::factory()->admin()->create(), 'canvas')
                          ->getJson(route('canvas.topics.index'))
                          ->assertSuccessful();
 
@@ -102,7 +100,7 @@ class TopicControllerTest extends TestCase
 
     public function testListPostsForTopic(): void
     {
-        $topic = Topic::factory()->has(Post::factory())->create();
+        $topic = Topic::factory()->hasPosts(1)->create();
 
         $response = $this->actingAs($topic->user, 'canvas')
             ->getJson(route('canvas.topics.posts', ['id' => $topic->id]))
@@ -118,7 +116,7 @@ class TopicControllerTest extends TestCase
     public function testTopicNotFound(): void
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
-            ->getJson(route('canvas.topics.posts', ['id' => 'not-a-topic']))
+            ->getJson(route('canvas.topics.posts', ['id' => Uuid::uuid4()->toString()]))
              ->assertNotFound();
     }
 
@@ -127,14 +125,13 @@ class TopicControllerTest extends TestCase
         $user = User::factory()->admin()->create();
 
         $data = [
-            'id' => Uuid::uuid4()->toString(),
             'name' => 'A new topic',
             'slug' => 'a-new-topic',
             'user_id' => $user->id,
         ];
 
         $response = $this->actingAs($user, 'canvas')
-            ->putJson(route('canvas.topics.store', ['id' => $data['id']]), $data)
+            ->putJson(route('canvas.topics.store', ['id' => Uuid::uuid4()->toString()]), $data)
                          ->assertSuccessful();
 
         $this->assertInstanceOf(Topic::class, $response->getOriginalContent()->first());
@@ -147,7 +144,6 @@ class TopicControllerTest extends TestCase
         $topic = Topic::factory()->create();
 
         $data = [
-            'id' => $topic->id,
             'name' => 'An updated topic',
             'slug' => 'an-updated-topic',
             'user_id' => $topic->user_id,
@@ -162,29 +158,9 @@ class TopicControllerTest extends TestCase
         $this->assertSame($data['slug'], $response->getOriginalContent()->slug);
     }
 
-    public function testInvalidSlugsAreValidated(): void
-    {
-        $this->actingAs($user = User::factory()->admin()->create(), 'canvas')
-            ->putJson(route('canvas.topics.store', ['id' => Uuid::uuid4()->toString()]), [
-                'name' => 'A new topic',
-                'slug' => 'a new.slug',
-                'user_id' => $user->id,
-            ])
-             ->assertStatus(422)
-             ->assertJsonStructure([
-                 'errors' => [
-                     'slug',
-                 ],
-             ]);
-    }
-
     public function testDeleteExistingTopic(): void
     {
         $topic = Topic::factory()->create();
-
-        $this->actingAs($topic->user, 'canvas')
-            ->deleteJson(route('canvas.topics.destroy', ['id' => 'not-a-topic']))
-            ->assertNotFound();
 
         $this->actingAs($topic->user, 'canvas')
             ->deleteJson(route('canvas.topics.destroy', ['id' => $topic->id]))
@@ -195,5 +171,37 @@ class TopicControllerTest extends TestCase
             'id' => $topic->id,
             'slug' => $topic->slug,
         ]);
+    }
+
+    public function testShowTopicMethodValidatesUuidParameter(): void
+    {
+        $this->actingAs(User::factory()->admin()->create(), 'canvas')
+            ->getJson(route('canvas.topics.show', ['id' => 'not-a-topic']))
+            ->assertBadRequest();
+    }
+
+    public function testStoreTopicMethodValidatesUuidParameter(): void
+    {
+        $this->actingAs($user = User::factory()->admin()->create(), 'canvas')
+            ->putJson(route('canvas.topics.store', ['id' => 'not-a-topic']), [
+                'slug' => 'a-new-topic',
+                'name' => 'A new topic',
+                'user_id' => $user->id,
+            ])
+            ->assertBadRequest();
+    }
+
+    public function testGetPostsForTopicMethodValidatesUuidParameter(): void
+    {
+        $this->actingAs(User::factory()->admin()->create(), 'canvas')
+            ->getJson(route('canvas.topics.posts', ['id' => 'not-a-topic']))
+            ->assertBadRequest();
+    }
+
+    public function testDestroyTopicMethodValidatesUuidParameter(): void
+    {
+        $this->actingAs(User::factory()->admin()->create(), 'canvas')
+            ->getJson(route('canvas.topics.destroy', ['id' => 'not-a-topic']))
+            ->assertBadRequest();
     }
 }

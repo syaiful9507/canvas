@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Canvas\Http\Controllers\ImageController;
 use Canvas\Http\Controllers\PostController;
-use Canvas\Http\Controllers\ProfileController;
 use Canvas\Http\Controllers\SearchController;
 use Canvas\Http\Controllers\StatController;
 use Canvas\Http\Controllers\TagController;
@@ -17,14 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware([AuthenticateSession::class])->group(function () {
     Route::prefix('api')->as('canvas.')->group(function () {
-        Route::prefix('profile')
-            ->controller(ProfileController::class)
-            ->as('profile.')
-            ->group(function () {
-                Route::get('/', 'show')->name('show');
-                Route::put('/', 'update')->name('update');
-            });
-
         Route::prefix('posts')
             ->controller(PostController::class)
             ->as('posts.')
@@ -61,19 +52,23 @@ Route::middleware([AuthenticateSession::class])->group(function () {
                     Route::put('{id}', 'store')->name('store');
                     Route::delete('{id}', 'destroy')->name('destroy');
                 });
+        });
 
-            Route::prefix('users')
-                ->controller(UserController::class)
-                ->as('users.')
-                ->group(function () {
+        Route::prefix('users')
+            ->controller(UserController::class)
+            ->as('users.')
+            ->group(function () {
+                Route::middleware([VerifyAdmin::class])->group(function () {
                     Route::get('/', 'index')->name('index');
                     Route::get('create', 'create')->name('create');
-                    Route::get('{id}', 'show')->name('show');
                     Route::get('{id}/posts', 'posts')->name('posts');
-                    Route::put('{id}', 'store')->name('store');
                     Route::delete('{id}', 'destroy')->name('destroy');
                 });
-        });
+
+                Route::get('{id}', 'show')->name('show');
+                Route::put('{id}', 'store')->name('store');
+
+            });
 
         Route::prefix('images')
             ->controller(ImageController::class)

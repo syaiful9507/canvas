@@ -24,42 +24,9 @@ class TopicTest extends TestCase
         $this->assertIsArray(Topic::factory()->create()->meta);
     }
 
-    public function testTopicsCanShareTheSameSlugWithUniqueUsers(): void
-    {
-        $primaryAdmin = User::factory()->admin()->create();
-
-        $response = $this->actingAs($primaryAdmin, 'canvas')
-            ->postJson(route('canvas.topics.store'), [
-                'name' => 'A new topic',
-                'slug' => 'a-new-topic',
-                'user_id' => $primaryAdmin->id,
-            ]);
-
-        $this->assertDatabaseHas('canvas_topics', [
-            'id' => $response->original['id'],
-            'slug' => $response->original['slug'],
-            'user_id' => $response->original['user_id'],
-        ]);
-
-        $secondaryAdmin = User::factory()->admin()->create();
-
-        $response = $this->actingAs($secondaryAdmin, 'canvas')
-            ->postJson(route('canvas.topics.store'), [
-                'name' => 'A new topic',
-                'slug' => 'a-new-topic',
-                'user_id' => $secondaryAdmin->id,
-            ]);
-
-        $this->assertDatabaseHas('canvas_topics', [
-            'id' => $response->original['id'],
-            'slug' => $response->original['slug'],
-            'user_id' => $response->original['user_id'],
-        ]);
-    }
-
     public function testPostsRelationship(): void
     {
-        $topic = Topic::factory()->has(Post::factory())->create();
+        $topic = Topic::factory()->hasPosts(1)->create();
 
         $this->assertInstanceOf(HasMany::class, $topic->posts());
         $this->assertInstanceOf(Post::class, $topic->posts->first());
@@ -67,7 +34,7 @@ class TopicTest extends TestCase
 
     public function testUserRelationship(): void
     {
-        $topic = Topic::factory()->has(User::factory())->create();
+        $topic = Topic::factory()->hasUser()->create();
 
         $this->assertInstanceOf(BelongsTo::class, $topic->user());
         $this->assertInstanceOf(User::class, $topic->user);
@@ -75,7 +42,7 @@ class TopicTest extends TestCase
 
     public function testDissociatePostsOnDelete(): void
     {
-        $topic = Topic::factory()->has(Post::factory())->create();
+        $topic = Topic::factory()->hasPosts(1)->create();
 
         $post = $topic->posts()->first();
 

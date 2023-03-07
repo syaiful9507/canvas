@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Canvas\Http\Controllers;
 
+use Canvas\Http\Requests\ShowUserRequest;
 use Canvas\Http\Requests\StoreUserRequest;
 use Canvas\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
 
 class UserController extends Controller
@@ -55,10 +58,11 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Canvas\Http\Requests\ShowUserRequest  $request
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function show(ShowUserRequest $request, string $id)
     {
         abort_unless(Uuid::isValid($id), 400);
 
@@ -78,9 +82,20 @@ class UserController extends Controller
     {
         abort_unless(Uuid::isValid($id), 400);
 
-        $user = User::query()->updateOrCreate(['id' => $id], $request->validated());
+        $data = $request->validated();
 
-        return response()->json($user->refresh());
+        $user = User::query()->firstOrNew(['id' => $id], $data);
+
+        if (Arr::has($data, 'password')) {
+            $user->password = Hash::make($data['password']);
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'user' => $user->refresh(),
+            'i18n' => collect(trans('canvas::app', [], $user->locale))->toJson(),
+        ]);
     }
 
     /**

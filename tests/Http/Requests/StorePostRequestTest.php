@@ -19,9 +19,9 @@ class StorePostRequestTest extends TestCase
 
     public function testSlugIsRequired(): void
     {
-        $post = Post::factory()->for(User::factory())->create();
+        $post = Post::factory()->create();
 
-        $this->actingAs($post->user, 'canvas')
+        $response = $this->actingAs($post->user, 'canvas')
             ->putJson(route('canvas.posts.store', ['id' => $post->id]), [
                 'title' => $post->title,
                 'user_id' => $post->user->id,
@@ -32,16 +32,19 @@ class StorePostRequestTest extends TestCase
                     'slug',
                 ],
             ]);
+
+        $this->assertSame(trans('canvas::app.slug_required'), $response->getOriginalContent()['message']);
     }
 
     public function testSlugMustBeAlphaDash(): void
     {
-        $post = Post::factory()->for(User::factory())->create();
+        $post = Post::factory()->create();
 
-        $this->actingAs($post->user, 'canvas')
+        $response = $this->actingAs($post->user, 'canvas')
             ->putJson(route('canvas.posts.store', ['id' => $post->id]), [
                 'slug' => 'a new.slug',
                 'title' => $post->title,
+                'user_id' => $post->user->id,
             ])
             ->assertStatus(422)
             ->assertJsonStructure([
@@ -49,6 +52,8 @@ class StorePostRequestTest extends TestCase
                     'slug',
                 ],
             ]);
+
+        $this->assertSame(trans('canvas::app.slug_alpha_dash'), $response->getOriginalContent()['message']);
     }
 
     public function testPostsCanShareTheSameSlugWithUniqueUsers(): void
@@ -60,7 +65,8 @@ class StorePostRequestTest extends TestCase
                 'slug' => 'a-new-post',
                 'title' => 'A new post',
                 'user_id' => $admin->id,
-            ]);
+            ])
+            ->assertSuccessful();
 
         $this->assertDatabaseHas('canvas_posts', [
             'id' => $response->original['id'],
@@ -75,7 +81,8 @@ class StorePostRequestTest extends TestCase
                 'slug' => 'a-new-post',
                 'title' => 'A new post',
                 'user_id' => $editor->id,
-            ]);
+            ])
+            ->assertSuccessful();
 
         $this->assertDatabaseHas('canvas_posts', [
             'id' => $response->original['id'],
@@ -86,9 +93,9 @@ class StorePostRequestTest extends TestCase
 
     public function testTitleIsRequired(): void
     {
-        $post = Post::factory()->for(User::factory())->create();
+        $post = Post::factory()->create();
 
-        $this->actingAs($post->user, 'canvas')
+        $response = $this->actingAs($post->user, 'canvas')
             ->putJson(route('canvas.posts.store', ['id' => $post->id]), [
                 'slug' => 'a-new-post',
                 'user_id' => $post->user->id,
@@ -99,13 +106,15 @@ class StorePostRequestTest extends TestCase
                     'title',
                 ],
             ]);
+
+        $this->assertSame(trans('canvas::app.title_required'), $response->getOriginalContent()['message']);
     }
 
     public function testUserIdIsRequired(): void
     {
-        $post = Post::factory()->for(User::factory())->create();
+        $post = Post::factory()->create();
 
-        $this->actingAs($post->user, 'canvas')
+        $response = $this->actingAs($post->user, 'canvas')
             ->putJson(route('canvas.posts.store', ['id' => $post->id]), [
                 'slug' => 'a-new-post',
                 'title' => 'A new post',
@@ -116,5 +125,7 @@ class StorePostRequestTest extends TestCase
                     'user_id',
                 ],
             ]);
+
+        $this->assertSame(trans('canvas::app.user_id_required'), $response->getOriginalContent()['message']);
     }
 }

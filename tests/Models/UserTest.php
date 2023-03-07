@@ -71,7 +71,7 @@ class UserTest extends TestCase
 
     public function testPostsRelationship(): void
     {
-        $user = User::factory()->has(Post::factory())->create();
+        $user = User::factory()->hasPosts(1)->create();
 
         $this->assertInstanceOf(HasMany::class, $user->posts());
         $this->assertInstanceOf(Post::class, $user->posts->first());
@@ -79,7 +79,7 @@ class UserTest extends TestCase
 
     public function testTagsRelationship(): void
     {
-        $user = User::factory()->has(Tag::factory())->create();
+        $user = User::factory()->hasTags(1)->create();
 
         $this->assertInstanceOf(HasMany::class, $user->tags());
         $this->assertInstanceOf(Tag::class, $user->tags->first());
@@ -133,7 +133,7 @@ class UserTest extends TestCase
 
     public function testDeletePostsOnDelete(): void
     {
-        $user = User::factory()->has(Post::factory())->create();
+        $user = User::factory()->hasPosts(1)->create();
 
         $post = $user->posts()->first();
 
@@ -144,7 +144,7 @@ class UserTest extends TestCase
 
     public function testDeleteTagsOnDelete(): void
     {
-        $user = User::factory()->has(Tag::factory())->create();
+        $user = User::factory()->hasTags(1)->create();
 
         $tag = $user->tags()->first();
 
