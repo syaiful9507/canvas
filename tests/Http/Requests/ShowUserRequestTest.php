@@ -26,31 +26,19 @@ class ShowUserRequestTest extends TestCase
         $contributor = User::factory()->contributor()->create();
 
         $this->actingAs($contributor, 'canvas')
-            ->putJson(route('canvas.users.store', ['id' => $user->id]), [
-                'name' => $user->name,
-                'email' => $user->email,
-            ])
+            ->getJson(route('canvas.users.show', ['id' => $user->id]))
             ->assertForbidden();
 
         $this->actingAs($contributor, 'canvas')
-            ->putJson(route('canvas.users.store', ['id' => $contributor->id]), [
-                'name' => $contributor->name,
-                'email' => $contributor->email,
-            ])
+            ->getJson(route('canvas.users.show', ['id' => $contributor->id]))
             ->assertSuccessful();
 
         $this->actingAs($editor, 'canvas')
-            ->putJson(route('canvas.users.store', ['id' => $user->id]), [
-                'name' => $user->name,
-                'email' => $user->email,
-            ])
+            ->getJson(route('canvas.users.show', ['id' => $user->id]))
             ->assertForbidden();
 
         $this->actingAs($admin, 'canvas')
-            ->putJson(route('canvas.users.store', ['id' => $user->id]), [
-                'name' => $user->name,
-                'email' => $user->email,
-            ])
+            ->getJson(route('canvas.users.show', ['id' => $user->id]))
             ->assertSuccessful();
     }
 }
