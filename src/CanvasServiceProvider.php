@@ -89,7 +89,7 @@ class CanvasServiceProvider extends ServiceProvider
              ->prefix(config('canvas.path'))
              ->group(function () {
                  $this->loadRoutesFrom(dirname(__DIR__).'/routes/auth.php');
-                 $this->loadRoutesFrom(dirname(__DIR__).'/routes/web.php');
+                 $this->loadRoutesFrom(dirname(__DIR__).'/routes/api.php');
              });
     }
 
