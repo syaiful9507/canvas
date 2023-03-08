@@ -3,7 +3,6 @@
 namespace Canvas\Tests\Http\Middleware;
 
 use Canvas\Http\Middleware\ExpireTrafficInSession;
-use Canvas\Models\Post;
 use Canvas\Models\View;
 use Canvas\Models\Visit;
 use Canvas\Tests\TestCase;
@@ -31,34 +30,44 @@ class ExpireTrafficInSessionTest extends TestCase
 
     public function testOldVisitsArePrunedFromSession(): void
     {
-        $recent = Post::factory()->published()->has(Visit::factory()->set('created_at', now()))->create();
-        $old = Post::factory()->published()->has(Visit::factory()->set('created_at', now()->subDay()))->create();
+        $recent = Visit::factory()->create([
+            'created_at' => now()
+        ]);
 
-        session()->put('canvas.visited_posts.'.$recent->id, [
+        $old = Visit::factory()->create([
+            'created_at' => now()->subDay()
+        ]);
+
+        session()->put('canvas.visited_posts.' . $recent->id, [
             'timestamp' => now()->timestamp,
             'ip' => '127.0.0.1',
         ]);
 
-        session()->put('canvas.visited_posts.'.$old->id, [
+        session()->put('canvas.visited_posts.' . $old->id, [
             'timestamp' => now()->subDay()->timestamp,
             'ip' => '127.0.0.1',
         ]);
 
         $this->get('/_test/session')
-             ->assertSessionHas("canvas.visited_posts.{$recent->id}")
-             ->assertSessionMissing("canvas.visited_posts.{$old->id}");
+            ->assertSessionHas("canvas.visited_posts.{$recent->id}")
+            ->assertSessionMissing("canvas.visited_posts.{$old->id}");
     }
 
     public function testOldViewsArePrunedFromSession(): void
     {
-        $recent = Post::factory()->published()->has(View::factory()->set('created_at', now()))->create();
-        $old = Post::factory()->published()->has(View::factory()->set('created_at', now()->subDay()))->create();
+        $recent = View::factory()->create([
+            'created_at' => now()
+        ]);
 
-        session()->put('canvas.viewed_posts.'.$recent->id, now()->timestamp);
-        session()->put('canvas.viewed_posts.'.$old->id, now()->subHours(2)->timestamp);
+        $old = View::factory()->create([
+            'created_at' => now()->subDay()
+        ]);
+
+        session()->put('canvas.viewed_posts.' . $recent->id, now()->timestamp);
+        session()->put('canvas.viewed_posts.' . $old->id, now()->subHours(2)->timestamp);
 
         $this->get('/_test/session')
-             ->assertSessionHas("canvas.viewed_posts.{$recent->id}")
-             ->assertSessionMissing("canvas.viewed_posts.{$old->id}");
+            ->assertSessionHas("canvas.viewed_posts.{$recent->id}")
+            ->assertSessionMissing("canvas.viewed_posts.{$old->id}");
     }
 }
