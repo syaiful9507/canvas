@@ -177,7 +177,7 @@ class TopicControllerTest extends TestCase
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.topics.show', ['id' => 'not-a-topic']))
-            ->assertStatus(400);
+            ->assertBadRequest();
     }
 
     public function testStoreTopicMethodValidatesUuidParameter(): void
@@ -188,20 +188,20 @@ class TopicControllerTest extends TestCase
                 'name' => 'A new topic',
                 'user_id' => $user->id,
             ])
-            ->assertStatus(400);
+            ->assertBadRequest();
     }
 
     public function testGetPostsForTopicMethodValidatesUuidParameter(): void
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.topics.posts', ['id' => 'not-a-topic']))
-            ->assertStatus(400);
+            ->assertBadRequest();
     }
 
     public function testDestroyTopicMethodValidatesUuidParameter(): void
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.topics.destroy', ['id' => 'not-a-topic']))
-            ->assertStatus(400);
+            ->assertBadRequest();
     }
 }

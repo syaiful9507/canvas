@@ -62,7 +62,7 @@ class StoreUserRequestTest extends TestCase
             ->putJson(route('canvas.users.store', ['id' => $admin->id]), [
                 'email' => $admin->email,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'name',
@@ -80,7 +80,7 @@ class StoreUserRequestTest extends TestCase
             ->putJson(route('canvas.users.store', ['id' => $admin->id]), [
                 'name' => $admin->name,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'email',
@@ -101,7 +101,7 @@ class StoreUserRequestTest extends TestCase
                 'name' => $admin->name,
                 'email' => $editor->email,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'email',
@@ -120,7 +120,7 @@ class StoreUserRequestTest extends TestCase
                 'name' => $admin->name,
                 'email' => 'not-an-email',
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'email',
@@ -142,7 +142,7 @@ class StoreUserRequestTest extends TestCase
                 'email' => $admin->email,
                 'username' => $editor->username,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'username',
@@ -163,7 +163,7 @@ class StoreUserRequestTest extends TestCase
                 'password' => 'password',
                 'password_confirmation' => 'not-a-match',
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'password',
@@ -184,7 +184,7 @@ class StoreUserRequestTest extends TestCase
                 'password' => 'pass',
                 'password_confirmation' => 'pass',
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'password',

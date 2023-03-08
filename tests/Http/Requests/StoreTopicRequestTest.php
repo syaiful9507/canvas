@@ -53,7 +53,7 @@ class StoreTopicRequestTest extends TestCase
                 'name' => $topic->name,
                 'user_id' => $topic->user->id,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'slug',
@@ -73,7 +73,7 @@ class StoreTopicRequestTest extends TestCase
                 'name' => $topic->name,
                 'user_id' => $topic->user->id,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'slug',
@@ -125,7 +125,7 @@ class StoreTopicRequestTest extends TestCase
                 'slug' => 'a-new-topic',
                 'user_id' => $topic->user->id,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'name',
@@ -144,7 +144,7 @@ class StoreTopicRequestTest extends TestCase
                 'slug' => 'a-new-topic',
                 'name' => 'A new topic',
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'user_id',

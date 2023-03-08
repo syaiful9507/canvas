@@ -26,7 +26,7 @@ class StorePostRequestTest extends TestCase
                 'title' => $post->title,
                 'user_id' => $post->user->id,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'slug',
@@ -46,7 +46,7 @@ class StorePostRequestTest extends TestCase
                 'title' => $post->title,
                 'user_id' => $post->user->id,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'slug',
@@ -100,7 +100,7 @@ class StorePostRequestTest extends TestCase
                 'slug' => 'a-new-post',
                 'user_id' => $post->user->id,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'title',
@@ -119,7 +119,7 @@ class StorePostRequestTest extends TestCase
                 'slug' => 'a-new-post',
                 'title' => 'A new post',
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'user_id',

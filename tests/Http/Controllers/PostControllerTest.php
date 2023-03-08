@@ -512,7 +512,7 @@ class PostControllerTest extends TestCase
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.posts.show', ['id' => 'not-a-post']))
-            ->assertStatus(400);
+            ->assertBadRequest();
     }
 
     public function testStorePostMethodValidatesUuidParameter(): void
@@ -523,20 +523,20 @@ class PostControllerTest extends TestCase
                 'title' => 'A new post',
                 'user_id' => $user->id,
             ])
-            ->assertStatus(400);
+            ->assertBadRequest();
     }
 
     public function testGetStatsForPostMethodValidatesUuidParameter(): void
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.posts.stats', ['id' => 'not-a-post']))
-            ->assertStatus(400);
+            ->assertBadRequest();
     }
 
     public function testDestroyPostMethodValidatesUuidParameter(): void
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.posts.destroy', ['id' => 'not-a-post']))
-            ->assertStatus(400);
+            ->assertBadRequest();
     }
 }

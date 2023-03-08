@@ -25,7 +25,7 @@ class ImageControllerTest extends TestCase
 
         $this->actingAs(User::factory()->create(), 'canvas')
              ->putJson(route('canvas.uploads.store'), [null])
-             ->assertStatus(400);
+             ->assertBadRequest();
     }
 
     public function testUploadedImageCanBeStored(): void
@@ -57,7 +57,7 @@ class ImageControllerTest extends TestCase
         Storage::fake(config('canvas.storage_disk'));
 
         $this->actingAs(User::factory()->create(), 'canvas')
-             ->delete(route('canvas.uploads.destroy', null))->assertStatus(400);
+             ->delete(route('canvas.uploads.destroy', null))->assertBadRequest();
 
         $this->actingAs(User::factory()->create(), 'canvas')
              ->delete(route('canvas.uploads.destroy', [$file = UploadedFile::fake()->image('1.jpg')]))

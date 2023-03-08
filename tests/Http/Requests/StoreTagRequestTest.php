@@ -53,7 +53,7 @@ class StoreTagRequestTest extends TestCase
                 'name' => $tag->name,
                 'user_id' => $tag->user->id,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'slug',
@@ -73,7 +73,7 @@ class StoreTagRequestTest extends TestCase
                 'name' => $tag->name,
                 'user_id' => $tag->user->id,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'slug',
@@ -125,7 +125,7 @@ class StoreTagRequestTest extends TestCase
                 'slug' => 'a-new-tag',
                 'user_id' => $tag->user->id,
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'name',
@@ -144,7 +144,7 @@ class StoreTagRequestTest extends TestCase
                 'slug' => 'a-new-tag',
                 'name' => 'A new tag',
             ])
-            ->assertStatus(422)
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'errors' => [
                     'user_id',

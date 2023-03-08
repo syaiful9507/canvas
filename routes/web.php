@@ -17,83 +17,90 @@ use Illuminate\Support\Facades\Route;
 Route::middleware([AuthenticateSession::class])->group(function () {
     Route::prefix('api')->as('canvas.')->group(function () {
         Route::prefix('posts')
+            ->controller(PostController::class)
             ->as('posts.')
             ->group(function () {
-                Route::get('/', [PostController::class, 'index'])->name('index');
-                Route::get('create', [PostController::class, 'create'])->name('create');
-                Route::get('{id}', [PostController::class, 'show'])->name('show');
-                Route::get('{id}/stats', [PostController::class, 'stats'])->name('stats');
-                Route::put('{id}', [PostController::class, 'store'])->name('store');
-                Route::delete('{id}', [PostController::class, 'destroy'])->name('destroy');
+                Route::get('/', 'index')->name('index');
+                Route::get('create', 'create')->name('create');
+                Route::get('{id}', 'show')->name('show');
+                Route::get('{id}/stats', 'stats')->name('stats');
+                Route::put('{id}', 'store')->name('store');
+                Route::delete('{id}', 'destroy')->name('destroy');
             });
 
         Route::middleware([VerifyAdmin::class])->group(function () {
             Route::prefix('tags')
+                ->controller(TagController::class)
                 ->as('tags.')
                 ->group(function () {
-                    Route::get('/', [TagController::class, 'index'])->name('index');
-                    Route::get('create', [TagController::class, 'create'])->name('create');
-                    Route::get('{id}', [TagController::class, 'show'])->name('show');
-                    Route::get('{id}/posts', [TagController::class, 'posts'])->name('posts');
-                    Route::put('{id}', [TagController::class, 'store'])->name('store');
-                    Route::delete('{id}', [TagController::class, 'destroy'])->name('destroy');
+                    Route::get('/', 'index')->name('index');
+                    Route::get('create', 'create')->name('create');
+                    Route::get('{id}', 'show')->name('show');
+                    Route::get('{id}/posts', 'posts')->name('posts');
+                    Route::put('{id}', 'store')->name('store');
+                    Route::delete('{id}', 'destroy')->name('destroy');
                 });
 
             Route::prefix('topics')
+                ->controller(TopicController::class)
                 ->as('topics.')
                 ->group(function () {
-                    Route::get('/', [TopicController::class, 'index'])->name('index');
-                    Route::get('create', [TopicController::class, 'create'])->name('create');
-                    Route::get('{id}', [TopicController::class, 'show'])->name('show');
-                    Route::get('{id}/posts', [TopicController::class, 'posts'])->name('posts');
-                    Route::put('{id}', [TopicController::class, 'store'])->name('store');
-                    Route::delete('{id}', [TopicController::class, 'destroy'])->name('destroy');
+                    Route::get('/', 'index')->name('index');
+                    Route::get('create', 'create')->name('create');
+                    Route::get('{id}', 'show')->name('show');
+                    Route::get('{id}/posts', 'posts')->name('posts');
+                    Route::put('{id}', 'store')->name('store');
+                    Route::delete('{id}', 'destroy')->name('destroy');
                 });
         });
 
         Route::prefix('users')
+            ->controller(UserController::class)
             ->as('users.')
             ->group(function () {
                 Route::middleware([VerifyAdmin::class])->group(function () {
-                    Route::get('/', [UserController::class, 'index'])->name('index');
-                    Route::get('create', [UserController::class, 'create'])->name('create');
-                    Route::get('{id}/posts', [UserController::class, 'posts'])->name('posts');
-                    Route::delete('{id}', [UserController::class, 'destroy'])->name('destroy');
+                    Route::get('/', 'index')->name('index');
+                    Route::get('create', 'create')->name('create');
+                    Route::get('{id}/posts', 'posts')->name('posts');
+                    Route::delete('{id}', 'destroy')->name('destroy');
                 });
 
-                Route::get('{id}', [UserController::class, 'show'])->name('show');
-                Route::put('{id}', [UserController::class, 'store'])->name('store');
+                Route::get('{id}', 'show')->name('show');
+                Route::put('{id}', 'store')->name('store');
             });
 
         Route::prefix('images')
+            ->controller(ImageController::class)
             ->as('images.')
             ->group(function () {
-                Route::put('/', [ImageController::class, 'store'])->name('store');
-                Route::delete('/', [ImageController::class, 'destroy'])->name('destroy');
+                Route::put('/', 'store')->name('store');
+                Route::delete('/', 'destroy')->name('destroy');
             });
 
         Route::prefix('search')
+            ->controller(SearchController::class)
             ->as('search.')
             ->group(function () {
-                Route::get('posts', [SearchController::class, 'posts'])->name('posts');
+                Route::get('posts', 'posts')->name('posts');
 
                 Route::middleware([VerifyAdmin::class])->group(function () {
-                    Route::get('tags', [SearchController::class, 'tags'])->name('tags');
-                    Route::get('topics', [SearchController::class, 'topics'])->name('topics');
-                    Route::get('users', [SearchController::class, 'users'])->name('users');
+                    Route::get('tags', 'tags')->name('tags');
+                    Route::get('topics', 'topics')->name('topics');
+                    Route::get('users', 'users')->name('users');
                 });
             });
 
         Route::prefix('stats')
+            ->controller(StatController::class)
             ->as('stats.')
             ->group(function () {
-                Route::get('views', [StatController::class, 'views'])->name('views');
-                Route::get('visits', [StatController::class, 'visits'])->name('visits');
-                Route::get('chart', [StatController::class, 'chart'])->name('chart');
-                Route::get('sources', [StatController::class, 'sources'])->name('sources');
-                Route::get('pages', [StatController::class, 'pages'])->name('pages');
-                Route::get('countries', [StatController::class, 'countries'])->name('countries');
-                Route::get('devices', [StatController::class, 'devices'])->name('devices');
+                Route::get('views', 'views')->name('views');
+                Route::get('visits', 'visits')->name('visits');
+                Route::get('chart', 'chart')->name('chart');
+                Route::get('sources', 'sources')->name('sources');
+                Route::get('pages', 'pages')->name('pages');
+                Route::get('countries', 'countries')->name('countries');
+                Route::get('devices', 'devices')->name('devices');
             });
     });
 

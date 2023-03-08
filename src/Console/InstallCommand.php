@@ -36,7 +36,7 @@ class InstallCommand extends Command
         parent::__construct();
 
         if (file_exists(config_path('canvas.php'))) {
-            $this->setHidden(true);
+            $this->setHidden();
         }
     }
 
