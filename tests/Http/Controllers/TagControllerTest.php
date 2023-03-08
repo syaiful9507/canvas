@@ -177,7 +177,7 @@ class TagControllerTest extends TestCase
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.tags.show', ['id' => 'not-a-tag']))
-            ->assertBadRequest();
+            ->assertStatus(400);
     }
 
     public function testStoreTagMethodValidatesUuidParameter(): void
@@ -188,20 +188,20 @@ class TagControllerTest extends TestCase
                 'name' => 'A new tag',
                 'user_id' => $user->id,
             ])
-            ->assertBadRequest();
+            ->assertStatus(400);
     }
 
     public function testGetPostsForTagMethodValidatesUuidParameter(): void
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.tags.posts', ['id' => 'not-a-tag']))
-            ->assertBadRequest();
+            ->assertStatus(400);
     }
 
     public function testDestroyTagMethodValidatesUuidParameter(): void
     {
         $this->actingAs(User::factory()->admin()->create(), 'canvas')
             ->getJson(route('canvas.tags.destroy', ['id' => 'not-a-tag']))
-            ->assertBadRequest();
+            ->assertStatus(400);
     }
 }
