@@ -25,14 +25,14 @@ class TagFactory extends Factory
     public function definition()
     {
         return [
-            'id' => $this->faker->unique()->uuid,
-            'slug' => $this->faker->unique()->slug,
-            'name' => $this->faker->word,
-            'featured_image' => $this->faker->imageUrl,
+            'id' => fake()->unique()->uuid,
+            'slug' => fake()->unique()->slug,
+            'name' => fake()->word,
+            'featured_image' => fake()->imageUrl,
             'user_id' => User::factory()->admin(),
             'meta' => [
-                'title' => $this->faker->sentence,
-                'description' => $this->faker->sentence,
+                'title' => fake()->sentence,
+                'description' => fake()->sentence,
             ],
         ];
     }

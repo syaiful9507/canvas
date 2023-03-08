@@ -10,7 +10,6 @@ use Canvas\Models\View;
 use Canvas\Models\Visit;
 use Canvas\Tests\TestCase;
 use Carbon\Carbon;
-use Faker\Factory as Faker;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -83,16 +82,14 @@ class PostTest extends TestCase
 
     public function testEstimatedReadTimeInMinutesAttribute(): void
     {
-        $faker = Faker::create();
-
         $post = Post::factory()->create([
-            'body' => $faker->words(249, true),
+            'body' => fake()->words(249, true),
         ]);
 
         $this->assertSame(1, $post->estimatedReadTimeInMinutes);
 
         $post = Post::factory()->create([
-            'body' => $faker->words(251, true),
+            'body' => fake()->words(251, true),
         ]);
 
         $this->assertSame(2, $post->estimatedReadTimeInMinutes);

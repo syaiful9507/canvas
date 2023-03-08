@@ -25,20 +25,20 @@ class PostFactory extends Factory
     public function definition()
     {
         return [
-            'id' => $this->faker->unique()->uuid,
-            'slug' => $this->faker->unique()->slug,
-            'title' => $this->faker->word,
-            'summary' => $this->faker->sentence,
-            'body' => $this->faker->realText,
+            'id' => fake()->unique()->uuid,
+            'slug' => fake()->unique()->slug,
+            'title' => fake()->word,
+            'summary' => fake()->sentence,
+            'body' => fake()->realText,
             'published_at' => null,
-            'featured_image' => $this->faker->imageUrl,
-            'featured_image_caption' => $this->faker->sentence,
+            'featured_image' => fake()->imageUrl,
+            'featured_image_caption' => fake()->sentence,
             'user_id' => User::factory(),
             'topic_id' => null,
             'meta' => [
-                'title' => $this->faker->sentence,
-                'description' => $this->faker->sentence,
-                'canonical_link' => $this->faker->sentence,
+                'title' => fake()->sentence,
+                'description' => fake()->sentence,
+                'canonical_link' => fake()->sentence,
             ],
         ];
     }
