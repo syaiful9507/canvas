@@ -4,6 +4,17 @@ declare(strict_types=1);
 
 namespace Canvas\Http\Controllers;
 
+use Canvas\Canvas;
+use Canvas\Models\Post;
+use Canvas\Models\View;
+use Canvas\Models\Visit;
+use Carbon\CarbonInterval;
+use DateInterval;
+use DatePeriod;
+use DateTimeInterface;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Str;
 use Illuminate\Routing\Controller;
 
 class StatController extends Controller
@@ -231,8 +242,8 @@ class StatController extends Controller
         // to every model and we may be creating a new one
         return sprintf('%d %s %s',
             $minutes,
-            Str::plural(trans('canvas::app.min', [], optional($this->user)->locale), $minutes),
-            trans('canvas::app.read', [], optional($this->user)->locale)
+            Str::plural(trans('canvas::app.min', [], optional(request()->user('canvas'))->locale), $minutes),
+            trans('canvas::app.read', [], optional(request()->user('canvas'))->locale)
         );
     }
 
@@ -299,7 +310,7 @@ class StatController extends Controller
         $collection = new Collection();
         $data->each(function ($item, $key) use ($collection) {
             if (empty(Canvas::parseReferer($item->referer))) {
-                $collection->push(trans('canvas::app.other', [], $this->user->locale));
+                $collection->push(trans('canvas::app.other', [], request()->user('canvas')->locale));
             } else {
                 $collection->push(Canvas::parseReferer($item->referer));
             }

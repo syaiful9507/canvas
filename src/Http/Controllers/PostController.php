@@ -149,6 +149,16 @@ class PostController extends Controller
     public function stats(string $id)
     {
         abort_unless(Uuid::isValid($id), 400);
+
+        $post = Post::query()->when(request()->user('canvas')->isContributor, function (Builder $query) {
+            return $query->where('user_id', request()->user('canvas')->id);
+        }, function (Builder $query) {
+            return $query;
+        })
+            ->published()
+            ->findOrFail($id);
+
+        return response()->json($post);
     }
 
     /**
