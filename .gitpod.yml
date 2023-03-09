@@ -114,14 +114,14 @@ tasks:
   - init: |
       # Initializing the Canvas package
 
-      # Install core PHP dependencies
+      # Install PHP dependencies
       composer install
 
-      # Install core JS dependencies
-      yarn
+      # Install Install Node.js dependencies
+      npm ci
 
     command: |
-      yarn watch
+      npm run watch
 
     openMode: split-right
 
