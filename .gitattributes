@@ -12,3 +12,4 @@
 .workspace.json export-ignore
 Dockerfile export-ignore
 phpunit.xml.dist export-ignore
+phpstan.neon.dist export-ignore
