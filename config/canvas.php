@@ -30,6 +30,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Site URL
+    |--------------------------------------------------------------------------
+    |
+    | This is the public URI where visitors can access your published
+    | content. If the site URL is set to null, certain UI elements
+    | will be omitted from the logged in dashboard experience.
+    |
+    */
+
+    'site_url' => env('CANVAS_SITE_URL', null),
+
+    /*
+    |--------------------------------------------------------------------------
     | Route Middleware
     |--------------------------------------------------------------------------
     |

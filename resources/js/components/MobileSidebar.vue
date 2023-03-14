@@ -69,8 +69,7 @@
                                     inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                                     @click="closeSidebar"
                                 >
-                                    <component
-                                        :is="HomeIcon"
+                                    <HomeIcon
                                         :class="[
                                             ['dashboard'].includes(route.name)
                                                 ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
@@ -82,37 +81,13 @@
                                     {{ trans.dashboard }}
                                 </AppLink>
                                 <AppLink
-                                    :to="{ name: 'users' }"
-                                    class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                                    active-class="bg-gray-100 text-gray-900 dark:text-white dark:bg-gray-900"
-                                    inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
-                                    @click="closeSidebar"
-                                >
-                                    <component
-                                        :is="UsersIcon"
-                                        :class="[
-                                            [
-                                                'users',
-                                                'create-user',
-                                                'show-user'
-                                            ].includes(route.name)
-                                                ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
-                                                : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300',
-                                            'mr-4 flex-shrink-0 h-6 w-6'
-                                        ]"
-                                        aria-hidden="true"
-                                    />
-                                    {{ trans.users }}
-                                </AppLink>
-                                <AppLink
                                     :to="{ name: 'posts' }"
                                     class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
                                     active-class="bg-gray-100 text-gray-900 dark:text-white dark:bg-gray-900"
                                     inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                                     @click="closeSidebar"
                                 >
-                                    <component
-                                        :is="BookmarkSquareIcon"
+                                    <BookmarkSquareIcon
                                         :class="[
                                             [
                                                 'posts',
@@ -134,8 +109,7 @@
                                     inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                                     @click="closeSidebar"
                                 >
-                                    <component
-                                        :is="TagIcon"
+                                    <TagIcon
                                         :class="[
                                             [
                                                 'tags',
@@ -157,8 +131,7 @@
                                     inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                                     @click="closeSidebar"
                                 >
-                                    <component
-                                        :is="RectangleStackIcon"
+                                    <RectangleStackIcon
                                         :class="[
                                             [
                                                 'topics',
@@ -173,6 +146,28 @@
                                     />
                                     {{ trans.topics }}
                                 </AppLink>
+                                <AppLink
+                                    :to="{ name: 'users' }"
+                                    class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                                    active-class="bg-gray-100 text-gray-900 dark:text-white dark:bg-gray-900"
+                                    inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
+                                    @click="closeSidebar"
+                                >
+                                    <UsersIcon
+                                        :class="[
+                                            [
+                                                'users',
+                                                'create-user',
+                                                'show-user'
+                                            ].includes(route.name)
+                                                ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
+                                                : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300',
+                                            'mr-4 flex-shrink-0 h-6 w-6'
+                                        ]"
+                                        aria-hidden="true"
+                                    />
+                                    {{ trans.users }}
+                                </AppLink>
 
                                 <hr
                                     class="my-5 border-t border-gray-200 dark:border-gray-700"
@@ -186,8 +181,7 @@
                                     inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                                     @click="closeSidebar"
                                 >
-                                    <component
-                                        :is="CogIcon"
+                                    <CogIcon
                                         :class="[
                                             ['settings'].includes(route.name)
                                                 ? 'text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
@@ -202,8 +196,7 @@
                                     class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer"
                                     @click="logout"
                                 >
-                                    <component
-                                        :is="ArrowRightOnRectangleIcon"
+                                    <ArrowRightOnRectangleIcon
                                         class="mr-4 flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
                                         aria-hidden="true"
                                     />

@@ -20,7 +20,7 @@
                 leave-to="opacity-0"
             >
                 <div
-                    class="fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-25 transition-opacity"
+                    class="fixed inset-0 bg-gray-500 bg-opacity-25 transition-opacity"
                 />
             </TransitionChild>
 
@@ -35,7 +35,7 @@
                     leave-to="opacity-0 scale-95"
                 >
                     <DialogPanel
-                        class="mx-auto max-w-2xl transform divide-y divide-gray-500 divide-opacity-10 overflow-hidden rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
+                        class="mx-auto max-w-2xl transform divide-y divide-gray-100 dark:divide-gray-500 dark:divide-opacity-20 overflow-hidden rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
                     >
                         <Combobox @update:model-value="onSelect">
                             <div class="relative">
@@ -44,8 +44,8 @@
                                     aria-hidden="true"
                                 />
                                 <ComboboxInput
-                                    class="h-12 w-full border-0 pl-11 pr-4 bg-transparent text-gray-800 placeholder-gray-400 dark:bg-gray-900 dark:text-white focus:ring-0 sm:text-sm"
-                                    :placeholder="trans.search_canvas"
+                                    class="h-12 w-full border-0 pl-11 pr-4 bg-transparent text-gray-800 placeholder-gray-400 dark:bg-gray-900 dark:text-white focus:ring-0"
+                                    :placeholder="trans.search_or_jump_to"
                                     @change="query = $event.target.value"
                                 />
                             </div>
@@ -54,7 +54,7 @@
                                 v-if="filteredItems.length > 0"
                                 static
                                 hold
-                                class="max-h-80 scroll-py-2 divide-y divide-gray-200 dark:divide-gray-500 overflow-y-auto"
+                                class="max-h-80 scroll-py-2 divide-y divide-gray-100 dark:divide-gray-500 dark:divide-opacity-20 overflow-y-auto"
                             >
                                 <li
                                     v-for="[category, items] in Object.entries(
@@ -71,13 +71,12 @@
                                             :value="item"
                                             as="template"
                                         >
-                                            <AppLink
-                                                :to="{
-                                                    name: item.route,
-                                                    params: { id: item.id }
-                                                }"
-                                            >
-                                                <li
+                                            <li>
+                                                <AppLink
+                                                    :to="{
+                                                        name: item.route,
+                                                        params: { id: item.id }
+                                                    }"
                                                     :class="[
                                                         'flex cursor-pointer select-none items-center rounded-md px-3 py-2',
                                                         active &&
@@ -147,8 +146,8 @@
                                                             trans.jump_to
                                                         }}</span
                                                     >
-                                                </li>
-                                            </AppLink>
+                                                </AppLink>
+                                            </li>
                                         </ComboboxOption>
                                     </ul>
                                 </li>
@@ -252,6 +251,15 @@ watchEffect(() => {
     }
 })
 
+defineExpose({
+    show,
+    hide
+})
+
+onMounted(() => {
+    store.dispatch('search/buildIndex')
+})
+
 function onSelect(item) {
     hide()
     router.push({
@@ -261,13 +269,4 @@ function onSelect(item) {
         }
     })
 }
-
-defineExpose({
-    show,
-    hide
-})
-
-onMounted(() => {
-    store.dispatch('search/buildIndex')
-})
 </script>

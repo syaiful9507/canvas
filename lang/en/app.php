@@ -27,7 +27,7 @@ return [
     'clear_current_search_filters_and_sorts' => 'Clear current search query, filters, and sorts.',
     'dashboard' => 'Dashboard',
     'author' => 'Author',
-    'search_canvas' => 'Search Canvas',
+    'search_or_jump_to' => 'Search or jump to...',
     'no_results_found' => 'No results found',
     'we_could_not_find_anything' => 'We couldn\'t find anything with that term. Please try again.',
     'users' => 'Users',
