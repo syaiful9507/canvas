@@ -7,15 +7,16 @@ import {
 
 const initialState = {
     assetsUpToDate: window.Canvas.assetsUpToDate,
-    i18n: window.Canvas.translations,
     languageCodes: window.Canvas.languageCodes,
     maxUpload: window.Canvas.maxUpload,
     path: window.Canvas.path,
+    roles: window.Canvas.roles,
+    siteUrl: window.Canvas.siteUrl,
     timezone: window.Canvas.timezone,
+    translations: window.Canvas.translations,
     unsplash: window.Canvas.unsplash,
     user: window.Canvas.user,
-    version: window.Canvas.version,
-    roles: window.Canvas.roles
+    version: window.Canvas.version
 }
 
 const state = { ...initialState }
@@ -77,7 +78,7 @@ const mutations = {
     },
 
     UPDATE_LOCALE(state, data) {
-        state.i18n = data.i18n
+        state.translations = data.translations
         state.user.locale = data.user.locale
     },
 
@@ -92,7 +93,7 @@ const mutations = {
 
 const getters = {
     trans(state) {
-        return JSON.parse(state.i18n)
+        return JSON.parse(state.translations)
     },
 
     locale(state) {
@@ -108,11 +109,11 @@ const getters = {
     getAppearanceName(state) {
         switch (state.user.dark_mode) {
             case true:
-                return JSON.parse(state.i18n).dark
+                return JSON.parse(state.translations).dark
             case false:
-                return JSON.parse(state.i18n).light
+                return JSON.parse(state.translations).light
             default:
-                return JSON.parse(state.i18n).system
+                return JSON.parse(state.translations).system
         }
     },
 

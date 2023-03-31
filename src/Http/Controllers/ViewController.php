@@ -24,6 +24,7 @@ class ViewController extends Controller
                 'maxUpload' => config('canvas.upload_filesize'),
                 'path' => Canvas::basePath(),
                 'roles' => User::roles(),
+                'siteUrl' => config('canvas.site_url'),
                 'timezone' => config('app.timezone'),
                 'translations' => Canvas::availableTranslations(request()->user('canvas')->locale),
                 'unsplash' => config('canvas.unsplash.access_key'),

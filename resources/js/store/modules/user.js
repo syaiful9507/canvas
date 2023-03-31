@@ -64,6 +64,7 @@ const mutations = {
     },
 
     UPDATE_LOCALE(state, data) {
+        // TODO: Rename to translations?
         state.i18n = data.i18n
         state.locale = data.user.locale
     },

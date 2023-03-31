@@ -104,6 +104,7 @@ return [
     'these_credentials_do_not_match' => 'These credentials do not match our records.',
     'this_password_reset_token_is_invalid' => 'This password reset token is invalid.',
     'we_have_emailed_your_password_reset_link' => 'We have emailed your password reset link!',
+    'view_site' => 'View site',
 
     // VALIDATION
     'id_required' => 'The id field is required.',

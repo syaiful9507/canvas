@@ -80,6 +80,16 @@
                                     />
                                     {{ trans.dashboard }}
                                 </AppLink>
+                                <AppLink v-if="config.siteUrl" :to="config.siteUrl" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer">
+                                    <WindowIcon
+                                        class="mr-3 h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
+                                        aria-hidden="true"
+                                    />
+                                    <span class="flex-1">{{ trans.view_site }}</span>
+                                    <span class="ml-3 inline-block text-xs font-medium">
+                                        <ArrowTopRightOnSquareIcon class="h-5 w-5 text-transparent dark:group-hover:text-white" />
+                                    </span>
+                                </AppLink>
                                 <AppLink
                                     :to="{ name: 'posts' }"
                                     class="group flex items-center px-2 py-2 text-base font-medium rounded-md"
@@ -261,12 +271,14 @@ import {
 } from '@headlessui/vue'
 import {
     ArrowRightOnRectangleIcon,
+    ArrowTopRightOnSquareIcon,
     TagIcon,
     CogIcon,
     BookmarkSquareIcon,
     HomeIcon,
     RectangleStackIcon,
     UsersIcon,
+    WindowIcon,
     XMarkIcon
 } from '@heroicons/vue/24/outline'
 import { useStore } from 'vuex'
@@ -283,6 +295,7 @@ defineProps({
 const emit = defineEmits(['closeSidebar', 'logout'])
 const route = useRoute()
 const store = useStore()
+const config = computed(() => store.state.config)
 const user = computed(() => store.state.config.user)
 const trans = computed(() => store.getters['config/trans'])
 

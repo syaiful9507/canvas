@@ -19,7 +19,7 @@
                             :to="{ name: 'dashboard' }"
                             class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                             active-class="bg-gray-200 text-gray-900 dark:text-white dark:bg-gray-900"
-                            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
+                            inactive-class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                         >
                             <HomeIcon
                                 :class="[
@@ -32,11 +32,21 @@
                             />
                             {{ trans.dashboard }}
                         </AppLink>
+                        <AppLink v-if="config.siteUrl" :to="config.siteUrl" class="group flex items-center rounded-md px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer">
+                            <WindowIcon
+                                class="mr-3 h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
+                                aria-hidden="true"
+                            />
+                            <span class="flex-1">{{ trans.view_site }}</span>
+                            <span class="ml-3 inline-block text-xs font-medium">
+                                <ArrowTopRightOnSquareIcon class="h-5 w-5 text-transparent group-hover:text-gray-500 dark:group-hover:text-white" />
+                            </span>
+                        </AppLink>
                         <AppLink
                             :to="{ name: 'posts' }"
                             class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                             active-class="bg-gray-200 text-gray-900 dark:text-white dark:bg-gray-900"
-                            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
+                            inactive-class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                         >
                             <BookmarkSquareIcon
                                 :class="[
@@ -57,7 +67,7 @@
                             :to="{ name: 'tags' }"
                             class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                             active-class="bg-gray-200 text-gray-900 dark:text-white dark:bg-gray-900"
-                            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
+                            inactive-class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                         >
                             <TagIcon
                                 :class="[
@@ -76,7 +86,7 @@
                             :to="{ name: 'topics' }"
                             class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                             active-class="bg-gray-200 text-gray-900 dark:text-white dark:bg-gray-900"
-                            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
+                            inactive-class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                         >
                             <RectangleStackIcon
                                 :class="[
@@ -97,7 +107,7 @@
                             :to="{ name: 'users' }"
                             class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                             active-class="bg-gray-200 text-gray-900 dark:text-white dark:bg-gray-900"
-                            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
+                            inactive-class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                         >
                             <UsersIcon
                                 :class="[
@@ -126,7 +136,7 @@
                             :to="{ name: 'settings' }"
                             class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                             active-class="bg-gray-200 text-gray-900 dark:text-white dark:bg-gray-900"
-                            inactive-class="text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
+                            inactive-class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700"
                         >
                             <CogIcon
                                 :class="[
@@ -139,13 +149,12 @@
                             />
                             {{ trans.settings }}
                         </AppLink>
-
                         <a
-                            class="group flex items-center rounded-md px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer"
+                            class="group flex items-center rounded-md px-2 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:bg-gray-800 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer"
                             @click="logout"
                         >
                             <ArrowRightOnRectangleIcon
-                                class="mr-3 h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
+                                class="mr-3 h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-300"
                                 aria-hidden="true"
                             />
                             {{ trans.sign_out }}
@@ -194,12 +203,14 @@
 import { computed } from 'vue'
 import {
     ArrowRightOnRectangleIcon,
+    ArrowTopRightOnSquareIcon,
     TagIcon,
     CogIcon,
     BookmarkSquareIcon,
     HomeIcon,
     RectangleStackIcon,
-    UsersIcon
+    UsersIcon,
+    WindowIcon
 } from '@heroicons/vue/24/outline'
 import { useStore } from 'vuex'
 import AppLink from '@/components/AppLink'
@@ -215,6 +226,7 @@ defineProps({
 const emit = defineEmits(['logout'])
 const route = useRoute()
 const store = useStore()
+const config = computed(() => store.state.config)
 const user = computed(() => store.state.config.user)
 const trans = computed(() => store.getters['config/trans'])
 
