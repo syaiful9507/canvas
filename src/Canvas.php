@@ -3,6 +3,7 @@
 namespace Canvas;
 
 use Canvas\Models\User;
+use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -20,9 +21,7 @@ class Canvas
             return '';
         }
 
-        $dependencies = json_decode(file_get_contents(base_path('composer.lock')), true)['packages'];
-
-        return collect($dependencies)->firstWhere('name', 'austintoddj/canvas')['version'];
+        return InstalledVersions::getPrettyVersion('austintoddj/canvas');
     }
 
     /**
