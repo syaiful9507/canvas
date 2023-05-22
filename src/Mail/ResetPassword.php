@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -15,7 +17,7 @@ class ResetPassword extends Mailable
      *
      * @var string
      */
-    public $token;
+    public string $token;
 
     /**
      * Create a new message instance.
@@ -37,7 +39,7 @@ class ResetPassword extends Mailable
     {
         return $this->subject('Reset your password')
                     ->markdown('canvas::mail.password', [
-                        'link' => route('canvas.password.reset', ['token' => $this->token]),
+                        'link' => route('canvas.reset-password.view', ['token' => $this->token]),
                     ]);
     }
 }

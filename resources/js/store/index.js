@@ -1,13 +1,12 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import search from './modules/search';
-import settings from './modules/settings';
+import search from '@/store/modules/search'
+import config from '@/store/modules/config'
+import user from '@/store/modules/user'
+import { createStore } from 'vuex'
 
-Vue.use(Vuex);
-
-export const store = new Vuex.Store({
+export const store = createStore({
     modules: {
+        config,
         search,
-        settings,
-    },
-});
+        user
+    }
+})

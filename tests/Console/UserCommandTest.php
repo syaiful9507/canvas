@@ -17,58 +17,69 @@ class UserCommandTest extends TestCase
 
     public function testCanvasUserCommandWillValidateAnEmptyEmail(): void
     {
-        $this->artisan('canvas:user admin')
+        $this->artisan('canvas:user')
+             ->expectsQuestion('What email do you want to assign to this user?', '')
              ->assertExitCode(0)
              ->expectsOutput('Please enter a valid email.');
     }
 
     public function testCanvasUserCommandWillValidateAnInvalidEmail(): void
     {
-        $this->artisan('canvas:user admin --email bad.email')
+        $this->artisan('canvas:user')
+             ->expectsQuestion('What email do you want to assign to this user?', 'bad.email')
              ->assertExitCode(0)
              ->expectsOutput('Please enter a valid email.');
     }
 
-    public function testCanvasUserCommandWillValidateAnInvalidRole(): void
+    public function testCanvasUserCommandWillValidateAnExistingEmail(): void
     {
-        $this->artisan('canvas:user ad --email email@example.com')
+        $user = User::factory()->contributor()->create();
+
+        $this->artisan('canvas:user')
+             ->expectsQuestion('What email do you want to assign to this user?', $user->email)
              ->assertExitCode(0)
-             ->expectsOutput('Please enter a valid role.');
+             ->expectsOutput('That email already exists in the system.');
     }
 
     public function testCanvasUserCommandCanCreateANewContributor(): void
     {
-        $this->artisan('canvas:user contributor --email contributor@example.com')
+        $this->artisan('canvas:user')
+             ->expectsQuestion('What email do you want to assign to this user?', 'contributor@example.com')
+             ->expectsChoice('What role should the user have?', trans('canvas::app.contributor'), User::roles())
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
 
         $this->assertDatabaseHas('canvas_users', [
             'email' => 'contributor@example.com',
-            'role' => User::CONTRIBUTOR,
+            'role' => User::$contributor_id,
         ]);
     }
 
     public function testCanvasUserCommandCanCreateANewEditor(): void
     {
-        $this->artisan('canvas:user editor --email editor@example.com')
+        $this->artisan('canvas:user')
+             ->expectsQuestion('What email do you want to assign to this user?', 'editor@example.com')
+            ->expectsChoice('What role should the user have?', trans('canvas::app.editor'), User::roles())
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
 
         $this->assertDatabaseHas('canvas_users', [
             'email' => 'editor@example.com',
-            'role' => User::EDITOR,
+            'role' => User::$editor_id,
         ]);
     }
 
     public function testCanvasUserCommandCanCreateANewAdmin(): void
     {
-        $this->artisan('canvas:user admin --email admin@example.com')
+        $this->artisan('canvas:user')
+             ->expectsQuestion('What email do you want to assign to this user?', 'admin@example.com')
+            ->expectsChoice('What role should the user have?', trans('canvas::app.admin'), User::roles())
              ->assertExitCode(0)
              ->expectsOutput('New user created.');
 
         $this->assertDatabaseHas('canvas_users', [
             'email' => 'admin@example.com',
-            'role' => User::ADMIN,
+            'role' => User::$admin_id,
         ]);
     }
 }

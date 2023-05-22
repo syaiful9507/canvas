@@ -1,36 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Models;
 
 use Canvas\Canvas;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Canvas\Database\Factories\UserFactory;
+use Canvas\Traits\HasRole;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use SoftDeletes;
-
-    /**
-     * Role identifier for a Contributor.
-     *
-     * @const int
-     */
-    public const CONTRIBUTOR = 1;
-
-    /**
-     * Role identifier for an Editor.
-     *
-     * @const int
-     */
-    public const EDITOR = 2;
-
-    /**
-     * Role identifier for an Admin.
-     *
-     * @const int
-     */
-    public const ADMIN = 3;
+    use HasFactory, HasRole, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -82,9 +65,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'digest' => 'boolean',
         'dark_mode' => 'boolean',
+        'digest' => 'boolean',
         'role' => 'int',
+        'social' => 'array',
+        'meta' => 'array',
     ];
 
     /**
@@ -107,9 +92,9 @@ class User extends Authenticatable
     /**
      * Get the posts relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function posts(): HasMany
+    public function posts()
     {
         return $this->hasMany(Post::class);
     }
@@ -117,9 +102,9 @@ class User extends Authenticatable
     /**
      * Get the tags relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function tags(): HasMany
+    public function tags()
     {
         return $this->hasMany(Tag::class);
     }
@@ -127,9 +112,9 @@ class User extends Authenticatable
     /**
      * Get the topics relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function topics(): HasMany
+    public function topics()
     {
         return $this->hasMany(Topic::class);
     }
@@ -139,9 +124,9 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function getIsContributorAttribute(): bool
+    public function getIsContributorAttribute()
     {
-        return $this->role === self::CONTRIBUTOR;
+        return is_null($this->role) || $this->role === self::$contributor_id;
     }
 
     /**
@@ -149,9 +134,9 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function getIsEditorAttribute(): bool
+    public function getIsEditorAttribute()
     {
-        return $this->role === self::EDITOR;
+        return $this->role === self::$editor_id;
     }
 
     /**
@@ -159,9 +144,9 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function getIsAdminAttribute(): bool
+    public function getIsAdminAttribute()
     {
-        return $this->role === self::ADMIN;
+        return $this->role === self::$admin_id;
     }
 
     /**
@@ -169,7 +154,7 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function getDefaultAvatarAttribute(): string
+    public function getDefaultAvatarAttribute()
     {
         return Canvas::gravatar($this->email ?? '');
     }
@@ -179,8 +164,34 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function getDefaultLocaleAttribute(): string
+    public function getDefaultLocaleAttribute()
     {
         return config('app.locale');
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return UserFactory::new();
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function (self $user) {
+            $user->posts()->delete();
+            $user->tags()->delete();
+            $user->topics()->delete();
+        });
     }
 }

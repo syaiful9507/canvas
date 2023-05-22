@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Models;
 
+use Canvas\Database\Factories\TopicFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Topic extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -54,25 +56,42 @@ class Topic extends Model
     protected $perPage = 10;
 
     /**
+     * The attributes that should be casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'meta' => 'array',
+    ];
+
+    /**
      * Get the posts relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function posts(): BelongsToMany
+    public function posts()
     {
-        // TODO: This should be a hasMany() relationship?
-
-        return $this->belongsToMany(Post::class, 'canvas_posts_topics', 'topic_id', 'post_id');
+        return $this->hasMany(Post::class);
     }
 
     /**
      * Get the user relationship.
      *
-     * @return BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return TopicFactory::new();
     }
 
     /**
@@ -85,7 +104,10 @@ class Topic extends Model
         parent::boot();
 
         static::deleting(function (self $topic) {
-            $topic->posts()->detach();
+            $topic->posts()->each(function (Post $post, $key) {
+                $post->topic()->dissociate();
+                $post->save();
+            });
         });
     }
 }

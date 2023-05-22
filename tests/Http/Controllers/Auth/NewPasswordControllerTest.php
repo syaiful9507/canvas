@@ -2,6 +2,7 @@
 
 namespace Canvas\Tests\Http\Controllers\Auth;
 
+use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -10,6 +11,7 @@ use Illuminate\Validation\ValidationException;
  * Class NewPasswordControllerTest.
  *
  * @covers \Canvas\Http\Controllers\Auth\NewPasswordController
+ * @covers \Canvas\Http\Requests\NewPasswordRequest
  */
 class NewPasswordControllerTest extends TestCase
 {
@@ -17,40 +19,44 @@ class NewPasswordControllerTest extends TestCase
     {
         $this->withoutMix();
 
-        $this->get(route('canvas.password.reset', [
-            'token' => Str::random(60),
+        $user = User::factory()->create();
+
+        $this->get(route('canvas.reset-password.view', [
+            'token' => encrypt($user->id.'|'.Str::random()),
         ]))
              ->assertSuccessful()
              ->assertViewIs('canvas::auth.passwords.reset')
-             ->assertSeeText('Reset password');
+             ->assertSeeText(trans('canvas::app.update_password'));
     }
 
     public function testPasswordCanBeReset(): void
     {
         $this->withoutMix();
 
-        $token = encrypt($this->admin->id.'|'.Str::random());
+        $user = User::factory()->create();
 
-        cache(["password.reset.{$this->admin->id}" => $token],
+        $token = encrypt($user->id.'|'.Str::random());
+
+        cache(["password.reset.{$user->id}" => $token],
             now()->addMinutes(60)
         );
 
-        $this->post(route('canvas.password.update', [
+        $this->post(route('canvas.reset-password', [
             'token' => $token,
-            'email' => $this->admin->email,
+            'email' => $user->email,
             'password' => 'password',
             'password_confirmation' => 'password',
         ]))->assertRedirect(route('canvas'));
 
-        $this->assertEmpty(cache()->get("password.reset.{$this->admin->id}"));
+        $this->assertEmpty(cache("password.reset.{$user->id}"));
     }
 
     public function testNewPasswordRequestWillValidateAnInvalidEmail(): void
     {
-        $token = encrypt($this->admin->id.'|'.Str::random());
+        $user = User::factory()->create();
 
-        $response = $this->post(route('canvas.password.update'), [
-            'token' => $token,
+        $response = $this->post(route('canvas.reset-password'), [
+            'token' =>  encrypt($user->id.'|'.Str::random()),
             'email' => 'not-an-email',
             'password' => 'password',
             'password_confirmation' => 'password',
@@ -61,11 +67,11 @@ class NewPasswordControllerTest extends TestCase
 
     public function testNewPasswordRequestWillValidateUnconfirmedPasswords(): void
     {
-        $token = encrypt($this->admin->id.'|'.Str::random());
+        $user = User::factory()->create();
 
-        $response = $this->post(route('canvas.password.update'), [
-            'token' => $token,
-            'email' => $this->admin->email,
+        $response = $this->post(route('canvas.reset-password'), [
+            'token' =>  encrypt($user->id.'|'.Str::random()),
+            'email' => $user->email,
             'password' => 'password',
             'password_confirmation' => 'secret',
         ]);
@@ -73,11 +79,19 @@ class NewPasswordControllerTest extends TestCase
         $this->assertInstanceOf(ValidationException::class, $response->exception);
     }
 
-    public function testNewPasswordRequestWillValidateBadTokens(): void
+    public function testNewPasswordRequestWillValidateExpiredTokens(): void
     {
-        $this->post(route('canvas.password.update'), [
-            'token' => Str::random(),
-            'email' => $this->admin->email,
+        $user = User::factory()->create();
+
+        $oldToken = encrypt($user->id.'|'.Str::random());
+
+        cache(["password.reset.{$user->id}" => $oldToken],
+            now()->subMinute()
+        );
+
+        $this->post(route('canvas.reset-password'), [
+            'token' => $oldToken,
+            'email' => $user->email,
             'password' => 'password',
             'password_confirmation' => 'password',
         ])->assertSessionHas('invalidResetToken');

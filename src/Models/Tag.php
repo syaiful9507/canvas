@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Models;
 
+use Canvas\Database\Factories\TagFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tag extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -54,23 +56,47 @@ class Tag extends Model
     protected $perPage = 10;
 
     /**
+     * The attributes that should be casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'meta' => 'array',
+    ];
+
+    /**
      * Get the posts relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function posts(): BelongsToMany
+    public function posts()
     {
-        return $this->belongsToMany(Post::class, 'canvas_posts_tags', 'tag_id', 'post_id');
+        return $this->belongsToMany(
+            Post::class,
+            'canvas_posts_tags',
+            'tag_id',
+            'post_id'
+        );
     }
 
     /**
      * Get the user relationship.
      *
-     * @return BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return TagFactory::new();
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Canvas\Tests\Http\Controllers;
 
+use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 
 /**
@@ -11,16 +12,15 @@ use Canvas\Tests\TestCase;
  */
 class ViewControllerTest extends TestCase
 {
-    /** @test */
     public function testScriptVariables(): void
     {
         $this->withoutMix();
 
-        $this->actingAs($this->admin, 'canvas')
+        $this->actingAs(User::factory()->create(), 'canvas')
              ->get(config('canvas.path'))
              ->assertSuccessful()
              ->assertViewIs('canvas::layout')
-             ->assertViewHas('jsVars')
+             ->assertViewHas('scripts')
              ->assertSee('canvas');
     }
 }

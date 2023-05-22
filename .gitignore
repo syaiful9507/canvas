@@ -1,11 +1,7 @@
-/node_modules
-/vendor
-/coverage
-/.idea
-/.vscode
-npm-debug.log
-yarn-error.log
-Thumbs.db
+node_modules
+vendor
+coverage
+.idea
+*.log
 .DS_Store
-phpunit.xml
 .phpunit.result.cache

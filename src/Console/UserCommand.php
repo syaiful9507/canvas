@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Console;
 
-use Canvas\Canvas;
 use Canvas\Models\User;
+use Faker\Factory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
@@ -15,9 +17,7 @@ class UserCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'canvas:user
-                    { role : The role to be assigned (admin, editor, contributor) }
-                    { --email= : Email associated with the user }';
+    protected $signature = 'canvas:user';
 
     /**
      * The console command description.
@@ -33,55 +33,38 @@ class UserCommand extends Command
      */
     public function handle()
     {
-        if (! filter_var($this->option('email'), FILTER_VALIDATE_EMAIL)) {
+        $email = $this->ask('What email do you want to assign to this user?');
+        $password = 'password';
+
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->error('Please enter a valid email.');
 
             return;
         }
 
-        $email = $this->option('email');
-        $password = 'password';
+        if (User::query()->where('email', $email)->exists()) {
+            $this->error('That email already exists in the system.');
 
-        $user = new User();
-        $user->fill([
-            'id' => Uuid::uuid4()->toString(),
-            'email' => $email,
-            'password' => Hash::make($password),
-            'avatar' => Canvas::gravatar($email),
-        ]);
-
-        switch ($this->argument('role')) {
-            case 'admin':
-                $user->fill([
-                    'name' => 'New Admin',
-                    'role' => User::ADMIN,
-                ]);
-                break;
-
-            case 'editor':
-                $user->fill([
-                    'name' => 'New Editor',
-                    'role' => User::EDITOR,
-                ]);
-                break;
-
-            case 'contributor':
-                $user->fill([
-                    'name' => 'New Contributor',
-                    'role' => User::CONTRIBUTOR,
-                ]);
-                break;
-
-            default:
-                $this->error('Please enter a valid role.');
-
-                return;
+            return;
         }
 
-        $user->save();
+        $role = $this->choice(
+            'What role should the user have?',
+            User::roles(),
+            User::$contributor_id,
+            3
+        );
+
+        User::query()->create([
+            'id' => Uuid::uuid4()->toString(),
+            'name' => Factory::create()->name,
+            'email' => $email,
+            'password' => Hash::make($password),
+            'role' => array_search($role, User::roles()),
+        ]);
 
         $this->info('New user created.');
         $this->table(['Email', 'Password'], [[$email, $password]]);
-        $this->info('First things first, login at <info>'.route('canvas.login').'</info> and update your credentials.');
+        $this->info('First things first, head to <info>'.route('canvas.login').'</info> and update your credentials.');
     }
 }

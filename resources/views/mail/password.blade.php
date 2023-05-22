@@ -1,17 +1,17 @@
 @component('mail::message')
 
-# Hello
+# {{ trans('canvas::app.hello') }}
 
-You are receiving this email because we received a password reset request for your account.
+{{ trans('canvas::app.you_are_receiving_this_email') }}
 
 @component('mail::button', ['url' => $link])
-    Reset Password
+    {{ trans('canvas::app.reset_password') }}
 @endcomponent
 
-This password reset link will expire in 60 minutes.
+{{ trans('canvas::app.this_password_reset_link_will_expire') }}
 
-If you did not request a password reset, no further action is required.
+{{ trans('canvas::app.if_you_did_not_request_a_password_reset') }}
 
-Thanks,<br>
+{{ trans('canvas::app.thanks') }},<br>
 {{ config('app.name') }}
 @endcomponent

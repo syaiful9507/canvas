@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -15,7 +17,7 @@ class WeeklyDigest extends Mailable
      *
      * @var array
      */
-    public $data;
+    public array $data;
 
     /**
      * Create a new message instance.

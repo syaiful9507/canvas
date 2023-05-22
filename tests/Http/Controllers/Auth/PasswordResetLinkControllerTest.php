@@ -3,6 +3,7 @@
 namespace Canvas\Tests\Http\Controllers\Auth;
 
 use Canvas\Mail\ResetPassword;
+use Canvas\Models\User;
 use Canvas\Tests\TestCase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
@@ -11,6 +12,7 @@ use Illuminate\Validation\ValidationException;
  * Class PasswordResetLinkControllerTest.
  *
  * @covers \Canvas\Http\Controllers\Auth\PasswordResetLinkController
+ * @covers \Canvas\Http\Requests\PasswordResetLinkRequest
  */
 class PasswordResetLinkControllerTest extends TestCase
 {
@@ -18,15 +20,15 @@ class PasswordResetLinkControllerTest extends TestCase
     {
         $this->withoutMix();
 
-        $this->get(route('canvas.password.request'))
+        $this->get(route('canvas.forgot-password.view'))
              ->assertSuccessful()
              ->assertViewIs('canvas::auth.passwords.email')
-             ->assertSeeText('Send Password Reset Link');
+             ->assertSeeText(trans('canvas::app.send_password_reset_link'));
     }
 
     public function testForgotPasswordLinkRequestWillValidateAnInvalidEmail(): void
     {
-        $response = $this->post(route('canvas.password.email'), [
+        $response = $this->post(route('canvas.forgot-password'), [
             'email' => 'not-an-email',
         ]);
 
@@ -37,15 +39,16 @@ class PasswordResetLinkControllerTest extends TestCase
     {
         Mail::fake();
 
-        $this->post(route('canvas.password.email'), [
-            'email' => $this->admin->email,
-        ])
-             ->assertRedirect(route('canvas.password.request'));
+        $user = User::factory()->create();
 
-        Mail::assertSent(ResetPassword::class, function ($mail) {
+        $this->post(route('canvas.forgot-password'), [
+            'email' => $user->email,
+        ])->assertRedirect(route('canvas.forgot-password.view'));
+
+        Mail::assertSent(ResetPassword::class, function ($mail) use ($user) {
             $this->assertIsString($mail->token);
 
-            return $mail->hasTo($this->admin->email);
+            return $mail->hasTo($user->email);
         });
     }
 }

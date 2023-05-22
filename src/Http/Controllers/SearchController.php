@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Http\Controllers;
 
 use Canvas\Models\Post;
@@ -7,104 +9,130 @@ use Canvas\Models\Tag;
 use Canvas\Models\Topic;
 use Canvas\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Cache;
 
 class SearchController extends Controller
 {
     /**
      * Display the specified resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function posts(): JsonResponse
+    public function posts()
     {
-        $posts = Post::query()
-                     ->select('id', 'title')
-                     ->when(request()->user('canvas')->isContributor, function (Builder $query) {
-                         return $query->where('user_id', request()->user('canvas')->id);
-                     }, function (Builder $query) {
-                         return $query;
-                     })
-                     ->latest()
-                     ->get();
+        $key = vsprintf('%s-%s-%s', [
+            'posts',
+            request()->user('canvas')->id,
+            Post::query()->latest()->first()->updated_at->timestamp ?? 0,
+        ]);
 
-        // TODO: Can ->map() drop into the above query?
+        return Cache::remember($key, now()->addHours(4), function () {
+            $posts = Post::query()->select('id', 'title')
+                         ->when(request()->user('canvas')->isContributor, function (Builder $query) {
+                             return $query->where('user_id', request()->user('canvas')->id);
+                         }, function (Builder $query) {
+                             return $query;
+                         })
+                         ->latest()
+                         ->get()
+                         ->map(function ($post) {
+                             $post['name'] = $post->title;
+                             $post['category'] = trans('canvas::app.posts');
+                             $post['route'] = 'show-post';
 
-        $posts->map(function ($post) {
-            $post['name'] = $post->title;
-            $post['type'] = 'Post';
-            $post['route'] = 'edit-post';
+                             return $post;
+                         })
+                         ->toArray();
 
-            return $post;
+            return response()->json($posts);
         });
-
-        return response()->json(collect($posts)->toArray(), 200);
     }
 
     /**
      * Display the specified resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function tags(): JsonResponse
+    public function tags()
     {
-        $tags = Tag::query()
-                   ->select('id', 'name')
-                   ->latest()
-                   ->get();
+        $key = vsprintf('%s-%s-%s', [
+            'tags',
+            request()->user('canvas')->id,
+            Tag::query()->latest()->first()->updated_at->timestamp ?? 0,
+        ]);
 
-        $tags->map(function ($tag) {
-            $tag['type'] = 'Tag';
-            $tag['route'] = 'edit-tag';
-
-            return $tag;
-        });
-
-        return response()->json(collect($tags)->toArray(), 200);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @return JsonResponse
-     */
-    public function topics(): JsonResponse
-    {
-        $topics = Topic::query()
-                       ->select('id', 'name')
+        return Cache::remember($key, now()->addHours(4), function () {
+            $tags = Tag::query()->select('id', 'name')
                        ->latest()
-                       ->get();
+                       ->get()
+                       ->map(function ($tag) {
+                           $tag['category'] = trans('canvas::app.tags');
+                           $tag['route'] = 'show-tag';
 
-        $topics->map(function ($topic) {
-            $topic['type'] = 'Topic';
-            $topic['route'] = 'edit-topic';
+                           return $tag;
+                       })
+                       ->toArray();
 
-            return $topic;
+            return response()->json($tags);
         });
-
-        return response()->json(collect($topics)->toArray(), 200);
     }
 
     /**
      * Display the specified resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function users(): JsonResponse
+    public function topics()
     {
-        $users = User::query()
-                     ->select('id', 'name', 'email')
-                     ->latest()
-                     ->get();
+        $key = vsprintf('%s-%s-%s', [
+            'topics',
+            request()->user('canvas')->id,
+            Topic::query()->latest()->first()->updated_at->timestamp ?? 0,
+        ]);
 
-        $users->map(function ($user) {
-            $user['type'] = 'User';
-            $user['route'] = 'edit-user';
+        return Cache::remember($key, now()->addHours(4), function () {
+            $topics = Topic::query()->select('id', 'name')
+                           ->latest()
+                           ->get()
+                           ->map(function ($topic) {
+                               $topic['category'] = trans('canvas::app.topics');
+                               $topic['route'] = 'show-topic';
 
-            return $user;
+                               return $topic;
+                           })
+                           ->toArray();
+
+            return response()->json($topics);
         });
+    }
 
-        return response()->json(collect($users)->toArray(), 200);
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function users()
+    {
+        $key = vsprintf('%s-%s-%s', [
+            'users',
+            request()->user('canvas')->id,
+            User::query()->latest()->first()->updated_at->timestamp ?? 0,
+        ]);
+
+        return Cache::remember($key, now()->addHours(4), function () {
+            $users = User::query()->select('id', 'name')
+                         ->latest()
+                         ->get()
+                         ->map(function ($user) {
+                             $user['category'] = trans('canvas::app.users');
+                             $user['route'] = 'show-user';
+
+                             return $user;
+                         })
+                         ->toArray();
+
+            return response()->json($users);
+        });
     }
 }

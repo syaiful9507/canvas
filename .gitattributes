@@ -3,7 +3,7 @@
 /.github export-ignore
 /tests export-ignore
 .editorconfig export-ignore
-.eslintrc.js export-ignore
+.eslintrc.json export-ignore
 .gitattributes export-ignore
 .gitpod.yml export-ignore
 .gitignore export-ignore
@@ -12,3 +12,4 @@
 .workspace.json export-ignore
 Dockerfile export-ignore
 phpunit.xml.dist export-ignore
+phpstan.neon.dist export-ignore

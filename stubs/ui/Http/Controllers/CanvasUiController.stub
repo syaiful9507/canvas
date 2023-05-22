@@ -1,0 +1,118 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Canvas\Models\User;
+use Canvas\Events\PostViewed;
+use Canvas\Models\Post;
+use Canvas\Models\Tag;
+use Canvas\Models\Topic;
+use Illuminate\Http\Request;
+
+class CanvasUiController extends Controller
+{
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
+    public function index(Request $request)
+    {
+        $posts = Post::query()
+                     ->latest()
+                     ->published()
+                     ->with('user', 'topic')
+                     ->paginate();
+
+        return view('canvas-ui.index')->with('posts', $posts);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param string $slug
+     * @return \Illuminate\View\View
+     */
+    public function showPost(Request $request, string $slug)
+    {
+        $post = Post::query()
+                    ->with('user', 'tags', 'topic')
+                    ->where('slug', $slug)
+                    ->firstOrFail();
+
+        event(new PostViewed($post));
+
+        return view('canvas-ui.show-post')->with('post', $post);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
+    public function getTags(Request $request)
+    {
+        $tags = Tag::query()->paginate();
+
+        return view('canvas-ui.get-tags')->with('tags', $tags);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param string $slug
+     * @return \Illuminate\View\View
+     */
+    public function showTag(Request $request, string $slug)
+    {
+        $tag = Tag::query()
+                  ->where('slug', $slug)
+                  ->firstOrFail();
+
+        return view('canvas-ui.show-tag')->with([
+            'tag' => $tag,
+            'posts' => $tag->posts()->paginate(),
+        ]);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
+    public function getTopics(Request $request)
+    {
+        $topics = Topic::query()->paginate();
+
+        return view('canvas-ui.get-topics')->with('topics', $topics);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param string $slug
+     * @return \Illuminate\View\View
+     */
+    public function showTopic(Request $request, string $slug)
+    {
+        $topic = Topic::query()
+                      ->where('slug', $slug)
+                      ->firstOrFail();
+
+        return view('canvas-ui.show-topic')->with([
+            'topic' => $topic,
+            'posts' => $topic->posts()->paginate(),
+        ]);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param string $id
+     * @return \Illuminate\View\View
+     */
+    public function showUser(Request $request, string $id)
+    {
+        $user = User::query()
+                    ->where('id', $id)
+                    ->firstOrFail();
+
+        return view('canvas-ui.show-user')->with([
+            'user' => $user,
+            'posts' => $user->posts()->published()->paginate(),
+        ]);
+    }
+}

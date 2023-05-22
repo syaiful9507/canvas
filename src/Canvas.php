@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas;
 
-use Canvas\Models\User;
 use Composer\InstalledVersions;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -15,7 +17,7 @@ class Canvas
      *
      * @return string
      */
-    public static function installedVersion(): string
+    public static function installedVersion()
     {
         if (app()->runningUnitTests()) {
             return '';
@@ -29,9 +31,9 @@ class Canvas
      *
      * @return array
      */
-    public static function availableLanguageCodes(): array
+    public static function availableLanguageCodes()
     {
-        $locales = preg_grep('/^([^.])/', scandir(dirname(__DIR__, 1).'/resources/lang'));
+        $locales = preg_grep('/^([^.])/', scandir(dirname(__DIR__).'/lang'));
 
         return collect($locales)->each(function ($code) {
             return $code;
@@ -44,31 +46,17 @@ class Canvas
      * @param $locale
      * @return string
      */
-    public static function availableTranslations($locale): string
+    public static function availableTranslations($locale)
     {
         return collect(trans('canvas::app', [], $locale))->toJson();
     }
 
     /**
-     * Return an array of available user roles.
-     *
-     * @return array
-     */
-    public static function availableRoles(): array
-    {
-        return [
-            User::CONTRIBUTOR => 'Contributor',
-            User::EDITOR => 'Editor',
-            User::ADMIN => 'Admin',
-        ];
-    }
-
-    /**
-     * Return true if the publishable assets are up to date.
+     * Return true if the publishable assets are up-to-date.
      *
      * @return bool
      */
-    public static function assetsUpToDate(): bool
+    public static function assetsUpToDate()
     {
         if (app()->runningUnitTests()) {
             return true;
@@ -76,17 +64,15 @@ class Canvas
 
         $path = public_path('vendor/canvas/mix-manifest.json');
 
-        $message = sprintf('%s%s.  %s',
-            trans('canvas::app.assets_are_not_up_to_date'),
-            trans('canvas::app.to_update_run'),
-            'php artisan canvas:publish'
-        );
-
         if (! File::exists($path)) {
-            throw new RuntimeException($message);
+            throw new RuntimeException(vsprintf('%s%s. %s', [
+                trans('canvas::app.assets_are_not_up_to_date'),
+                trans('canvas::app.to_update_run'),
+                'php artisan canvas:publish',
+            ]));
         }
 
-        return File::get($path) === File::get(__DIR__.'/../public/mix-manifest.json');
+        return File::get($path) === File::get(dirname(__DIR__).'/public/mix-manifest.json');
     }
 
     /**
@@ -94,17 +80,17 @@ class Canvas
      *
      * @return string
      */
-    public static function basePath(): string
+    public static function basePath()
     {
         return sprintf('/%s', config('canvas.path'));
     }
 
     /**
-     * Return the configured storage path url.
+     * Return the configured storage path url for images.
      *
      * @return string
      */
-    public static function baseStoragePath(): string
+    public static function baseStoragePathForImages()
     {
         return sprintf('%s/images', config('canvas.storage_path'));
     }
@@ -115,7 +101,7 @@ class Canvas
      * @param  string|null  $url
      * @return string|null
      */
-    public static function parseReferer(?string $url): ?string
+    public static function parseReferer(?string $url)
     {
         if (filter_var($url, FILTER_VALIDATE_URL)) {
             return parse_url($url)['host'];
@@ -138,7 +124,7 @@ class Canvas
         int $size = 200,
         string $default = 'retro',
         string $rating = 'g'
-    ): string {
+    ) {
         $hash = md5(trim(Str::lower($email)));
 
         return "https://secure.gravatar.com/avatar/{$hash}?s={$size}&d={$default}&r={$rating}";
@@ -150,9 +136,9 @@ class Canvas
      * @param  int|null  $enabled
      * @return bool
      */
-    public static function enabledDarkMode(?int $enabled): bool
+    public static function enabledDarkMode(?int $enabled)
     {
-        return (bool) $enabled ?: false;
+        return (bool) $enabled;
     }
 
     /**
@@ -161,7 +147,7 @@ class Canvas
      * @param  string|null  $locale
      * @return bool
      */
-    public static function usingRightToLeftLanguage(?string $locale): bool
+    public static function usingRightToLeftLanguage(?string $locale)
     {
         return in_array($locale, ['ar', 'fa']);
     }

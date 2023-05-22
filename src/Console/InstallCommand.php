@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Console;
 
 use Canvas\Models\User;
@@ -22,7 +24,7 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Install the Canvas components and resources';
+    protected $description = 'Install Canvas components and resources';
 
     /**
      * Create a new console command instance.
@@ -34,7 +36,7 @@ class InstallCommand extends Command
         parent::__construct();
 
         if (file_exists(config_path('canvas.php'))) {
-            $this->setHidden(true);
+            $this->setHidden();
         }
     }
 
@@ -54,29 +56,17 @@ class InstallCommand extends Command
             $this->installCanvasServiceProvider();
         }
 
-        $this->createDefaultUser($email = 'email@example.com', $password = 'password');
-
-        $this->info('Installation complete.');
-        $this->table(['Default Email', 'Default Password'], [[$email, $password]]);
-        $this->info('First things first, head to <comment>'.route('canvas.login').'</comment> and update your credentials.');
-    }
-
-    /**
-     * Create a new default user.
-     *
-     * @param  string  $email
-     * @param  string  $password
-     * @return void
-     */
-    protected function createDefaultUser(string $email, string $password)
-    {
-        User::create([
+        $user = User::query()->create([
             'id' => Uuid::uuid4()->toString(),
             'name' => 'Example User',
-            'email' => $email,
-            'password' => Hash::make($password),
-            'role' => User::ADMIN,
+            'email' => 'email@example.com',
+            'password' => Hash::make('password'),
+            'role' => User::$admin_id,
         ]);
+
+        $this->info('Installation complete.');
+        $this->table(['Default Email', 'Default Password'], [[$user->email, $user->password]]);
+        $this->info('First things first, head to <comment>'.route('canvas.login').'</comment> and update your credentials.');
     }
 
     /**
@@ -86,7 +76,9 @@ class InstallCommand extends Command
      */
     protected function installCanvasServiceProvider()
     {
-        if (! Str::contains($appConfig = file_get_contents(config_path('app.php')), 'App\\Providers\\CanvasServiceProvider::class')) {
+        $appConfig = file_get_contents(config_path('app.php'));
+
+        if (! Str::contains($appConfig, 'App\\Providers\\CanvasServiceProvider::class')) {
             file_put_contents(config_path('app.php'), str_replace(
                 "App\\Providers\RouteServiceProvider::class,",
                 "App\\Providers\RouteServiceProvider::class,".PHP_EOL."        App\Providers\CanvasServiceProvider::class,",

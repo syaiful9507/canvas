@@ -27,57 +27,22 @@ class PostTest extends TestCase
 
     public function testDatesAreCarbonObjects(): void
     {
-        $this->assertInstanceOf(Carbon::class, factory(Post::class)->create()->published_at);
+        $this->assertInstanceOf(Carbon::class, Post::factory()->published()->create()->published_at);
     }
 
     public function testMetaIsCastToArray(): void
     {
-        $this->assertIsArray(factory(Post::class)->create()->meta);
+        $this->assertIsArray(Post::factory()->create()->meta);
     }
 
-    public function testPublishedAttribute(): void
+    public function testEstimatedReadTimeInMinutesIsAppendedToModel(): void
     {
-        $this->assertTrue(factory(Post::class)->create([
-            'published_at' => now()->subDay(),
-        ])->published);
-    }
-
-    public function testPostsCanShareTheSameSlugWithUniqueUsers(): void
-    {
-        $data = [
-            'slug' => 'a-new-post',
-            'title' => 'A new post',
-        ];
-
-        $primaryPost = factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-        ]);
-        $response = $this->actingAs($this->admin, 'canvas')->postJson("/canvas/api/posts/{$primaryPost->id}", $data);
-
-        $this->assertDatabaseHas('canvas_posts', [
-            'id' => $response->original['id'],
-            'slug' => $response->original['slug'],
-            'user_id' => $response->original['user_id'],
-        ]);
-
-        $secondaryPost = factory(Post::class)->create([
-            'user_id' => $this->editor->id,
-        ]);
-        $response = $this->actingAs($this->editor, 'canvas')->postJson("/canvas/api/posts/{$secondaryPost->id}", $data);
-
-        $this->assertDatabaseHas('canvas_posts', [
-            'id' => $response->original['id'],
-            'slug' => $response->original['slug'],
-            'user_id' => $response->original['user_id'],
-        ]);
+        $this->assertArrayHasKey('estimated_read_time_in_minutes', Post::factory()->create()->toArray());
     }
 
     public function testTagsRelationship(): void
     {
-        $post = factory(Post::class)->create();
-        $tag = factory(Tag::class)->create();
-
-        $post->tags()->sync($tag);
+        $post = Post::factory()->hasTags(1)->create();
 
         $this->assertInstanceOf(BelongsToMany::class, $post->tags());
         $this->assertInstanceOf(Tag::class, $post->tags->first());
@@ -85,18 +50,15 @@ class PostTest extends TestCase
 
     public function testTopicRelationship(): void
     {
-        $post = factory(Post::class)->create();
-        $topic = factory(Topic::class)->create();
+        $post = Post::factory()->for(Topic::factory())->create();
 
-        $post->topic()->sync($topic);
-
-        $this->assertInstanceOf(BelongsToMany::class, $post->topic());
+        $this->assertInstanceOf(BelongsTo::class, $post->topic());
         $this->assertInstanceOf(Topic::class, $post->topic->first());
     }
 
     public function testUserRelationship(): void
     {
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->create();
 
         $this->assertInstanceOf(BelongsTo::class, $post->user());
         $this->assertInstanceOf(User::class, $post->user);
@@ -104,11 +66,7 @@ class PostTest extends TestCase
 
     public function testViewsRelationship(): void
     {
-        $post = factory(Post::class)->create();
-
-        factory(View::class)->create([
-            'post_id' => $post->id,
-        ]);
+        $post = Post::factory()->hasViews()->create();
 
         $this->assertInstanceOf(HasMany::class, $post->views());
         $this->assertInstanceOf(View::class, $post->views->first());
@@ -116,22 +74,40 @@ class PostTest extends TestCase
 
     public function testVisitsRelationship(): void
     {
-        $post = factory(Post::class)->create();
-
-        factory(Visit::class)->create([
-            'post_id' => $post->id,
-        ]);
+        $post = Post::factory()->hasVisits()->create();
 
         $this->assertInstanceOf(HasMany::class, $post->visits());
         $this->assertInstanceOf(Visit::class, $post->visits->first());
     }
 
+    public function testEstimatedReadTimeInMinutesAttribute(): void
+    {
+        $post = Post::factory()->create([
+            'body' => fake()->words(249, true),
+        ]);
+
+        $this->assertSame(1, $post->estimatedReadTimeInMinutes);
+
+        $post = Post::factory()->create([
+            'body' => fake()->words(251, true),
+        ]);
+
+        $this->assertSame(2, $post->estimatedReadTimeInMinutes);
+    }
+
+    public function testPublishedAttribute(): void
+    {
+        $this->assertTrue(Post::factory()->published()->create()->published);
+    }
+
+    public function testDraftAttribute(): void
+    {
+        $this->assertTrue(Post::factory()->draft()->create()->draft);
+    }
+
     public function testPublishedScope(): void
     {
-        factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => now()->subDay(),
-        ]);
+        Post::factory()->published()->create();
 
         $this->assertInstanceOf(Builder::class, resolve(Post::class)->published());
         $this->assertCount(1, Post::published()->get());
@@ -139,35 +115,29 @@ class PostTest extends TestCase
 
     public function testDraftScope(): void
     {
-        factory(Post::class)->create([
-            'user_id' => $this->admin->id,
-            'published_at' => now()->addDay(),
-        ]);
+        Post::factory()->draft()->create();
 
         $this->assertInstanceOf(Builder::class, resolve(Post::class)->draft());
         $this->assertCount(1, Post::draft()->get());
     }
 
-    public function testDetachTaxonomyOnDelete(): void
+    public function testDetachTagsOnDelete(): void
     {
-        $tag = factory(Tag::class)->create();
-        $topic = factory(Topic::class)->create();
-        $post = factory(Post::class)->create();
+        $post = Post::factory()->hasTags(1)->create();
 
-        $post->topic()->sync([$topic->id]);
-        $post->tags()->sync([$tag->id]);
+        $tag = $post->tags()->first();
+
+        $this->assertDatabaseHas('canvas_posts_tags', [
+            'post_id' => $post->id,
+            'tag_id' => $tag->id,
+        ]);
 
         $post->delete();
 
         $this->assertEquals(0, $post->tags->count());
-        $this->assertEquals(0, $post->topic->count());
         $this->assertDatabaseMissing('canvas_posts_tags', [
             'post_id' => $post->id,
             'tag_id' => $tag->id,
-        ]);
-        $this->assertDatabaseMissing('canvas_posts_topics', [
-            'post_id' => $post->id,
-            'topic_id' => $topic->id,
         ]);
     }
 }

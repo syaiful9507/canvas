@@ -5,34 +5,12 @@ namespace Canvas\Tests;
 use Canvas\CanvasServiceProvider;
 use Canvas\Models\User;
 use Exception;
-use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {
     use RefreshDatabase;
-
-    /**
-     * A test user with the role of Contributor.
-     *
-     * @var User
-     */
-    protected $contributor;
-
-    /**
-     * A test user with the role of Editor.
-     *
-     * @var User
-     */
-    protected $editor;
-
-    /**
-     * A test user with the role of Admin.
-     *
-     * @var User
-     */
-    protected $admin;
 
     /**
      * @return void
@@ -44,22 +22,10 @@ abstract class TestCase extends OrchestraTestCase
         parent::setUp();
 
         $this->setUpDatabase($this->app);
-
-        $this->contributor = factory(User::class)->create([
-            'role' => User::CONTRIBUTOR,
-        ]);
-
-        $this->editor = factory(User::class)->create([
-            'role' => User::EDITOR,
-        ]);
-
-        $this->admin = factory(User::class)->create([
-            'role' => User::ADMIN,
-        ]);
     }
 
     /**
-     * @param  Application  $app
+     * @param  \Illuminate\Foundation\Application  $app
      * @return array
      */
     protected function getPackageProviders($app): array
@@ -70,7 +36,7 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param  Application  $app
+     * @param  \Illuminate\Foundation\Application  $app
      * @return void
      */
     protected function resolveApplicationCore($app): void
@@ -83,7 +49,7 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param  Application  $app
+     * @param  \Illuminate\Foundation\Application  $app
      * @return void
      */
     protected function getEnvironmentSetUp($app): void
@@ -112,16 +78,16 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param  Application  $app
+     * @param  \Illuminate\Foundation\Application  $app
      * @return void
      *
      * @throws Exception
      */
-    protected function setUpDatabase($app): void
+    protected function setUpDatabase($app)
     {
         $this->loadLaravelMigrations();
+
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadFactoriesUsing($app, __DIR__.'/../database/factories');
 
         $this->artisan('migrate');
     }

@@ -3,7 +3,6 @@
 namespace Canvas\Tests;
 
 use Canvas\Canvas;
-use Canvas\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -30,15 +29,6 @@ class CanvasTest extends TestCase
         $this->assertIsString(Canvas::availableTranslations(config('app.locale')));
     }
 
-    public function testAvailableRoles(): void
-    {
-        $this->assertSame([
-            User::CONTRIBUTOR => 'Contributor',
-            User::EDITOR => 'Editor',
-            User::ADMIN => 'Admin',
-        ], Canvas::availableRoles());
-    }
-
     public function testAssetsAreUpToDate(): void
     {
         $this->assertTrue(Canvas::assetsUpToDate());
@@ -53,9 +43,9 @@ class CanvasTest extends TestCase
 
     public function testBaseStoragePath(): void
     {
-        $this->assertSame(config('canvas.storage_path').'/images', Canvas::baseStoragePath());
+        $this->assertSame(config('canvas.storage_path').'/images', Canvas::baseStoragePathForImages());
 
-        $this->assertIsString(Canvas::baseStoragePath());
+        $this->assertIsString(Canvas::baseStoragePathForImages());
     }
 
     public function testParseReferer(): void

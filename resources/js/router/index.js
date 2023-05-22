@@ -1,32 +1,117 @@
-import NProgress from 'nprogress';
-import Router from 'vue-router';
-import Vue from 'vue';
-import routes from './routes';
-import settings from '../store/modules/settings';
+import { createRouter, createWebHistory } from 'vue-router'
+import { store } from '@/store'
+import Dashboard from '@/pages/Dashboard.vue'
+import PostList from '@/pages/PostList.vue'
+import ShowPost from '@/pages/ShowPost.vue'
+import TagList from '@/pages/TagList.vue'
+import ShowTag from '@/pages/ShowTag.vue'
+import TopicList from '@/pages/TopicList.vue'
+import ShowTopic from '@/pages/ShowTopic.vue'
+import UserList from '@/pages/UserList.vue'
+import ShowUser from '@/pages/ShowUser.vue'
+import Settings from '@/pages/Settings.vue'
 
-Vue.use(Router);
+const routes = [
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: Dashboard
+    },
+    {
+        path: '/posts',
+        name: 'posts',
+        component: PostList,
+        props: route => ({
+            author: route.query?.author,
+            page: route.query?.page,
+            sort: route.query?.sort,
+            type: route.query?.type
+        })
+    },
+    {
+        path: '/posts/create',
+        name: 'create-post',
+        component: ShowPost
+    },
+    {
+        path: '/posts/:id',
+        name: 'show-post',
+        component: ShowPost
+    },
+    {
+        path: '/tags',
+        name: 'tags',
+        component: TagList,
+        props: route => ({
+            page: route.query?.page,
+            sort: route.query?.sort,
+            usage: route.query?.usage
+        })
+    },
+    {
+        path: '/tags/create',
+        name: 'create-tag',
+        component: ShowTag
+    },
+    {
+        path: '/tags/:id',
+        name: 'show-tag',
+        component: ShowTag
+    },
+    {
+        path: '/topics',
+        name: 'topics',
+        component: TopicList,
+        props: route => ({
+            page: route.query?.page,
+            sort: route.query?.sort,
+            usage: route.query?.usage
+        })
+    },
+    {
+        path: '/topics/create',
+        name: 'create-topic',
+        component: ShowTopic
+    },
+    {
+        path: '/topics/:id',
+        name: 'show-topic',
+        component: ShowTopic
+    },
+    {
+        path: '/users',
+        name: 'users',
+        component: UserList,
+        props: route => ({
+            role: route.query?.role,
+            page: route.query?.page,
+            sort: route.query?.sort
+        })
+    },
+    {
+        path: '/users/create',
+        name: 'create-user',
+        component: ShowUser
+    },
+    {
+        path: '/users/:id',
+        name: 'show-user',
+        component: ShowUser
+    },
+    {
+        path: '/settings',
+        name: 'settings',
+        component: Settings
+    },
+    {
+        path: '/:catchAll(.*)',
+        redirect: 'dashboard'
+    }
+]
 
-NProgress.configure({
-    showSpinner: false,
-    easing: 'ease',
-    speed: 300,
-});
+const router = createRouter({
+    history: createWebHistory(store.state.config.path),
+    routes
+})
 
-const router = createRouter();
-
-export default router;
-
-function createRouter() {
-    const router = new Router({
-        base: settings.state.path,
-        mode: 'history',
-        routes,
-    });
-
-    router.beforeEach((to, from, next) => {
-        NProgress.start();
-        next();
-    });
-
-    return router;
-}
+export default router

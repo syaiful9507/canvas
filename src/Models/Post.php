@@ -1,18 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Canvas\Models;
 
+use Canvas\Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
 class Post extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -62,7 +62,7 @@ class Post extends Model
      * @var array
      */
     protected $appends = [
-        'read_time',
+        'estimated_read_time_in_minutes',
     ];
 
     /**
@@ -78,9 +78,9 @@ class Post extends Model
     /**
      * Get the tags relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function tags(): BelongsToMany
+    public function tags()
     {
         return $this->belongsToMany(
             Tag::class,
@@ -93,26 +93,19 @@ class Post extends Model
     /**
      * Get the topic relationship.
      *
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function topic(): BelongsToMany
+    public function topic()
     {
-        // TODO: This should be a belongsTo() relationship?
-
-        return $this->belongsToMany(
-            Topic::class,
-            'canvas_posts_topics',
-            'post_id',
-            'topic_id'
-        );
+        return $this->belongsTo(Topic::class);
     }
 
     /**
      * Get the user relationship.
      *
-     * @return BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
@@ -120,9 +113,9 @@ class Post extends Model
     /**
      * Get the views relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function views(): HasMany
+    public function views()
     {
         return $this->hasMany(View::class);
     }
@@ -130,34 +123,21 @@ class Post extends Model
     /**
      * Get the visits relationship.
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function visits(): HasMany
+    public function visits()
     {
         return $this->hasMany(Visit::class);
     }
 
     /**
-     * Get the human-friendly estimated reading time of a given text.
+     * Get the estimated reading time of a post in minutes.
      *
-     * @return string
+     * @return int
      */
-    public function getReadTimeAttribute(): string
+    public function getEstimatedReadTimeInMinutesAttribute()
     {
-        // Only count words in our estimation
-        $words = str_word_count(strip_tags($this->body));
-
-        // Divide by the average number of words per minute
-        $minutes = ceil($words / 250);
-
-        // The user is optional since we append this attribute
-        // to every model and we may be creating a new one
-        return vsprintf('%d %s %s', [
-            $minutes,
-            Str::plural(trans('canvas::app.min', [], optional(request()->user())->locale), $minutes),
-            trans('canvas::app.read', [], optional(request()->user())->locale),
-        ]
-        );
+        return (int) ceil(str_word_count(strip_tags($this->body ?? '')) / 250);
     }
 
     /**
@@ -165,31 +145,51 @@ class Post extends Model
      *
      * @return bool
      */
-    public function getPublishedAttribute(): bool
+    public function getPublishedAttribute()
     {
-        return ! is_null($this->published_at) && $this->published_at <= now()->toDateTimeString();
+        return isset($this->published_at) && $this->published_at <= now();
     }
 
     /**
-     * Scope a query to only include published posts.
+     * Check to see if the post is a draft.
      *
-     * @param  Builder  $query
-     * @return Builder
+     * @return bool
      */
-    public function scopePublished(Builder $query): Builder
+    public function getDraftAttribute()
     {
-        return $query->where('published_at', '<=', now()->toDateTimeString());
+        return is_null($this->published_at) || $this->published_at > now();
     }
 
     /**
-     * Scope a query to only include drafted posts.
+     * Scope a query to include published posts.
      *
-     * @param  Builder  $query
-     * @return Builder
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeDraft(Builder $query): Builder
+    public function scopePublished(Builder $query)
     {
-        return $query->where('published_at', '=', null)->orWhere('published_at', '>', now()->toDateTimeString());
+        return $query->where('published_at', '<=', now());
+    }
+
+    /**
+     * Scope a query to include drafted posts.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeDraft(Builder $query)
+    {
+        return $query->whereNull('published_at')->orWhere('published_at', '>', now());
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return PostFactory::new();
     }
 
     /**
@@ -203,7 +203,6 @@ class Post extends Model
 
         static::deleting(function (self $post) {
             $post->tags()->detach();
-            $post->topic()->detach();
         });
     }
 }
