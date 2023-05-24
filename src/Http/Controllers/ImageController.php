@@ -18,7 +18,7 @@ class ImageController extends Controller
      */
     public function store(StoreImageRequest $request)
     {
-        $path = $request->file('image')->storePublicly(Canvas::baseStoragePathForImages(), [
+        $path = $request->file('image')->store(Canvas::baseStoragePathForImages(), [
             'disk' => config('canvas.storage_disk'),
         ]);
 
