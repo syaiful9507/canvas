@@ -208,5 +208,100 @@ class PostController extends Controller
 
             return (string) $tag->id;
         })->toArray();
+<<<<<<< HEAD
+=======
+
+        $topicToSync = collect($request->input('topic', []))->map(function ($item) use ($topics) {
+            $topic = $topics->firstWhere('slug', $item['slug']);
+
+            if (! $topic) {
+                $topic = Topic::create([
+                    'id' => $id = Uuid::uuid4()->toString(),
+                    'name' => $item['name'],
+                    'slug' => $item['slug'],
+                    'user_id' => request()->user('canvas')->id,
+                ]);
+            }
+
+            return (string) $topic->id;
+        })->toArray();
+
+        $post->tags()->sync($tagsToSync);
+
+        $post->topic()->sync($topicToSync);
+
+        return response()->json($post->refresh(), 201);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  $id
+     * @return JsonResponse
+     */
+    public function show($id): JsonResponse
+    {
+        $post = Post::query()
+                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
+                        return $query->where('user_id', request()->user('canvas')->id);
+                    }, function (Builder $query) {
+                        return $query;
+                    })
+                    ->with('tags:name,slug', 'topic:name,slug')
+                    ->findOrFail($id);
+
+        return response()->json([
+            'post' => $post,
+            'tags' => Tag::query()->get(['name', 'slug']),
+            'topics' => Topic::query()->get(['name', 'slug']),
+        ]);
+    }
+
+    /**
+     * Display stats for the specified resource.
+     *
+     * @param  string  $id
+     * @return JsonResponse
+     */
+    public function stats(string $id): JsonResponse
+    {
+        $post = Post::query()
+                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
+                        return $query->where('user_id', request()->user('canvas')->id);
+                    }, function (Builder $query) {
+                        return $query;
+                    })
+                    ->published()
+                    ->findOrFail($id);
+
+        $stats = new StatsAggregator(request()->user('canvas'));
+
+        $results = $stats->getStatsForPost($post);
+
+        return response()->json($results);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  $id
+     * @return mixed
+     *
+     * @throws Exception
+     */
+    public function destroy($id)
+    {
+        $post = Post::query()
+                    ->when(request()->user('canvas')->isContributor, function (Builder $query) {
+                        return $query->where('user_id', request()->user('canvas')->id);
+                    }, function (Builder $query) {
+                        return $query;
+                    })
+                    ->findOrFail($id);
+
+        $post->delete();
+
+        return response()->json(null, 204);
+>>>>>>> v6.0.47
     }
 }
