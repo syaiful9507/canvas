@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="//fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap">
     <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/canvas') }}">
 
-    @if(\Canvas\Canvas::enabledDarkMode($jsVars['user']['dark_mode']))
+    @if(\Canvas\Canvas::enabledDarkMode($scripts['user']['dark_mode']))
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.8.0/build/styles/sunburst.min.css">
     @else
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.8.0/build/styles/github.min.css">
