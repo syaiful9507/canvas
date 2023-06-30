@@ -2,7 +2,7 @@
     "private": true,
     "scripts": {
         "dev": "mix watch",
-        "build": "mix --production",
+        "production": "mix --production",
         "format": "prettier --write resources \"**/*.{css,js,json,vue}\"",
         "lint": "eslint --ext .js,.vue --fix resources/js"
     },
