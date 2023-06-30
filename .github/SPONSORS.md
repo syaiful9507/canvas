@@ -2,7 +2,7 @@
 
 [Canvas](https://trycanvas.app) is a freely available, open source project that gives something back to the greater
  [Laravel](https://laravel.com) community. Since blog platforms dominate so much of the Internet today, it makes
- sense that there should be a simple, easy-to-use package that can drop into your application with little to no effort.
+ sense that there should be a simple, easy-to-use package that can drop into your application with minimal effort.
 
 **Financial contributions will never be required to maintain this project**, they are however very much appreciated
 . If you've ever used Canvas in your daily work, either personally or professionally, and feel that it has made your
