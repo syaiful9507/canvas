@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    class="h-full"
+    class="h-full bg-gray-900"
     @if(\Canvas\Canvas::usingRightToLeftLanguage($scripts['user']['locale'])) dir="rtl" @endif
 >
 <head>
@@ -26,7 +26,7 @@
 
     <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.8.0/build/highlight.min.js"></script>
 </head>
-<body class="h-full bg-white dark:bg-gray-800">
+<body class="h-full">
 
 <div id="app"></div>
 
