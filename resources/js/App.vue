@@ -98,7 +98,6 @@
 <!--})-->
 <!--</script>-->
 
-
 <template>
     <div>
         <TransitionRoot as="template" :show="sidebarOpen">
@@ -150,8 +149,8 @@
                                         @click="closeSidebar"
                                     >
                                         <span class="sr-only">{{
-                                                trans.close_sidebar
-                                            }}</span>
+                                            trans.close_sidebar
+                                        }}</span>
                                         <XMarkIcon
                                             class="h-6 w-6 text-white"
                                             aria-hidden="true"
@@ -228,13 +227,13 @@
                                                     >
                                                         <span
                                                             class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
-                                                        >{{
+                                                            >{{
                                                                 team.initial
                                                             }}</span
                                                         >
                                                         <span
                                                             class="truncate"
-                                                        >{{
+                                                            >{{
                                                                 team.name
                                                             }}</span
                                                         >
@@ -256,11 +255,11 @@
                                                     :alt="user.name"
                                                 />
                                                 <span class="sr-only">{{
-                                                        trans.view_profile
-                                                    }}</span>
+                                                    trans.view_profile
+                                                }}</span>
                                                 <span aria-hidden="true">{{
-                                                        user.name
-                                                    }}</span>
+                                                    user.name
+                                                }}</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -330,11 +329,11 @@
                                     >
                                         <span
                                             class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
-                                        >{{ team.initial }}</span
+                                            >{{ team.initial }}</span
                                         >
                                         <span class="truncate">{{
-                                                team.name
-                                            }}</span>
+                                            team.name
+                                        }}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -350,8 +349,8 @@
                                     :alt="user.name"
                                 />
                                 <span class="sr-only">{{
-                                        trans.view_profile
-                                    }}</span>
+                                    trans.view_profile
+                                }}</span>
                                 <span aria-hidden="true">{{ user.name }}</span>
                             </a>
                         </li>
@@ -431,7 +430,7 @@
                                             active ? 'bg-gray-50' : '',
                                             'block px-3 py-1 text-sm leading-6 text-gray-900'
                                         ]"
-                                    >Name</a
+                                        >Name</a
                                     >
                                 </MenuItem>
                                 <MenuItem v-slot="{ active }">
@@ -441,7 +440,7 @@
                                             active ? 'bg-gray-50' : '',
                                             'block px-3 py-1 text-sm leading-6 text-gray-900'
                                         ]"
-                                    >Date updated</a
+                                        >Date updated</a
                                     >
                                 </MenuItem>
                                 <MenuItem v-slot="{ active }">
@@ -451,7 +450,7 @@
                                             active ? 'bg-gray-50' : '',
                                             'block px-3 py-1 text-sm leading-6 text-gray-900'
                                         ]"
-                                    >Environment</a
+                                        >Environment</a
                                     >
                                 </MenuItem>
                             </MenuItems>
@@ -486,12 +485,12 @@
                                         class="flex gap-x-2"
                                     >
                                         <span class="truncate">{{
-                                                deployment.teamName
-                                            }}</span>
+                                            deployment.teamName
+                                        }}</span>
                                         <span class="text-gray-400">/</span>
                                         <span class="whitespace-nowrap">{{
-                                                deployment.projectName
-                                            }}</span>
+                                            deployment.projectName
+                                        }}</span>
                                         <span class="absolute inset-0" />
                                     </a>
                                 </h2>
@@ -542,7 +541,7 @@
                     <a
                         href="#"
                         class="text-sm font-semibold leading-6 text-indigo-400"
-                    >View all</a
+                        >View all</a
                     >
                 </header>
                 <ul role="list" class="divide-y divide-white/5">
@@ -565,14 +564,14 @@
                             <time
                                 :datetime="item.dateTime"
                                 class="flex-none text-xs text-gray-600"
-                            >{{ item.date }}</time
+                                >{{ item.date }}</time
                             >
                         </div>
                         <p class="mt-3 truncate text-sm text-gray-500">
                             Pushed to
                             <span class="text-gray-400">{{
-                                    item.projectName
-                                }}</span>
+                                item.projectName
+                            }}</span>
                             (<span class="font-mono text-gray-400">{{
                                 item.commit
                             }}</span>
