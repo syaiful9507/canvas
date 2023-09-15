@@ -1,4 +1,5 @@
 const mix = require('laravel-mix')
+/* eslint-disable-next-line */
 const BundleAnalyzerPlugin =
     require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
