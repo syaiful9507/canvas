@@ -1,13 +1,13 @@
-import Dashboard from '@/pages/Dashboard.vue'
-import PostList from '@/pages/PostList.vue'
-import Settings from '@/pages/Settings.vue'
-import ShowPost from '@/pages/ShowPost.vue'
-import ShowTag from '@/pages/ShowTag.vue'
-import ShowTopic from '@/pages/ShowTopic.vue'
-import ShowUser from '@/pages/ShowUser.vue'
-import TagList from '@/pages/TagList.vue'
-import TopicList from '@/pages/TopicList.vue'
-import UserList from '@/pages/UserList.vue'
+import AccountDashboard from '@/pages/AccountDashboard'
+import PostList from '@/pages/PostList'
+import AccountSettings from '@/pages/AccountSettings'
+import ShowPost from '@/pages/ShowPost'
+import ShowTag from '@/pages/ShowTag'
+import ShowTopic from '@/pages/ShowTopic'
+import ShowUser from '@/pages/ShowUser'
+import TagList from '@/pages/TagList'
+import TopicList from '@/pages/TopicList'
+import UserList from '@/pages/UserList'
 import { store } from '@/store'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -15,7 +15,7 @@ const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: Dashboard
+    component: AccountDashboard
   },
   {
     path: '/posts',
@@ -101,7 +101,7 @@ const routes = [
   {
     path: '/settings',
     name: 'settings',
-    component: Settings
+    component: AccountSettings
   },
   {
     path: '/:catchAll(.*)',
