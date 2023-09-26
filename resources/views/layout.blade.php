@@ -13,8 +13,6 @@
 
     <link rel="icon" type="image/x-icon" href="{{ mix('img/favicon.ico', 'vendor/canvas') }}" />
     <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/canvas') }}">
-
-    <script type="text/javascript" src="{{ mix('js/app.js', 'vendor/canvas') }}"></script>
 </head>
 <body class="h-full">
 
@@ -23,5 +21,7 @@
 <script type="text/javascript">
     window.Canvas = @json($scripts);
 </script>
+
+<script type="text/javascript" src="{{ mix('js/app.js', 'vendor/canvas') }}"></script>
 </body>
 </html>

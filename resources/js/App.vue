@@ -52,11 +52,13 @@
                 class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 ring-1 ring-white/10"
               >
                 <div class="flex h-16 shrink-0 items-center">
-                  <img
-                    class="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  />
+                    <AppLink :to="config.path">
+                        <img
+                            class="h-8 w-auto"
+                            src="/vendor/canvas/img/logo.svg"
+                            alt="Canvas logo"
+                        />
+                    </AppLink>
                 </div>
                 <nav class="flex flex-1 flex-col">
                   <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -140,11 +142,13 @@
         class="flex grow flex-col gap-y-5 overflow-y-auto bg-black/10 px-6 ring-1 ring-white/5"
       >
         <div class="flex h-16 shrink-0 items-center">
+            <AppLink :to="config.path">
           <img
             class="h-8 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-            alt="Your Company"
+            src="/vendor/canvas/img/logo.svg"
+            alt="Canvas logo"
           />
+            </AppLink>
         </div>
         <nav class="flex flex-1 flex-col">
           <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -444,17 +448,19 @@ import {
   MagnifyingGlassIcon
 } from '@heroicons/vue/20/solid'
 import {
-  ChartBarSquareIcon,
-  Cog6ToothIcon,
-  FolderIcon,
-  GlobeAltIcon,
-  ServerIcon,
-  SignalIcon,
-  XMarkIcon
-} from '@heroicons/vue/24/outline'
+    ArrowRightOnRectangleIcon,
+    ChartBarSquareIcon,
+    Cog6ToothIcon,
+    FolderIcon,
+    GlobeAltIcon,
+    ServerIcon,
+    SignalIcon,
+    XMarkIcon
+} from "@heroicons/vue/24/outline";
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
+import AppLink from "./components/AppLink.vue";
 
 /* eslint-disable-next-line */
 const route = useRoute()
@@ -470,7 +476,8 @@ const navigation = [
   { name: 'Activity', href: '#', icon: SignalIcon, current: false },
   { name: 'Domains', href: '#', icon: GlobeAltIcon, current: false },
   { name: 'Usage', href: '#', icon: ChartBarSquareIcon, current: false },
-  { name: 'Settings', href: '#', icon: Cog6ToothIcon, current: false }
+  { name: 'Settings', href: '#', icon: Cog6ToothIcon, current: false },
+    { name: 'Log out', href: '#', icon: ArrowRightOnRectangleIcon, current: false },
 ]
 const teams = [
   { id: 1, name: 'Planetaria', href: '#', initial: 'P', current: false },

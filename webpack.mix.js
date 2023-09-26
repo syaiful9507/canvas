@@ -19,7 +19,7 @@ mix
   .vue({ version: 3 })
   .postCss('resources/css/app.css', 'public/css', [require('tailwindcss')])
   .alias({
-    '@': 'resources/js'
+    '@': 'resources/js',
   })
 
 if (mix.inProduction()) {
