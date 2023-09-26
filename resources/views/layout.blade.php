@@ -12,12 +12,7 @@
 
     <title>{{ config('app.name') }} ― Canvas</title>
 
-    <link rel="icon" type="image/x-icon" href="{{ mix('img/favicon.png', 'vendor/canvas') }}" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="stylesheet" href="//fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap">
-    <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/canvas') }}">
-
+    <link rel="icon" type="image/x-icon" href="{{ mix('img/favicon.ico', 'vendor/canvas') }}" />
     @if(\Canvas\Canvas::enabledDarkMode($scripts['user']['dark_mode']))
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.8.0/build/styles/sunburst.min.css">
     @else

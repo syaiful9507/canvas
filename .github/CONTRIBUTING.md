@@ -2,18 +2,18 @@
 
 Thank you for considering contributing to Canvas! One of the ongoing goals for Canvas is to make it as accessible as possible. If you come across any translation mistakes or issues and want to make a contribution, please [create a pull request](https://github.com/austintoddj/canvas/pulls). If you don't see your native language included in the `lang` directory, feel free to add it.
 
--   [OS Tools](#before-you-get-started)
--   [Setup](#setup)
-    -   [Git](#git)
-    -   [Database](#database)
-    -   [Directories](#directories)
-    -   [Installation](#installation)
-    -   [Developing](#developing)
+- [OS Tools](#before-you-get-started)
+- [Setup](#setup)
+  - [Git](#git)
+  - [Database](#database)
+  - [Directories](#directories)
+  - [Installation](#installation)
+  - [Developing](#developing)
 
 ## Before you get started
 
--   Make sure the [Vue DevTools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en) extension is installed in your Chrome browser
--   Add the following function from [Caleb Porzio](https://calebporzio.com/bash-alias-composer-link-use-local-folders-as-composer-dependancies/) to your `~/.bashrc`, `~/.bash_profile` or `~/.zshrc`:
+- Make sure the [Vue DevTools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en) extension is installed in your Chrome browser
+- Add the following function from [Caleb Porzio](https://calebporzio.com/bash-alias-composer-link-use-local-folders-as-composer-dependancies/) to your `~/.bashrc`, `~/.bash_profile` or `~/.zshrc`:
 
 ```bash
 composer-link() {composer config repositories.local '{"type": "path", "url": "'$1'"}' --file composer.json}

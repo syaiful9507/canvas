@@ -16,12 +16,12 @@ php artisan canvas:migrate
 php artisan canvas:publish
 ```
 
--   [Upgrading to 7.0.0 from 6.0](#upgrading-to-700-from-60)
--   [Upgrading to 6.0.0 from 5.4](#upgrading-to-600-from-54)
--   [Upgrading to 5.4.0 from 5.3](#upgrading-to-540-from-53)
--   [Upgrading to 5.3.0 from 5.2](#upgrading-to-530-from-52)
--   [Upgrading to 5.2.0 from 5.1](#upgrading-to-520-from-51)
--   [Upgrading to 5.1.0 from 5.0](#upgrading-to-510-from-50)
+- [Upgrading to 7.0.0 from 6.0](#upgrading-to-700-from-60)
+- [Upgrading to 6.0.0 from 5.4](#upgrading-to-600-from-54)
+- [Upgrading to 5.4.0 from 5.3](#upgrading-to-540-from-53)
+- [Upgrading to 5.3.0 from 5.2](#upgrading-to-530-from-52)
+- [Upgrading to 5.2.0 from 5.1](#upgrading-to-520-from-51)
+- [Upgrading to 5.1.0 from 5.0](#upgrading-to-510-from-50)
 
 ## Upgrading to 7.0.0 from 6.0
 
@@ -44,13 +44,13 @@ _Include table structure_ and _Drop table if exists_ in the export selection scr
 
 The following tables need to be included in the export:
 
--   `canvas_users`
--   `canvas_posts`
--   `canvas_posts_tags`
--   `canvas_tags`
--   `canvas_topics`
--   `canvas_views`
--   `canvas_visits`
+- `canvas_users`
+- `canvas_posts`
+- `canvas_posts_tags`
+- `canvas_tags`
+- `canvas_topics`
+- `canvas_views`
+- `canvas_visits`
 
 Once completed, you can drop those tables from your database.
 
@@ -118,13 +118,13 @@ Structure and DROP TABLE syntax elements in the export selection screen.
 
 The following tables need to be included in the export:
 
--   `canvas_posts`
--   `canvas_posts_tags`
--   `canvas_posts_topics`
--   `canvas_tags`
--   `canvas_topics`
--   `canvas_views`
--   `canvas_visits`
+- `canvas_posts`
+- `canvas_posts_tags`
+- `canvas_posts_topics`
+- `canvas_tags`
+- `canvas_topics`
+- `canvas_views`
+- `canvas_visits`
 
 Once completed, you can drop those tables from your database.
 
@@ -155,9 +155,9 @@ determine if you should run into any errors while performing this action.
 
 Once the import is complete, the `user_id` column in the following tables will need to be addressed:
 
--   `canvas_posts`
--   `canvas_tags`
--   `canvas_topics`
+- `canvas_posts`
+- `canvas_tags`
+- `canvas_topics`
 
 Since those values reflect the user ID from the default `users` table, you'll need to make sure you manually update
 those to the correct user IDs when you have them established in `canvas_users`.

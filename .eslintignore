@@ -1,5 +1,8 @@
 node_modules
-public
 vendor
 coverage
 .idea
+*.log
+.DS_Store
+.phpunit.result.cache
+public

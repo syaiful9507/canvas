@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        @include('canvas::components.brand')
+        <img src='{{ mix('img/logo.svg', 'vendor/canvas') }}' alt='Canvas logo' width="76px" height="50px" class='mx-auto'>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
             {{ trans('canvas::app.reset_your_password', [], app()->getLocale()) }}
         </h2>
