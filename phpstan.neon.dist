@@ -1,9 +1,0 @@
-parameters:
-  paths:
-    - config
-    - database
-    - src
-    - routes
-    - lang
-
-  level: 0
