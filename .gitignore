@@ -1,8 +1,8 @@
-node_modules
-vendor
-coverage
-.idea
+/node_modules
+/vendor
+/coverage
+/.idea
+/.phpunit.result.cache
 *.log
 .DS_Store
-.phpunit.result.cache
 .phpunit.cache

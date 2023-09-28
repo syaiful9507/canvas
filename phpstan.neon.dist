@@ -1,0 +1,11 @@
+parameters:
+  paths:
+    - config
+    - database
+    - lang
+    - routes
+    - src
+    - stubs
+    - tests
+
+  level: 0
