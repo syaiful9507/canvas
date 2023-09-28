@@ -6,6 +6,5 @@ parameters:
     - routes
     - src
     - stubs
-    - tests
 
   level: 0
