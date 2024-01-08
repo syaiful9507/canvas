@@ -1,6 +1,6 @@
 import AccountDashboard from '@/pages/AccountDashboard'
-import PostList from '@/pages/PostList'
 import AccountSettings from '@/pages/AccountSettings'
+import PostList from '@/pages/PostList'
 import ShowPost from '@/pages/ShowPost'
 import ShowTag from '@/pages/ShowTag'
 import ShowTopic from '@/pages/ShowTopic'
