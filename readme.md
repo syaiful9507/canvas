@@ -170,8 +170,7 @@ update `config/canvas.php`:
 
 ## E-mail Notifications
 
-**Want a weekly summary?** Canvas allows users to receive a weekly digest of their authored content. Once your
-application is [configured for sending mail](https://laravel.com/docs/9.x/mail), update `config/canvas.php`:
+**Want a weekly summary?** Canvas allows users to receive a weekly digest of their authored content. Once your application is [configured for sending mail](https://laravel.com/docs/10.x/mail), update `config/canvas.php`:
 
 ```php
 /*
@@ -191,7 +190,7 @@ application is [configured for sending mail](https://laravel.com/docs/9.x/mail),
 ]
 ```
 
-Since this feature runs on [Laravel's Scheduler](https://laravel.com/docs/9.x/scheduling), you'll need to add the
+Since this feature runs on [Laravel's Scheduler](https://laravel.com/docs/10.x/scheduling), you'll need to add the
 following cron entry to your server:
 
 ```bash
@@ -201,7 +200,7 @@ following cron entry to your server:
 ## API
 
 Installing [Canvas UI](#canvas-ui) will be the most efficient way to get up and running with a frontend interface to
-display your data. However many users will opt for creating this by hand since it gives flexibility to their design
+display your data. However, many users will opt for creating this by hand since it gives flexibility to their design
 aesthetic.
 
 Using the `published` scope will allow you to only retrieve posts that have a published date in the past:
