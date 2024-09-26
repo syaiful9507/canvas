@@ -109,7 +109,6 @@
         </main>
     </section>
 </template>
-
 <script>
 import { mapGetters, mapState } from 'vuex';
 import Hover from '../directives/Hover';
