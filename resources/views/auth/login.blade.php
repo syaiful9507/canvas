@@ -62,8 +62,5 @@
                 </div>
             </div>
         </div>
-        <div class="mt-5 text-center">
-            <p class="text-muted">Powered by <a href="https://trycanvas.app" class="text-primary text-decoration-none">Canvas</a></p>
-        </div>
     </main>
 @endsection
