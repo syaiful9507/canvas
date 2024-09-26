@@ -106,12 +106,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="pt-5 d-flex justify-content-center">
-                <a :href="latestRelease.link" class="text-muted text-decoration-none">
-                    {{ latestRelease.tag }}
-                </a>
-            </div>
         </main>
     </section>
 </template>
